@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AtlasVault Finance — Online Banking</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{--gold:#00D4AA;--g2:#00A882;--glow:rgba(0,212,170,0.22);--navy:#050E1A;--navy2:#0A2540;--bg:#060D18;--bg2:#0D1A2E;--bg3:#112038;--card:#0F1D30;--border:#1A3050;--text:#E8F4FF;--text2:#7A95B8;--ok:#00D4AA;--err:#FF4757;--warn:#FFA502;--info:#4A9EFF;--sw:265px;--r:12px;}
+[data-theme=light]{--bg:#F0F4FF;--bg2:#E8EDF8;--bg3:#DDE3F0;--card:#fff;--border:#D1D9E6;--text:#0A1628;--text2:#5A6A85;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+#ldr{position:fixed;inset:0;z-index:9999;background:#050C18;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.lr{width:96px;height:96px;border-radius:50%;border:2px solid rgba(240,180,41,.1);display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:20px;}
+.lr::before{content:'';position:absolute;inset:-3px;border-radius:50%;border:2.5px solid transparent;border-top-color:var(--gold);border-right-color:var(--gold);animation:spin 1.2s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.li2{width:74px;height:74px;background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:800;color:var(--gold);}
+.ln{font-family:'Playfair Display',serif;font-size:1.35rem;color:#fff;letter-spacing:2px;margin-bottom:4px;}
+.ln span{color:var(--gold);}
+.ls2{font-size:.68rem;color:rgba(255,255,255,.22);letter-spacing:3px;text-transform:uppercase;margin-bottom:22px;}
+.lb2{width:190px;height:2px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden;}
+.lf2{height:100%;background:linear-gradient(90deg,var(--gold),#fff,var(--gold));background-size:200%;border-radius:99px;animation:sh 1.5s linear infinite,gw 2.5s ease forwards;}
+@keyframes sh{to{background-position:200% center}}
+@keyframes gw{from{width:0}to{width:100%}}
+#auth{display:none;}
+.al{display:grid;grid-template-columns:1fr 1fr;min-height:100vh;}
+.alL{background:linear-gradient(135deg,var(--navy),var(--navy2));padding:48px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;}
+.alL::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(240,180,41,.05),transparent 60%);}
+.alogo{font-family:'Playfair Display',serif;font-size:1.35rem;color:var(--gold);display:flex;align-items:center;gap:10px;margin-bottom:44px;position:relative;}
+.alogoi{width:38px;height:38px;background:linear-gradient(135deg,var(--gold),var(--g2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:800;color:var(--navy);}
+.atag{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:#fff;line-height:1.3;margin-bottom:16px;position:relative;}
+.atag span{color:var(--gold);}
+.adesc{font-size:.9rem;color:rgba(255,255,255,.5);line-height:1.8;margin-bottom:30px;position:relative;}
+.afeats{display:flex;flex-direction:column;gap:12px;position:relative;}
+.afeat{display:flex;align-items:center;gap:12px;font-size:.87rem;color:rgba(255,255,255,.7);}
+.afeatic{width:34px;height:34px;border-radius:9px;background:rgba(240,180,41,.1);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:.88rem;flex-shrink:0;}
+.alR{background:var(--bg);display:flex;align-items:center;justify-content:center;padding:36px 44px;}
+.afw{width:100%;max-width:430px;}
+.ath{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--text);margin-bottom:5px;}
+.ats{font-size:.84rem;color:var(--text2);margin-bottom:24px;}
+.aerr{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.22);color:var(--err);padding:10px 14px;border-radius:8px;font-size:.82rem;margin-bottom:12px;display:none;}
+.asuc{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.22);color:var(--ok);padding:10px 14px;border-radius:8px;font-size:.82rem;margin-bottom:12px;display:none;}
+.fg{margin-bottom:13px;}
+.fl{display:block;font-size:.76rem;font-weight:600;color:var(--text2);margin-bottom:5px;}
+.fc{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:11px 13px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.87rem;outline:none;transition:border .2s;}
+.fc:focus{border-color:var(--gold);}
+.fc::placeholder{color:var(--text2);}
+select.fc option{background:var(--bg2);}
+textarea.fc{resize:vertical;min-height:88px;}
+.iw{position:relative;}
+.iw .ic{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text2);font-size:.84rem;pointer-events:none;}
+.iw .fc{padding-left:37px;}
+.iw .ey{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text2);cursor:pointer;font-size:.84rem;}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 17px;border-radius:8px;font-size:.83rem;font-weight:600;font-family:'Outfit',sans-serif;cursor:pointer;border:none;transition:all .2s;text-decoration:none;white-space:nowrap;}
+.bg2{background:linear-gradient(135deg,var(--gold),var(--g2));color:var(--navy);box-shadow:0 2px 8px var(--glow);}
+.bg2:hover{box-shadow:0 4px 16px var(--glow);transform:translateY(-1px);}
+.bo2{background:none;border:1px solid var(--border);color:var(--text2);}
+.bo2:hover{border-color:var(--gold);color:var(--gold);}
+.bfull{width:100%;justify-content:center;padding:13px;font-size:.9rem;}
+.alink{text-align:center;font-size:.82rem;color:var(--text2);margin-top:12px;}
+.alink a{color:var(--gold);text-decoration:none;font-weight:600;cursor:pointer;}
+.sp{display:flex;margin-bottom:24px;}
+.sd{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;position:relative;}
+.sd::after{content:'';position:absolute;top:13px;left:50%;width:100%;height:2px;background:var(--border);z-index:0;}
+.sd:last-child::after{display:none;}
+.sd .dot{width:26px;height:26px;border-radius:50%;background:var(--border);color:var(--text2);font-size:.73rem;font-weight:700;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;transition:all .3s;}
+.sd.active .dot,.sd.done .dot{background:var(--gold);color:var(--navy);}
+.sd span{font-size:.6rem;color:var(--text2);}
+.sd.active span{color:var(--gold);}
+.otpr{display:flex;gap:9px;justify-content:center;margin:16px 0;}
+.otpi{width:46px;height:52px;text-align:center;font-size:1.2rem;font-weight:700;background:var(--bg2);border:2px solid var(--border);border-radius:10px;color:var(--text);font-family:'Outfit',sans-serif;outline:none;transition:border .2s;}
+.otpi:focus{border-color:var(--gold);}
+#pov{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:800;display:none;align-items:center;justify-content:center;backdrop-filter:blur(8px);}
+#pov.on{display:flex;}
+.pc{background:var(--card);border:1px solid var(--border);border-radius:20px;width:100%;max-width:360px;overflow:hidden;animation:su .3s ease;}
+@keyframes su{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.ph{background:linear-gradient(135deg,var(--navy),var(--navy2));padding:28px;text-align:center;}
+.ph h3{font-family:'Playfair Display',serif;font-size:1.1rem;color:#fff;margin-bottom:5px;}
+.ph p{font-size:.78rem;color:rgba(255,255,255,.45);}
+.pb2{padding:24px;}
+.pav{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--g2));color:var(--navy);font-size:1.2rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-family:'Playfair Display',serif;}
+.pname{text-align:center;font-weight:600;font-size:.9rem;margin-bottom:16px;}
+.pdots{display:flex;gap:13px;justify-content:center;margin-bottom:18px;}
+.pdot{width:13px;height:13px;border-radius:50%;border:2px solid var(--border);transition:all .2s;}
+.pdot.on{background:var(--gold);border-color:var(--gold);}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;}
+.pk{height:52px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:1.15rem;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s;}
+.pk:hover{background:var(--bg2);border-color:var(--gold);}
+.pk.del{color:var(--err);}
+.pk.ok{background:var(--gold);color:var(--navy);border-color:var(--gold);}
+.perr{text-align:center;color:var(--err);font-size:.8rem;margin-top:9px;min-height:18px;}
+#app{display:none;}
+.layout{display:flex;min-height:100vh;}
+.sidebar{width:var(--sw);background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;transition:transform .3s;}
+.sidebar::-webkit-scrollbar{width:3px;}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px;}
+.slog{padding:18px 15px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.slogi{width:36px;height:36px;background:linear-gradient(135deg,var(--gold),var(--g2));border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:800;color:var(--navy);flex-shrink:0;}
+.sbr{font-family:'Playfair Display',serif;font-size:.88rem;color:var(--gold);line-height:1.3;}
+.sbr span{display:block;font-family:'Outfit',sans-serif;font-size:.62rem;color:var(--text2);font-weight:400;}
+.susr{padding:13px 15px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.sav{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--g2));color:var(--navy);font-weight:700;font-size:.88rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Playfair Display',serif;overflow:hidden;}
+.sav img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.sun{font-size:.84rem;font-weight:600;}
+.sac{font-size:.7rem;color:var(--text2);font-family:monospace;}
+.kb{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:99px;font-size:.63rem;font-weight:700;margin-top:2px;}
+.kb-ok{background:rgba(16,185,129,.1);color:var(--ok);}
+.kb-w{background:rgba(245,158,11,.1);color:var(--warn);}
+.kb-e{background:rgba(239,68,68,.1);color:var(--err);}
+.smenu{padding:10px 9px;flex:1;}
+.slbl{font-size:.59rem;font-weight:700;color:var(--text2);letter-spacing:1.7px;text-transform:uppercase;padding:8px 10px 3px;}
+.ni{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:9px;cursor:pointer;color:var(--text2);font-size:.83rem;font-weight:500;transition:all .2s;margin-bottom:1px;}
+.ni:hover{background:var(--bg3);color:var(--text);}
+.ni.on{background:linear-gradient(135deg,var(--gold),var(--g2));color:var(--navy);font-weight:700;box-shadow:0 4px 12px var(--glow);}
+.ni i{width:15px;text-align:center;font-size:.83rem;}
+.nbdg{margin-left:auto;background:var(--err);color:#fff;border-radius:99px;font-size:.59rem;font-weight:700;padding:2px 5px;min-width:16px;text-align:center;}
+.sftr{padding:11px 9px;border-top:1px solid var(--border);}
+.sbtns{display:flex;gap:6px;margin-bottom:8px;}
+.sbtn{flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:7px;border-radius:8px;font-size:.75rem;font-family:'Outfit',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;transition:all .2s;}
+.sbtn:hover{border-color:var(--gold);color:var(--gold);}
+.sbtn.lo{color:var(--err);}
+.sbtn.lo:hover{border-color:var(--err);}
+.stag{font-size:.68rem;color:var(--text2);display:flex;align-items:center;gap:5px;}
+.stag i{color:var(--ok);}
+.main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;}
+.tbar{background:var(--card);border-bottom:1px solid var(--border);padding:0 22px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.tbL{display:flex;align-items:center;gap:10px;}
+.ham{display:none;background:none;border:none;color:var(--text);font-size:1.1rem;cursor:pointer;}
+.ptitle{font-family:'Playfair Display',serif;font-size:1rem;color:var(--text);}
+.tbR{display:flex;align-items:center;gap:9px;}
+.tdate{font-size:.76rem;color:var(--text2);display:flex;align-items:center;gap:5px;}
+.tdate i{color:var(--gold);}
+.tbtn{background:var(--bg3);border:1px solid var(--border);color:var(--text2);width:34px;height:34px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.86rem;transition:all .2s;position:relative;}
+.tbtn:hover{border-color:var(--gold);color:var(--gold);}
+.nd{position:absolute;top:5px;right:5px;width:7px;height:7px;background:var(--err);border-radius:50%;border:2px solid var(--card);}
+.tav{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--g2));color:var(--navy);font-weight:700;font-size:.78rem;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:'Playfair Display',serif;overflow:hidden;}
+.tav img{width:100%;height:100%;border-radius:50%;object-fit:cover;}
+.cnt{padding:20px;flex:1;}
+.pg{display:none;}
+.pg.on{display:block;animation:fi .3s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.bbal{background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:16px;padding:22px 26px;margin-bottom:16px;position:relative;overflow:hidden;}
+.bbal::before{content:'';position:absolute;top:-50px;right:-50px;width:200px;height:200px;border-radius:50%;background:rgba(240,180,41,.05);}
+.bbt{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
+.bbg{font-size:.78rem;color:rgba(255,255,255,.55);}
+.bbn{font-size:.98rem;font-weight:600;color:#fff;margin-top:2px;}
+.bbl{font-size:.76rem;color:rgba(255,255,255,.5);margin-bottom:5px;}
+.bba{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px;}
+.ebt{background:none;border:none;color:rgba(255,255,255,.35);cursor:pointer;font-size:.88rem;margin-left:4px;}
+.bbac{display:flex;align-items:center;gap:8px;margin-top:12px;}
+.bban{font-family:monospace;font-size:.86rem;color:rgba(255,255,255,.6);}
+.spp{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#EF4444;padding:2px 9px;border-radius:99px;font-size:.66rem;font-weight:700;}
+.spp.ok{background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.3);color:var(--ok);}
+.bbacts{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap;}
+.bbact{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.11);color:#fff;padding:7px 14px;border-radius:8px;font-size:.78rem;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s;display:flex;align-items:center;gap:5px;}
+.bbact:hover{background:rgba(240,180,41,.14);border-color:rgba(240,180,41,.3);}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px;margin-bottom:16px;}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:15px;display:flex;align-items:center;gap:12px;}
+.sci{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:.96rem;flex-shrink:0;}
+.si-g{background:rgba(240,180,41,.1);color:var(--gold);}
+.si-ok{background:rgba(16,185,129,.1);color:var(--ok);}
+.si-e{background:rgba(239,68,68,.1);color:var(--err);}
+.si-i{background:rgba(59,130,246,.1);color:var(--info);}
+.si-w{background:rgba(245,158,11,.1);color:var(--warn);}
+.sl2{font-size:.69rem;color:var(--text2);margin-bottom:2px;}
+.sv{font-size:1.05rem;font-weight:700;}
+.qag{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:16px;}
+.qa{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px 10px;text-align:center;cursor:pointer;transition:all .2s;}
+.qa:hover{border-color:var(--gold);transform:translateY(-2px);}
+.qa i{font-size:1.2rem;color:var(--gold);display:block;margin-bottom:7px;}
+.qa span{font-size:.76rem;color:var(--text2);font-weight:500;}
+.card2{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:16px;}
+.chdr{padding:13px 17px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.ct{font-size:.86rem;font-weight:600;display:flex;align-items:center;gap:6px;}
+.ct i{color:var(--gold);}
+.vall{font-size:.74rem;color:var(--gold);cursor:pointer;}
+.tw{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:.81rem;}
+th{padding:9px 13px;text-align:left;font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--text2);border-bottom:1px solid var(--border);white-space:nowrap;background:var(--bg3);}
+td{padding:11px 13px;border-bottom:1px solid var(--border);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(240,180,41,.02);}
+.te{text-align:center;padding:38px;color:var(--text2);}
+.te i{font-size:1.8rem;display:block;margin-bottom:8px;opacity:.22;}
+.bdg{display:inline-flex;padding:3px 8px;border-radius:99px;font-size:.68rem;font-weight:600;white-space:nowrap;}
+.b-ok{background:rgba(16,185,129,.1);color:var(--ok);}
+.b-e{background:rgba(239,68,68,.1);color:var(--err);}
+.b-w{background:rgba(245,158,11,.1);color:var(--warn);}
+.b-i{background:rgba(59,130,246,.1);color:var(--info);}
+.b-g{background:rgba(240,180,41,.1);color:var(--gold);}
+.fs{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:16px;}
+.fst{font-size:.86rem;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:6px;}
+.fst i{color:var(--gold);}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.amtw{position:relative;}
+.amtw .sym{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--gold);font-weight:700;font-size:.92rem;pointer-events:none;}
+.amtw .fc{padding-left:26px;font-size:1.05rem;font-weight:700;}
+.presets{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px;}
+.pre{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:4px 11px;border-radius:7px;font-size:.76rem;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s;}
+.pre:hover{border-color:var(--gold);color:var(--gold);}
+.pban{background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:14px;padding:26px;margin-bottom:20px;text-align:center;position:relative;overflow:hidden;}
+.pban::before{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.pbanic{width:60px;height:60px;border-radius:50%;background:rgba(240,180,41,.12);border:2px solid rgba(240,180,41,.25);display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:var(--gold);margin:0 auto 12px;}
+.pban h2{font-family:'Playfair Display',serif;font-size:1.3rem;color:#fff;margin-bottom:5px;}
+.pban p{font-size:.83rem;color:rgba(255,255,255,.5);}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px;}
+.mc{background:var(--card);border:2px solid var(--border);border-radius:var(--r);padding:18px;text-align:center;cursor:pointer;transition:all .2s;}
+.mc:hover,.mc.on{border-color:var(--gold);background:rgba(240,180,41,.05);}
+.mc .ic2{font-size:1.6rem;margin-bottom:8px;}
+.mc h4{font-size:.83rem;font-weight:600;}
+.mc p{font-size:.73rem;color:var(--text2);margin-top:3px;}
+.wsteps{display:flex;margin-bottom:20px;}
+.ws{flex:1;text-align:center;position:relative;}
+.ws::after{content:'';position:absolute;top:13px;left:50%;width:100%;height:2px;background:var(--border);}
+.ws:last-child::after{display:none;}
+.ws .wn{width:26px;height:26px;border-radius:50%;background:var(--border);color:var(--text2);font-size:.73rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 5px;position:relative;z-index:1;transition:all .3s;}
+.ws.done .wn,.ws.active .wn{background:var(--gold);color:var(--navy);}
+.ws .wl{font-size:.63rem;color:var(--text2);}
+.ws.active .wl{color:var(--gold);}
+.codein{display:flex;gap:8px;justify-content:center;margin:14px 0;}
+.ci{width:46px;height:52px;text-align:center;font-size:1.2rem;font-weight:700;background:var(--bg2);border:2px solid var(--border);border-radius:10px;color:var(--text);font-family:'Outfit',sans-serif;outline:none;transition:border .2s;text-transform:uppercase;}
+.ci:focus{border-color:var(--gold);}
+.iplans{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:13px;margin-bottom:20px;}
+.ip{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;text-align:center;transition:all .2s;}
+.ip:hover{border-color:var(--gold);transform:translateY(-3px);}
+.ip.ft{border-color:rgba(240,180,41,.35);background:linear-gradient(135deg,rgba(240,180,41,.05),var(--card));}
+.iptag{display:inline-block;background:var(--gold);color:var(--navy);font-size:.63rem;font-weight:700;padding:2px 8px;border-radius:99px;margin-bottom:8px;}
+.ip h3{font-family:'Playfair Display',serif;font-size:1.05rem;margin-bottom:5px;}
+.ipmin{font-size:.73rem;color:var(--text2);margin-bottom:11px;}
+.ipret{font-size:1.7rem;font-weight:700;color:var(--gold);}
+.ipdur{font-size:.76rem;color:var(--text2);margin:5px 0 14px;}
+.clayout{display:grid;grid-template-columns:240px 1fr;height:calc(100vh - 142px);background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.cusers{border-right:1px solid var(--border);display:flex;flex-direction:column;}
+.cuhdr{padding:12px 14px;border-bottom:1px solid var(--border);font-size:.82rem;font-weight:600;background:var(--bg3);}
+.cmain{display:flex;flex-direction:column;flex:1;min-height:0;}
+.cmsgs{flex:1;overflow-y:auto;padding:13px;display:flex;flex-direction:column;gap:9px;}
+.cmsgs::-webkit-scrollbar{width:3px;}
+.cmsgs::-webkit-scrollbar-thumb{background:var(--border);}
+.cm{max-width:75%;display:flex;flex-direction:column;gap:3px;}
+.cm.user{align-self:flex-end;}
+.cm.admin{align-self:flex-start;}
+.cmb{padding:8px 12px;border-radius:13px;font-size:.82rem;line-height:1.5;word-break:break-word;}
+.cm.user .cmb{background:linear-gradient(135deg,var(--gold),var(--g2));color:var(--navy);border-radius:13px 4px 13px 13px;font-weight:500;}
+.cm.admin .cmb{background:var(--bg3);color:var(--text);border-radius:4px 13px 13px 13px;}
+.cm.code .cmb{background:rgba(16,185,129,.08);color:var(--ok);font-family:monospace;font-size:.95rem;font-weight:700;letter-spacing:3px;border:1px solid rgba(16,185,129,.2);}
+.cmt{font-size:.62rem;color:var(--text2);}
+.cimg{max-width:180px;border-radius:9px;cursor:pointer;}
+.cia{padding:11px 13px;border-top:1px solid var(--border);display:flex;gap:7px;align-items:flex-end;background:var(--bg3);}
+.cta2{flex:1;background:var(--card);border:1px solid var(--border);border-radius:9px;padding:8px 11px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.82rem;outline:none;resize:none;max-height:90px;min-height:36px;}
+.cta2:focus{border-color:var(--gold);}
+.csb{background:linear-gradient(135deg,var(--gold),var(--g2));border:none;color:var(--navy);width:36px;height:36px;border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ibox{background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.16);border-radius:9px;padding:12px;margin:12px 0;font-size:.81rem;color:var(--info);display:flex;gap:7px;}
+.ibox i{flex-shrink:0;margin-top:1px;}
+.wbox{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.16);border-radius:9px;padding:12px;margin:12px 0;font-size:.81rem;color:var(--warn);display:flex;gap:7px;}
+.upz{border:2px dashed var(--border);border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:all .2s;position:relative;}
+.upz:hover{border-color:var(--gold);background:rgba(240,180,41,.03);}
+.upz input{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.upz i{font-size:1.6rem;color:var(--text2);margin-bottom:8px;}
+.upz p{font-size:.8rem;color:var(--text2);}
+.uppr{max-width:140px;border-radius:8px;margin-top:9px;}
+.mov{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;display:none;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(6px);}
+.mov.on{display:flex;}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:16px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;animation:su .3s ease;}
+.mhdr{padding:15px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--card);z-index:1;}
+.mtit{font-size:.9rem;font-weight:600;}
+.mcls{background:none;border:none;color:var(--text2);cursor:pointer;width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:6px;font-size:.95rem;}
+.mcls:hover{color:var(--err);background:rgba(239,68,68,.1);}
+.mbdy{padding:18px;}
+.mftr{padding:12px 18px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;}
+.nitem{display:flex;gap:11px;padding:13px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .2s;}
+.nitem:hover{background:var(--bg3);}
+.nitem.unread{border-left:3px solid var(--gold);}
+.ndot2{width:36px;height:36px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.88rem;}
+.nd-ok{background:rgba(16,185,129,.1);color:var(--ok);}
+.nd-e{background:rgba(239,68,68,.1);color:var(--err);}
+.nd-i{background:rgba(59,130,246,.1);color:var(--info);}
+.nd-g{background:rgba(240,180,41,.1);color:var(--gold);}
+.ntit{font-size:.84rem;font-weight:600;margin-bottom:2px;}
+.nmsg{font-size:.77rem;color:var(--text2);line-height:1.5;}
+.ntm{font-size:.67rem;color:var(--text2);margin-top:2px;}
+.twrap{position:fixed;bottom:18px;right:18px;z-index:9999;display:flex;flex-direction:column;gap:7px;}
+.toast{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:10px 13px;font-size:.81rem;display:flex;align-items:center;gap:8px;animation:tin .3s ease;min-width:240px;max-width:320px;box-shadow:0 8px 24px rgba(0,0,0,.3);}
+.toast.success{border-left:3px solid var(--ok);}
+.toast.error{border-left:3px solid var(--err);}
+.toast.info{border-left:3px solid var(--info);}
+@keyframes tin{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+.ov2{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99;}
+.lb2x{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:9999;display:none;align-items:center;justify-content:center;}
+.lb2x.on{display:flex;}
+.lb2x img{max-width:90vw;max-height:90vh;border-radius:8px;}
+.lbc{position:absolute;top:15px;right:15px;background:rgba(255,255,255,.1);border:none;color:#fff;font-size:1.3rem;cursor:pointer;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+@media(max-width:900px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.ov2.on{display:block}.main{margin-left:0}.ham{display:flex}.fg2,.fr2{grid-template-columns:1fr}.qag{grid-template-columns:repeat(2,1fr)}.clayout{grid-template-columns:1fr}.cusers{display:none}.cnt{padding:13px}.tbar{padding:0 13px}.al{grid-template-columns:1fr}.alL{display:none}.alR{padding:26px 18px}}
+@media(max-width:480px){.sgrid{grid-template-columns:1fr 1fr}.iplans{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div id="ldr"><div class="lr"><div class="li2">B</div></div><div class="ln">Blue<span>Peak</span></div><div class="ls2">Online Banking</div><div class="lb2"><div class="lf2"></div></div></div>
+<div id="auth">
+  <!-- LOGIN -->
+  <div id="lp" class="al">
+    <div class="alL">
+      <div class="alogo"><div class="alogoi">B</div>AtlasVault Finance</div>
+      <div class="atag"><span>Swift</span> & Secure Banking</div>
+      <div class="adesc">Global Banking Excellence — Trusted by clients in 80+ countries worldwide.</div>
+      <div class="afeats">
+        <div class="afeat"><div class="afeatic"><i class="fas fa-shield-alt"></i></div>Bank-Level 256-bit Security</div>
+        <div class="afeat"><div class="afeatic"><i class="fas fa-bolt"></i></div>Lightning Fast Transfers</div>
+        <div class="afeat"><div class="afeatic"><i class="fas fa-globe"></i></div>Global Access — 80+ Countries</div>
+        <div class="afeat"><div class="afeatic"><i class="fas fa-headset"></i></div>24/7 Customer Support</div>
+      </div>
+    </div>
+    <div class="alR"><div class="afw">
+      <div class="ath">Welcome Back</div>
+      <div class="ats">Sign in to your AtlasVault Finance account</div>
+      <div class="aerr" id="lerr"></div>
+      <div class="fg"><label class="fl">Username or Email</label><div class="iw"><i class="ic fas fa-user"></i><input class="fc" id="lid" type="text" placeholder="Enter username or email"></div></div>
+      <div class="fg"><label class="fl" style="display:flex;justify-content:space-between"><span>Password</span><a style="color:var(--gold);font-size:.75rem;text-decoration:none;cursor:pointer;font-weight:600" onclick="sF()">Forgot Password?</a></label><div class="iw"><i class="ic fas fa-lock"></i><input class="fc" id="lpass" type="password" placeholder="Enter your password"><button class="ey" onclick="tE('lpass',this)"><i class="fas fa-eye"></i></button></div></div>
+      <button class="btn bg2 bfull" onclick="doLogin()" id="lbtn"><i class="fas fa-sign-in-alt"></i>Sign In</button>
+      <div class="alink">Don't have an account? <a onclick="sR()">Create Account</a></div>
+      <div style="text-align:center;font-size:.7rem;color:var(--text2);margin-top:10px">By signing in you agree to our <a href="index.html" style="color:var(--gold)">Terms of Service</a></div>
+    </div></div>
+  </div>
+  <!-- REGISTER -->
+  <div id="rp" class="al" style="display:none">
+    <div class="alL">
+      <div class="alogo"><div class="alogoi">B</div>AtlasVault Finance</div>
+      <div class="atag">Start Banking <span>Today</span></div>
+      <div class="adesc">Join thousands of clients. Create your account in under 5 minutes.</div>
+      <div class="afeats">
+        <div class="afeat"><div class="afeatic"><i class="fas fa-user-plus"></i></div>Quick 4-Step Registration</div>
+        <div class="afeat"><div class="afeatic"><i class="fas fa-envelope-circle-check"></i></div>Email Verification Included</div>
+        <div class="afeat"><div class="afeatic"><i class="fas fa-clock"></i></div>Ready in Under 5 Minutes</div>
+      </div>
+    </div>
+    <div class="alR"><div class="afw">
+      <div class="ath">Create Account</div>
+      <div class="ats" id="rslbl">Step 1 of 4 — Personal Information</div>
+      <div class="sp"><div class="sd active" id="sd1"><div class="dot">1</div><span>Personal</span></div><div class="sd" id="sd2"><div class="dot">2</div><span>Contact</span></div><div class="sd" id="sd3"><div class="dot">3</div><span>Account</span></div><div class="sd" id="sd4"><div class="dot">4</div><span>Security</span></div></div>
+      <div class="aerr" id="rerr"></div><div class="asuc" id="rsuc"></div>
+      <div id="rs1">
+        <div class="fg"><label class="fl">Legal First Name *</label><input class="fc" id="r1" placeholder="John"></div>
+        <div class="fg"><label class="fl">Middle Name</label><input class="fc" id="r2" placeholder="David (optional)"></div>
+        <div class="fg"><label class="fl">Legal Last Name *</label><input class="fc" id="r3" placeholder="Smith"></div>
+        <div class="fg"><label class="fl">Username *</label><input class="fc" id="r4" placeholder="johnsmith123"></div>
+        <div class="fg"><label class="fl">Date of Birth *</label><input class="fc" id="r5" type="date"></div>
+        <button class="btn bg2 bfull" onclick="rNext(1)">Continue <i class="fas fa-arrow-right"></i></button>
+      </div>
+      <div id="rs2" style="display:none">
+        <div class="fg"><label class="fl">Email Address *</label><input class="fc" id="r6" type="email" placeholder="your@email.com"></div>
+        <div class="fg"><label class="fl">Phone Number *</label><input class="fc" id="r7" placeholder="+1 234 567 8901"></div>
+        <div class="fg"><label class="fl">Country *</label><select class="fc" id="r8"><option value="">Select country</option><option>United States</option><option>United Kingdom</option><option>Nigeria</option><option>Ghana</option><option>South Africa</option><option>Kenya</option><option>Canada</option><option>Australia</option><option>Germany</option><option>France</option><option>India</option><option>UAE</option><option>Brazil</option><option>Other</option></select></div>
+        <div class="fg"><label class="fl">Referral Code (Optional)</label><input class="fc" id="r9" placeholder="Enter referral code if you have one"></div>
+        <div id="otpsec" style="display:none">
+          <p style="font-size:.8rem;color:var(--text2);margin-bottom:10px">Code sent to <strong id="otpem"></strong></p>
+          <div class="otpr"><input class="otpi" maxlength="1" id="o1" oninput="oN(this,'o2')"><input class="otpi" maxlength="1" id="o2" oninput="oN(this,'o3')" onkeydown="oB(event,this,'o1')"><input class="otpi" maxlength="1" id="o3" oninput="oN(this,'o4')" onkeydown="oB(event,this,'o2')"><input class="otpi" maxlength="1" id="o4" oninput="oN(this,'o5')" onkeydown="oB(event,this,'o3')"><input class="otpi" maxlength="1" id="o5" oninput="oN(this,'o6')" onkeydown="oB(event,this,'o4')"><input class="otpi" maxlength="1" id="o6" oninput="oN(this,null)" onkeydown="oB(event,this,'o5')"></div>
+          <p style="text-align:center;font-size:.78rem;color:var(--text2);margin-bottom:10px">Expires in <span id="otmr" style="color:var(--gold);font-weight:600">15:00</span> · <a style="color:var(--gold);cursor:pointer;font-weight:600" onclick="sendOTP()">Resend</a></p>
+          <button class="btn bg2 bfull" onclick="verOTP()">Verify Email <i class="fas fa-check"></i></button>
+        </div>
+        <div id="otpbw"><button class="btn bg2 bfull" onclick="rNext(2)" id="sotpbtn">Continue <i class="fas fa-arrow-right"></i></button></div>
+        <button class="btn bo2" style="width:100%;justify-content:center;margin-top:8px" onclick="rBack(1)"><i class="fas fa-arrow-left"></i> Back</button>
+      </div>
+      <div id="rs3" style="display:none">
+        <div class="fg"><label class="fl">Account Type *</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px">
+            <div class="mc" id="act-c" onclick="selAcc('checking')"><div class="ic2">💳</div><h4>Checking</h4><p>Daily use</p></div>
+            <div class="mc" id="act-s" onclick="selAcc('savings')"><div class="ic2">💰</div><h4>Savings</h4><p>Earn interest</p></div>
+          </div>
+        </div>
+        <div class="fg"><label class="fl">Preferred Currency *</label><select class="fc" id="r10"><option value="USD">🇺🇸 USD</option><option value="GBP">🇬🇧 GBP</option><option value="EUR">🇪🇺 EUR</option><option value="NGN">🇳🇬 NGN</option><option value="ZAR">🇿🇦 ZAR</option><option value="GHS">🇬🇭 GHS</option><option value="KES">🇰🇪 KES</option><option value="CAD">🇨🇦 CAD</option><option value="AUD">🇦🇺 AUD</option><option value="INR">🇮🇳 INR</option><option value="AED">🇦🇪 AED</option></select></div>
+        <div class="fg"><label class="fl">Transaction PIN (4 digits) *</label><div class="iw"><i class="ic fas fa-key"></i><input class="fc" id="r11" type="password" maxlength="4" placeholder="••••"><button class="ey" onclick="tE('r11',this)"><i class="fas fa-eye"></i></button></div><p style="font-size:.7rem;color:var(--text2);margin-top:4px">Required to authorize all transactions</p></div>
+        <button class="btn bg2 bfull" onclick="rNext(3)">Continue <i class="fas fa-arrow-right"></i></button>
+        <button class="btn bo2" style="width:100%;justify-content:center;margin-top:8px" onclick="rBack(2)"><i class="fas fa-arrow-left"></i> Back</button>
+      </div>
+      <div id="rs4" style="display:none">
+        <div class="fg"><label class="fl">Password *</label><div class="iw"><i class="ic fas fa-lock"></i><input class="fc" id="r12" type="password" placeholder="Create a strong password" oninput="chkStr(this.value)"><button class="ey" onclick="tE('r12',this)"><i class="fas fa-eye"></i></button></div><div style="height:4px;background:var(--border);border-radius:99px;margin-top:6px;overflow:hidden"><div id="strbar" style="height:100%;width:0;border-radius:99px;transition:all .3s;background:var(--err)"></div></div><div id="strtxt" style="font-size:.7rem;color:var(--text2);margin-top:3px"></div></div>
+        <div class="fg"><label class="fl">Confirm Password *</label><div class="iw"><i class="ic fas fa-lock"></i><input class="fc" id="r13" type="password" placeholder="Confirm password"></div></div>
+        <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:16px;font-size:.81rem;color:var(--text2)"><input type="checkbox" id="rterms" style="accent-color:var(--gold);margin-top:2px;flex-shrink:0"><label for="rterms">I agree to the <a href="index.html" style="color:var(--gold)">Terms of Service</a></label></div>
+        <button class="btn bg2 bfull" onclick="doReg()" id="rbtn"><i class="fas fa-user-plus"></i>Create My Account</button>
+        <button class="btn bo2" style="width:100%;justify-content:center;margin-top:8px" onclick="rBack(3)"><i class="fas fa-arrow-left"></i> Back</button>
+      </div>
+      <div class="alink">Already enrolled? <a onclick="sL()">Sign in</a></div>
+    </div></div>
+  </div>
+  <!-- FORGOT -->
+  <div id="fp" class="al" style="display:none">
+    <div class="alL"><div class="alogo"><div class="alogoi">B</div>AtlasVault Finance</div><div class="atag">Reset Your <span>Password</span></div><div class="adesc">We'll send a verification code to your registered email address.</div></div>
+    <div class="alR"><div class="afw">
+      <div class="ath">Forgot Password?</div><div class="ats">Enter your email to receive a reset code</div>
+      <div class="aerr" id="fperr"></div>
+      <div id="fps1"><div class="fg"><label class="fl">Email Address</label><div class="iw"><i class="ic fas fa-envelope"></i><input class="fc" id="fpe" type="email" placeholder="your@email.com"></div></div><button class="btn bg2 bfull" onclick="sndReset()">Send Reset Code <i class="fas fa-paper-plane"></i></button></div>
+      <div id="fps2" style="display:none">
+        <p style="font-size:.8rem;color:var(--text2);margin-bottom:12px">Enter the 6-digit code sent to your email and your new password.</p>
+        <div class="otpr"><input class="otpi" maxlength="1" id="fp1" oninput="oN(this,'fp2')"><input class="otpi" maxlength="1" id="fp2" oninput="oN(this,'fp3')" onkeydown="oB(event,this,'fp1')"><input class="otpi" maxlength="1" id="fp3" oninput="oN(this,'fp4')" onkeydown="oB(event,this,'fp2')"><input class="otpi" maxlength="1" id="fp4" oninput="oN(this,'fp5')" onkeydown="oB(event,this,'fp3')"><input class="otpi" maxlength="1" id="fp5" oninput="oN(this,'fp6')" onkeydown="oB(event,this,'fp4')"><input class="otpi" maxlength="1" id="fp6" oninput="oN(this,null)" onkeydown="oB(event,this,'fp5')"></div>
+        <div class="fg"><label class="fl">New Password</label><input class="fc" id="fpnp" type="password" placeholder="Enter new password"></div>
+        <button class="btn bg2 bfull" onclick="doReset()">Reset Password <i class="fas fa-lock"></i></button>
+      </div>
+      <div class="alink"><a onclick="sL()"><i class="fas fa-arrow-left"></i> Back to Sign In</a></div>
+    </div></div>
+  </div>
+</div>
+<!-- PIN OVERLAY -->
+<div id="pov"><div class="pc"><div class="ph"><div style="font-size:1.8rem;color:var(--gold);margin-bottom:10px"><i class="fas fa-fingerprint"></i></div><h3>Verify Your Identity</h3><p>Enter your secure 4-digit PIN</p></div><div class="pb2"><div class="pav" id="pav">BP</div><div class="pname" id="pname"></div><div class="pdots"><div class="pdot" id="pd1"></div><div class="pdot" id="pd2"></div><div class="pdot" id="pd3"></div><div class="pdot" id="pd4"></div></div><div class="pgrid"><button class="pk" onclick="pK('1')">1</button><button class="pk" onclick="pK('2')">2</button><button class="pk" onclick="pK('3')">3</button><button class="pk" onclick="pK('4')">4</button><button class="pk" onclick="pK('5')">5</button><button class="pk" onclick="pK('6')">6</button><button class="pk" onclick="pK('7')">7</button><button class="pk" onclick="pK('8')">8</button><button class="pk" onclick="pK('9')">9</button><button class="pk del" onclick="pK('del')"><i class="fas fa-delete-left"></i></button><button class="pk" onclick="pK('0')">0</button><button class="pk ok" onclick="pK('ok')"><i class="fas fa-check"></i></button></div><div class="perr" id="perr"></div></div></div></div>
+<!-- APP -->
+<div id="app">
+  <div class="ov2" id="ov2" onclick="cSB()"></div>
+  <div class="layout">
+    <aside class="sidebar" id="sb">
+      <div class="slog"><div class="slogi">B</div><div class="sbr">AtlasVault Finance<span>Online Banking</span></div></div>
+      <div class="susr"><div class="sav" id="sav">BP</div><div><div class="sun" id="sname">User</div><div class="sac" id="sacct"></div><div class="kb kb-e" id="skvbdg">⚠ Verify KYC</div></div></div>
+      <nav class="smenu">
+        <div class="slbl">Menu</div>
+        <div class="ni on" onclick="go('dashboard')"><i class="fas fa-th-large"></i>Dashboard</div>
+        <div class="ni" onclick="go('transactions')"><i class="fas fa-exchange-alt"></i>Transactions</div>
+        <div class="ni" onclick="go('cards')"><i class="fas fa-credit-card"></i>Virtual Cards</div>
+        <div class="slbl">Transfers</div>
+        <div class="ni" onclick="go('local')"><i class="fas fa-paper-plane"></i>Local Transfer</div>
+        <div class="ni" onclick="go('intl')"><i class="fas fa-globe"></i>International Wire</div>
+        <div class="ni" onclick="go('deposit')"><i class="fas fa-arrow-down-to-line"></i>Deposit</div>
+        <div class="ni" onclick="go('withdraw')"><i class="fas fa-arrow-up-from-line"></i>Withdrawal</div>
+        <div class="slbl">Services</div>
+        <div class="ni" onclick="go('loans')"><i class="fas fa-hand-holding-dollar"></i>Loan Request</div>
+        <div class="ni" onclick="go('invest')"><i class="fas fa-chart-line"></i>Investments</div>
+        <div class="ni" onclick="go('irs')"><i class="fas fa-file-invoice-dollar"></i>IRS Tax Refund</div>
+        <div class="slbl">Account</div>
+        <div class="ni" onclick="go('kyc')"><i class="fas fa-id-card"></i>KYC Verification</div>
+        <div class="ni" onclick="go('notifs')"><i class="fas fa-bell"></i>Notifications<span class="nbdg" id="nbdg" style="display:none">0</span></div>
+        <div class="ni" onclick="go('cs')"><i class="fas fa-comments-dollar"></i>Customer Service<span class="nbdg" id="csbdg" style="display:none">0</span></div>
+        <div class="ni" onclick="go('sup')"><i class="fas fa-headset"></i>Support Chat</div>
+        <div class="ni" onclick="go('tix')"><i class="fas fa-ticket"></i>Support Ticket</div>
+        <div class="ni" onclick="go('settings')"><i class="fas fa-sliders"></i>Settings</div>
+      </nav>
+      <div class="sftr"><div class="sbtns"><button class="sbtn" onclick="go('settings')"><i class="fas fa-user"></i>Profile</button><button class="sbtn lo" onclick="logout()"><i class="fas fa-sign-out-alt"></i>Logout</button></div><div class="stag"><i class="fas fa-shield-check"></i>Secured Banking · v1.0</div></div>
+    </aside>
+    <main class="main">
+      <div class="tbar">
+        <div class="tbL"><button class="ham" onclick="tSB()"><i class="fas fa-bars"></i></button><div class="ptitle" id="pgtit">Dashboard</div></div>
+        <div class="tbR">
+          <div class="tdate"><i class="fas fa-calendar"></i><span id="tdate"></span></div>
+          <button class="tbtn" onclick="togTh()"><i id="thic" class="fas fa-moon"></i></button>
+          <button class="tbtn" onclick="go('notifs')"><i class="fas fa-bell"></i><div class="nd" id="ndot" style="display:none"></div></button>
+          <div class="tav" id="tav" onclick="go('settings')">BP</div>
+        </div>
+      </div>
+      <div class="cnt">
+        <!-- DASHBOARD -->
+        <div class="pg on" id="pg-dashboard">
+          <div class="bbal">
+            <div class="bbt"><div><div class="bbg" id="greet">Good Day</div><div class="bbn" id="dname">User</div></div><div style="text-align:right"><div style="font-size:.74rem;color:rgba(255,255,255,.4)" id="ltime"></div><div style="font-size:.68rem;color:rgba(255,255,255,.3);margin-top:1px" id="ldate"></div></div></div>
+            <div class="bbl">Available Balance</div>
+            <div class="bba"><span id="dbal">$0.00</span><button class="ebt" onclick="togBal()"><i class="fas fa-eye" id="beye"></i></button></div>
+            <div class="bbac"><div style="font-size:.7rem;color:rgba(255,255,255,.4)">Account Number</div><div class="bban" id="dacct">——</div><div class="spp" id="dkpill">Inactive</div></div>
+            <div class="bbacts"><button class="bbact" onclick="go('transactions')"><i class="fas fa-list"></i>Transactions</button><button class="bbact" onclick="go('deposit')"><i class="fas fa-plus"></i>Top Up</button></div>
+          </div>
+          <div class="sgrid">
+            <div class="sc"><div class="sci si-ok"><i class="fas fa-arrow-down"></i></div><div><div class="sl2">Monthly In</div><div class="sv" id="min">$0.00</div></div></div>
+            <div class="sc"><div class="sci si-e"><i class="fas fa-arrow-up"></i></div><div><div class="sl2">Monthly Out</div><div class="sv" id="mout">$0.00</div></div></div>
+            <div class="sc"><div class="sci si-w"><i class="fas fa-clock"></i></div><div><div class="sl2">Pending</div><div class="sv" id="mpend">$0.00</div></div></div>
+            <div class="sc"><div class="sci si-g"><i class="fas fa-chart-bar"></i></div><div><div class="sl2">Tx Limit</div><div class="sv">$500K</div></div></div>
+          </div>
+          <div class="qag">
+            <div class="qa" onclick="go('settings')"><i class="fas fa-info-circle"></i><span>Account Info</span></div>
+            <div class="qa" onclick="go('local')"><i class="fas fa-paper-plane"></i><span>Send Money</span></div>
+            <div class="qa" onclick="go('deposit')"><i class="fas fa-plus-circle"></i><span>Deposit</span></div>
+            <div class="qa" onclick="go('transactions')"><i class="fas fa-history"></i><span>History</span></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 300px;gap:16px">
+            <div>
+              <div class="card2"><div class="chdr"><div class="ct"><i class="fas fa-exchange-alt"></i>Recent Transactions</div><span class="vall" onclick="go('transactions')">View all →</span></div><div class="tw"><table><thead><tr><th>Type</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead><tbody id="rxtbl"></tbody></table></div></div>
+              <div class="card2"><div class="chdr"><div class="ct"><i class="fas fa-credit-card"></i>My Cards</div><span class="vall" onclick="go('cards')">Manage →</span></div><div id="dcards" style="padding:16px"></div></div>
+            </div>
+            <div>
+              <div class="card2"><div class="chdr"><div class="ct"><i class="fas fa-chart-bar"></i>Account Stats</div></div><div style="padding:16px;font-size:.82rem">
+                <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text2)">Tx Limit</span><span style="font-weight:600">$500,000</span></div>
+                <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text2)">Total Volume</span><span id="svol" style="font-weight:600">$0.00</span></div>
+                <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text2)">Account Age</span><span id="sage" style="font-weight:600">-</span></div>
+                <div style="display:flex;justify-content:space-between;padding:8px 0"><span style="color:var(--text2)">Currency</span><span id="scur" style="font-weight:600">USD</span></div>
+              </div></div>
+              <div class="card2" style="background:linear-gradient(135deg,var(--navy),var(--navy2));border-color:rgba(240,180,41,.2)"><div style="padding:18px;text-align:center"><i class="fas fa-headset" style="font-size:1.8rem;color:var(--gold);display:block;margin-bottom:9px"></i><div style="font-weight:600;font-size:.88rem;color:#fff;margin-bottom:5px">Need Help?</div><div style="font-size:.78rem;color:rgba(255,255,255,.45);margin-bottom:13px">Our team is available 24/7</div><div style="display:flex;gap:7px"><button class="btn bg2" style="flex:1;justify-content:center;font-size:.78rem;padding:8px" onclick="go('cs')"><i class="fas fa-comments"></i>Chat</button><button class="btn bo2" style="flex:1;justify-content:center;font-size:.78rem;padding:8px" onclick="go('sup')"><i class="fas fa-headset"></i>Support</button></div></div></div>
+              <div class="card2"><div class="chdr"><div class="ct"><i class="fas fa-bolt"></i>Quick Transfer</div></div><div style="padding:10px;display:flex;flex-direction:column;gap:7px">
+                <div style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg3);border-radius:9px;cursor:pointer;border:1px solid var(--border)" onclick="go('local')"><i class="fas fa-paper-plane" style="color:var(--gold)"></i><div style="flex:1"><div style="font-size:.83rem;font-weight:600">Local Transfer</div><div style="font-size:.7rem;color:var(--text2)">0% handling fee</div></div><i class="fas fa-chevron-right" style="color:var(--text2);font-size:.78rem"></i></div>
+                <div style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg3);border-radius:9px;cursor:pointer;border:1px solid var(--border)" onclick="go('intl')"><i class="fas fa-globe" style="color:var(--gold)"></i><div style="flex:1"><div style="font-size:.83rem;font-weight:600">International</div><div style="font-size:.7rem;color:var(--text2)">Global reach</div></div><i class="fas fa-chevron-right" style="color:var(--text2);font-size:.78rem"></i></div>
+              </div></div>
+            </div>
+          </div>
+        </div>
+        <!-- TRANSACTIONS -->
+        <div class="pg" id="pg-transactions">
+          <div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:14px"><button class="btn bo2" style="font-size:.78rem;padding:7px 12px" onclick="loadTxns()"><i class="fas fa-refresh"></i>Refresh</button><button class="btn bg2" style="font-size:.78rem;padding:7px 12px" onclick="expTxns()"><i class="fas fa-download"></i>Export CSV</button></div>
+          <div class="card2"><div style="padding:12px;border-bottom:1px solid var(--border)"><input style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:9px 13px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.83rem;outline:none" placeholder="🔍 Search transactions..." id="tsearch" oninput="filTxns()"></div><div class="tw"><table><thead><tr><th>Amount</th><th>Type</th><th>Status</th><th>Reference</th><th>Description</th><th>Date</th><th>Receipt</th></tr></thead><tbody id="txntbl"></tbody></table></div></div>
+        </div>
+        <!-- CARDS -->
+        <div class="pg" id="pg-cards">
+          <div class="pban"><div class="pbanic"><i class="fas fa-credit-card"></i></div><h2>Virtual Cards</h2><p>Secure cards for online payments worldwide</p></div>
+          <div class="sgrid" style="margin-bottom:16px"><div class="sc"><div class="sci si-ok"><i class="fas fa-check-circle"></i></div><div><div class="sl2">Active</div><div class="sv" id="cact">0</div></div></div><div class="sc"><div class="sci si-w"><i class="fas fa-clock"></i></div><div><div class="sl2">Pending</div><div class="sv" id="cpend">0</div></div></div></div>
+          <div class="card2"><div class="chdr"><div class="ct"><i class="fas fa-credit-card"></i>Your Cards</div><button class="btn bg2" style="font-size:.78rem;padding:6px 12px" onclick="applyCard()"><i class="fas fa-plus"></i>Apply for Card</button></div><div id="cardslist" style="padding:18px"></div></div>
+        </div>
+        <!-- LOCAL TRANSFER -->
+        <div class="pg" id="pg-local">
+          <div class="pban"><div class="pbanic"><i class="fas fa-paper-plane"></i></div><h2>Local Bank Transfer</h2><p>Send money to any local bank account securely</p></div>
+          <div class="fs"><div class="fst"><i class="fas fa-wallet"></i>Available: <span id="ltbal" style="color:var(--gold);margin-left:4px">$0.00</span></div>
+            <div class="fg"><label class="fl">Amount *</label><div class="amtw"><div class="sym" id="ltsym">$</div><input class="fc" id="ltamt" type="number" placeholder="0.00"></div><div class="presets"><button class="pre" onclick="sa('ltamt',100)">$100</button><button class="pre" onclick="sa('ltamt',500)">$500</button><button class="pre" onclick="sa('ltamt',1000)">$1,000</button><button class="pre" onclick="sa('ltamt',5000)">$5,000</button></div></div>
+          </div>
+          <div class="fs"><div class="fst"><i class="fas fa-user"></i>Beneficiary Details</div>
+            <div class="fg2">
+              <div class="fg"><label class="fl">Account Number *</label><input class="fc" id="ltacct" placeholder="Enter account number" oninput="lkup()"></div>
+              <div class="fg"><label class="fl">Account Name</label><input class="fc" id="ltname" placeholder="Auto-filled" readonly></div>
+              <div class="fg"><label class="fl">Bank Name *</label><input class="fc" id="ltbank" placeholder="Bank name"></div>
+              <div class="fg"><label class="fl">Transfer Type</label><select class="fc" id="lttype"><option>Online Banking</option><option>ACH</option><option>Wire Transfer</option><option>RTGS</option></select></div>
+            </div>
+          </div>
+          <div class="fs"><div class="fst"><i class="fas fa-memo"></i>Additional Info</div>
+            <div class="fg"><label class="fl">Description</label><textarea class="fc" id="ltdesc" placeholder="Purpose of payment"></textarea></div>
+            <div class="fg"><label class="fl">Transaction PIN *</label><input class="fc" id="ltpin" type="password" maxlength="4" placeholder="4-digit PIN"></div>
+          </div>
+          <div style="display:flex;gap:11px;flex-wrap:wrap">
+            <button class="btn bg2" style="flex:1;justify-content:center;padding:12px" onclick="prevTx()"><i class="fas fa-eye"></i>Preview Transfer</button>
+            <button class="btn bo2" style="flex:1;justify-content:center;padding:12px" onclick="go('dashboard')"><i class="fas fa-arrow-left"></i>Cancel</button>
+          </div>
+          <div class="ibox" style="margin-top:12px"><i class="fas fa-shield-alt"></i>All transfers are encrypted and processed securely.</div>
+        </div>
+        <!-- INTERNATIONAL -->
+        <div class="pg" id="pg-intl">
+          <div class="pban"><div class="pbanic"><i class="fas fa-globe"></i></div><h2>International Wire Transfer</h2><p>Send money globally through multiple methods</p></div>
+          <div class="mgrid">
+            <div class="mc" onclick="selIM('Wire Transfer',this)"><div class="ic2">🏦</div><h4>Wire Transfer</h4><p>Bank to bank</p></div>
+            <div class="mc" onclick="selIM('Cryptocurrency',this)"><div class="ic2">₿</div><h4>Cryptocurrency</h4><p>Crypto wallet</p></div>
+            <div class="mc" onclick="selIM('PayPal',this)"><div class="ic2">🅿️</div><h4>PayPal</h4><p>PayPal account</p></div>
+            <div class="mc" onclick="selIM('Wise',this)"><div class="ic2">💱</div><h4>Wise</h4><p>Low fees</p></div>
+            <div class="mc" onclick="selIM('Cash App',this)"><div class="ic2">💵</div><h4>Cash App</h4><p>Quick transfer</p></div>
+            <div class="mc" onclick="selIM('Other',this)"><div class="ic2">···</div><h4>Other</h4><p>Zelle, Venmo...</p></div>
+          </div>
+          <div id="intf" style="display:none"><div class="fs"><div class="fst" id="imtitle"><i class="fas fa-globe"></i>Transfer Details</div>
+            <div class="fg2">
+              <div class="fg"><label class="fl">Amount *</label><div class="amtw"><div class="sym">$</div><input class="fc" id="intamt" type="number" placeholder="0.00"></div></div>
+              <div class="fg"><label class="fl">Recipient Name *</label><input class="fc" id="intname" placeholder="Full name"></div>
+              <div class="fg"><label class="fl">Account / Wallet *</label><input class="fc" id="intacct" placeholder="Account or wallet address"></div>
+              <div class="fg"><label class="fl">Country *</label><input class="fc" id="intcnt" placeholder="Destination country"></div>
+            </div>
+            <div class="fg"><label class="fl">Description</label><textarea class="fc" id="intdesc" placeholder="Purpose of transfer"></textarea></div>
+            <button class="btn bg2 bfull" onclick="subIntl()"><i class="fas fa-paper-plane"></i>Submit Transfer</button>
+          </div></div>
+        </div>
+        <!-- DEPOSIT -->
+        <div class="pg" id="pg-deposit">
+          <div class="pban"><div class="pbanic"><i class="fas fa-piggy-bank"></i></div><h2>Fund Your Account</h2><p>Top up your AtlasVault Finance balance</p></div>
+          <div class="fs"><div class="fst"><i class="fas fa-coins"></i>Deposit Details</div>
+            <div class="ibox"><i class="fas fa-info-circle"></i>After submitting, go to <strong>Customer Service</strong> chat. Our team will process your deposit within 24 hours.</div>
+            <div class="fg" style="margin-top:12px"><label class="fl">Amount *</label><div class="amtw"><div class="sym" id="depsym">$</div><input class="fc" id="depamt" type="number" placeholder="0.00"></div><div class="presets"><button class="pre" onclick="sa('depamt',100)">$100</button><button class="pre" onclick="sa('depamt',500)">$500</button><button class="pre" onclick="sa('depamt',1000)">$1,000</button><button class="pre" onclick="sa('depamt',5000)">$5,000</button><button class="pre" onclick="sa('depamt',10000)">$10,000</button></div></div>
+            <div class="fg"><label class="fl">Deposit Method</label><input class="fc" id="depmth" placeholder="e.g. Bank Transfer, Wire Transfer"></div>
+          </div>
+          <button class="btn bg2 bfull" onclick="subDep()"><i class="fas fa-check"></i>Submit Deposit Request</button>
+        </div>
+        <!-- WITHDRAWAL -->
+        <div class="pg" id="pg-withdraw">
+          <!-- Step 1: Withdrawal Details -->
+          <div id="wdp1">
+            <div class="pban"><div class="pbanic"><i class="fas fa-arrow-up-from-line"></i></div><h2>Withdraw Funds</h2><p>Step 1 of 5 — Enter your bank details</p></div>
+            <div class="fs">
+              <div class="fst"><i class="fas fa-university"></i>Bank Account Details</div>
+              <div style="font-size:.82rem;color:var(--text2);margin-bottom:12px">Available Balance: <strong style="color:var(--gold)" id="wdbal">$0.00</strong></div>
+              <div class="fg2">
+                <div class="fg"><label class="fl">Withdrawal Amount *</label><div class="amtw"><div class="sym">$</div><input class="fc" id="wdamt" type="number" placeholder="0.00"></div></div>
+                <div class="fg"><label class="fl">Account Number / IBAN *</label><input class="fc" id="wdacct" placeholder="Account number"></div>
+                <div class="fg"><label class="fl">Account Holder Name *</label><input class="fc" id="wdname" placeholder="Account holder name"></div>
+                <div class="fg"><label class="fl">Transfer Type *</label><select class="fc" id="wdtype"><option>Bank Transfer</option><option>Wire Transfer</option><option>ACH</option><option>SWIFT</option></select></div>
+              </div>
+              <div class="fg"><label class="fl">Bank Name *</label><input class="fc" id="wdbank" placeholder="Enter bank name"></div>
+              <button class="btn bg2 bfull" onclick="wdS1()"><i class="fas fa-arrow-right"></i>Continue to Verification</button>
+            </div>
+          </div>
+
+          <!-- Step 2: Exchange Fee -->
+          <div id="wdp2" style="display:none">
+            <div class="pban" style="background:linear-gradient(135deg,#0A1628,#1a2e4a)">
+              <div class="pbanic" style="background:rgba(240,180,41,.15);border-color:rgba(240,180,41,.3)"><i class="fas fa-coins"></i></div>
+              <h2>Exchange Fee Code</h2>
+              <p>Step 2 of 5 — Enter your Exchange Fee verification code</p>
+            </div>
+            <div class="fs">
+              <div style="background:var(--bg3);border-radius:12px;padding:18px;margin-bottom:18px;display:flex;align-items:center;gap:14px">
+                <div style="width:46px;height:46px;border-radius:50%;background:rgba(240,180,41,.1);border:2px solid rgba(240,180,41,.3);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:1.1rem;flex-shrink:0"><i class="fas fa-coins"></i></div>
+                <div><div style="font-weight:600;font-size:.88rem;margin-bottom:3px">Exchange Fee Required</div><div style="font-size:.79rem;color:var(--text2)">This fee is required to process your currency exchange before the transfer can proceed.</div></div>
+              </div>
+              <div class="ibox"><i class="fas fa-comments-dollar"></i>Go to <strong>Customer Service</strong> chat and request your <strong>Exchange Fee Code</strong> from our admin team, then enter it below.</div>
+              <div style="text-align:center;margin:20px 0">
+                <div style="font-size:.8rem;color:var(--text2);margin-bottom:12px;font-weight:500">Enter 6-character verification code</div>
+                <div class="codein"><input class="ci" maxlength="1" id="c1" oninput="cN(this,'c2')"><input class="ci" maxlength="1" id="c2" oninput="cN(this,'c3')" onkeydown="cB2(event,this,'c1')"><input class="ci" maxlength="1" id="c3" oninput="cN(this,'c4')" onkeydown="cB2(event,this,'c2')"><input class="ci" maxlength="1" id="c4" oninput="cN(this,'c5')" onkeydown="cB2(event,this,'c3')"><input class="ci" maxlength="1" id="c5" oninput="cN(this,'c6')" onkeydown="cB2(event,this,'c4')"><input class="ci" maxlength="1" id="c6" oninput="cN(this,null)" onkeydown="cB2(event,this,'c5')"></div>
+              </div>
+              <div class="aerr" id="wdcerr"></div>
+              <button class="btn bg2 bfull" onclick="verWd()"><i class="fas fa-check"></i>Verify Exchange Fee Code</button>
+              <button class="btn bo2" style="width:100%;justify-content:center;margin-top:8px" onclick="go('cs')"><i class="fas fa-comments"></i>Request Code from Customer Service</button>
+            </div>
+          </div>
+
+          <!-- Step 3: Withdrawal Fee -->
+          <div id="wdp3" style="display:none">
+            <div class="pban" style="background:linear-gradient(135deg,#0A1628,#1a2e4a)">
+              <div class="pbanic" style="background:rgba(59,130,246,.12);border-color:rgba(59,130,246,.3)"><i class="fas fa-hand-holding-dollar" style="color:var(--info)"></i></div>
+              <h2>Withdrawal Fee Code</h2>
+              <p>Step 3 of 5 — Enter your Withdrawal Fee verification code</p>
+            </div>
+            <div class="fs">
+              <div style="background:var(--bg3);border-radius:12px;padding:18px;margin-bottom:18px;display:flex;align-items:center;gap:14px">
+                <div style="width:46px;height:46px;border-radius:50%;background:rgba(59,130,246,.1);border:2px solid rgba(59,130,246,.3);display:flex;align-items:center;justify-content:center;color:var(--info);font-size:1.1rem;flex-shrink:0"><i class="fas fa-hand-holding-dollar"></i></div>
+                <div><div style="font-weight:600;font-size:.88rem;margin-bottom:3px">Withdrawal Fee Required</div><div style="font-size:.79rem;color:var(--text2)">This is a mandatory processing fee required to authorize and release your withdrawal funds.</div></div>
+              </div>
+              <div class="ibox" style="background:rgba(59,130,246,.06);border-color:rgba(59,130,246,.16);color:var(--info)"><i class="fas fa-comments-dollar"></i>Go to <strong>Customer Service</strong> chat and request your <strong>Withdrawal Fee Code</strong> from our admin team.</div>
+              <div style="text-align:center;margin:20px 0">
+                <div style="font-size:.8rem;color:var(--text2);margin-bottom:12px;font-weight:500">Enter 6-character verification code</div>
+                <div class="codein"><input class="ci" maxlength="1" id="d1" oninput="cN(this,'d2')"><input class="ci" maxlength="1" id="d2" oninput="cN(this,'d3')" onkeydown="cB2(event,this,'d1')"><input class="ci" maxlength="1" id="d3" oninput="cN(this,'d4')" onkeydown="cB2(event,this,'d2')"><input class="ci" maxlength="1" id="d4" oninput="cN(this,'d5')" onkeydown="cB2(event,this,'d3')"><input class="ci" maxlength="1" id="d5" oninput="cN(this,'d6')" onkeydown="cB2(event,this,'d4')"><input class="ci" maxlength="1" id="d6" oninput="cN(this,null)" onkeydown="cB2(event,this,'d5')"></div>
+              </div>
+              <div class="aerr" id="wdcerr3"></div>
+              <button class="btn bg2 bfull" onclick="verWdStep(3)"><i class="fas fa-check"></i>Verify Withdrawal Fee Code</button>
+              <button class="btn bo2" style="width:100%;justify-content:center;margin-top:8px" onclick="go('cs')"><i class="fas fa-comments"></i>Request Code from Customer Service</button>
+            </div>
+          </div>
+
+          <!-- Step 4: VAT -->
+          <div id="wdp4" style="display:none">
+            <div class="pban" style="background:linear-gradient(135deg,#0A1628,#1a2e4a)">
+              <div class="pbanic" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3)"><i class="fas fa-file-invoice" style="color:var(--ok)"></i></div>
+              <h2>VAT Code</h2>
+              <p>Step 4 of 5 — Enter your Value Added Tax verification code</p>
+            </div>
+            <div class="fs">
+              <div style="background:var(--bg3);border-radius:12px;padding:18px;margin-bottom:18px;display:flex;align-items:center;gap:14px">
+                <div style="width:46px;height:46px;border-radius:50%;background:rgba(16,185,129,.1);border:2px solid rgba(16,185,129,.3);display:flex;align-items:center;justify-content:center;color:var(--ok);font-size:1.1rem;flex-shrink:0"><i class="fas fa-file-invoice"></i></div>
+                <div><div style="font-weight:600;font-size:.88rem;margin-bottom:3px">VAT Verification Required</div><div style="font-size:.79rem;color:var(--text2)">Value Added Tax verification is required by regulation to complete international and domestic fund transfers.</div></div>
+              </div>
+              <div class="ibox" style="background:rgba(16,185,129,.06);border-color:rgba(16,185,129,.16);color:var(--ok)"><i class="fas fa-comments-dollar"></i>Go to <strong>Customer Service</strong> chat and request your <strong>VAT Code</strong> from our admin team.</div>
+              <div style="text-align:center;margin:20px 0">
+                <div style="font-size:.8rem;color:var(--text2);margin-bottom:12px;font-weight:500">Enter 6-character verification code</div>
+                <div class="codein"><input class="ci" maxlength="1" id="e1" oninput="cN(this,'e2')"><input class="ci" maxlength="1" id="e2" oninput="cN(this,'e3')" onkeydown="cB2(event,this,'e1')"><input class="ci" maxlength="1" id="e3" oninput="cN(this,'e4')" onkeydown="cB2(event,this,'e2')"><input class="ci" maxlength="1" id="e4" oninput="cN(this,'e5')" onkeydown="cB2(event,this,'e3')"><input class="ci" maxlength="1" id="e5" oninput="cN(this,'e6')" onkeydown="cB2(event,this,'e4')"><input class="ci" maxlength="1" id="e6" oninput="cN(this,null)" onkeydown="cB2(event,this,'e5')"></div>
+              </div>
+              <div class="aerr" id="wdcerr4"></div>
+              <button class="btn bg2 bfull" onclick="verWdStep(4)"><i class="fas fa-check"></i>Verify VAT Code</button>
+              <button class="btn bo2" style="width:100%;justify-content:center;margin-top:8px" onclick="go('cs')"><i class="fas fa-comments"></i>Request Code from Customer Service</button>
+            </div>
+          </div>
+
+          <!-- Step 5: IMF -->
+          <div id="wdp5" style="display:none">
+            <div class="pban" style="background:linear-gradient(135deg,#0A1628,#1a2e4a)">
+              <div class="pbanic" style="background:rgba(139,92,246,.12);border-color:rgba(139,92,246,.3)"><i class="fas fa-landmark" style="color:#8B5CF6"></i></div>
+              <h2>IMF Code</h2>
+              <p>Step 5 of 5 — Final IMF verification to release your funds</p>
+            </div>
+            <div class="fs">
+              <div style="background:var(--bg3);border-radius:12px;padding:18px;margin-bottom:18px;display:flex;align-items:center;gap:14px">
+                <div style="width:46px;height:46px;border-radius:50%;background:rgba(139,92,246,.1);border:2px solid rgba(139,92,246,.3);display:flex;align-items:center;justify-content:center;color:#8B5CF6;font-size:1.1rem;flex-shrink:0"><i class="fas fa-landmark"></i></div>
+                <div><div style="font-weight:600;font-size:.88rem;margin-bottom:3px">IMF Clearance Required</div><div style="font-size:.79rem;color:var(--text2)">This is the final International Monetary Fund clearance code required to authorize and release your withdrawal.</div></div>
+              </div>
+              <div class="ibox" style="background:rgba(139,92,246,.06);border-color:rgba(139,92,246,.16);color:#8B5CF6"><i class="fas fa-comments-dollar"></i>Go to <strong>Customer Service</strong> chat and request your <strong>IMF Code</strong> — this is the final step to complete your withdrawal.</div>
+              <div style="text-align:center;margin:20px 0">
+                <div style="font-size:.8rem;color:var(--text2);margin-bottom:12px;font-weight:500">Enter 6-character verification code</div>
+                <div class="codein"><input class="ci" maxlength="1" id="f1" oninput="cN(this,'f2')"><input class="ci" maxlength="1" id="f2" oninput="cN(this,'f3')" onkeydown="cB2(event,this,'f1')"><input class="ci" maxlength="1" id="f3" oninput="cN(this,'f4')" onkeydown="cB2(event,this,'f2')"><input class="ci" maxlength="1" id="f4" oninput="cN(this,'f5')" onkeydown="cB2(event,this,'f3')"><input class="ci" maxlength="1" id="f5" oninput="cN(this,'f6')" onkeydown="cB2(event,this,'f4')"><input class="ci" maxlength="1" id="f6" oninput="cN(this,null)" onkeydown="cB2(event,this,'f5')"></div>
+              </div>
+              <div class="aerr" id="wdcerr5"></div>
+              <button class="btn bg2 bfull" onclick="verWdStep(5)"><i class="fas fa-check"></i>Complete Withdrawal</button>
+              <button class="btn bo2" style="width:100%;justify-content:center;margin-top:8px" onclick="go('cs')"><i class="fas fa-comments"></i>Request Code from Customer Service</button>
+            </div>
+          </div>
+
+          <!-- Step 6: Success -->
+          <div id="wdp6" style="display:none">
+            <div style="text-align:center;padding:48px 20px">
+              <div style="width:80px;height:80px;border-radius:50%;background:rgba(16,185,129,.12);border:3px solid var(--ok);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:2rem;color:var(--ok)"><i class="fas fa-check"></i></div>
+              <h2 style="font-family:'Playfair Display',serif;font-size:1.6rem;margin-bottom:10px">Withdrawal Submitted!</h2>
+              <p style="color:var(--text2);margin-bottom:8px">All verification steps completed successfully.</p>
+              <p style="color:var(--text2);font-size:.84rem;margin-bottom:28px">Your withdrawal is now pending final admin approval. You will be notified once it is processed.</p>
+              <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+                <button class="btn bg2" onclick="go('dashboard')"><i class="fas fa-home"></i>Back to Dashboard</button>
+                <button class="btn bo2" onclick="go('transactions')"><i class="fas fa-list"></i>View Transactions</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- LOANS -->
+        <div class="pg" id="pg-loans">
+          <div class="pban"><div class="pbanic"><i class="fas fa-hand-holding-dollar"></i></div><h2>Loan Services</h2><p>Financial solutions to help achieve your goals</p></div>
+          <div class="fs"><div class="fst"><i class="fas fa-file-signature"></i>Apply for a Loan</div>
+            <div class="fg2">
+              <div class="fg"><label class="fl">Loan Type *</label><select class="fc" id="lntype"><option value="">Select loan type</option><option>Personal Home Loan</option><option>Automobile Loan</option><option>Business Loan</option><option>Joint Mortgage</option><option>Secured Overdraft</option><option>Health Finance</option></select></div>
+              <div class="fg"><label class="fl">Amount ($) *</label><div class="amtw"><div class="sym">$</div><input class="fc" id="lnamt" type="number" placeholder="0.00"></div></div>
+              <div class="fg"><label class="fl">Duration (months) *</label><input class="fc" id="lndur" type="number" placeholder="e.g. 12"></div>
+              <div class="fg"></div>
+            </div>
+            <div class="fg"><label class="fl">Purpose *</label><textarea class="fc" id="lnpur" placeholder="Describe purpose of the loan"></textarea></div>
+            <button class="btn bg2 bfull" onclick="subLoan()"><i class="fas fa-paper-plane"></i>Submit Application</button>
+          </div>
+          <div class="card2"><div class="chdr"><div class="ct"><i class="fas fa-history"></i>Loan History</div><button class="btn bo2" style="font-size:.75rem;padding:5px 10px" onclick="loadLoans()"><i class="fas fa-refresh"></i></button></div><div class="tw"><table><thead><tr><th>Type</th><th>Amount</th><th>Duration</th><th>Purpose</th><th>Status</th><th>Date</th></tr></thead><tbody id="lntbl"></tbody></table></div></div>
+        </div>
+        <!-- INVESTMENTS -->
+        <div class="pg" id="pg-invest">
+          <div class="pban"><div class="pbanic"><i class="fas fa-chart-line"></i></div><h2>Investment Plans</h2><p>Grow your wealth with smart investment options</p></div>
+          <div class="iplans" id="iplans"></div>
+          <div class="card2"><div class="chdr"><div class="ct"><i class="fas fa-list-check"></i>My Investments</div><button class="btn bo2" style="font-size:.75rem;padding:5px 10px" onclick="loadInv()"><i class="fas fa-refresh"></i></button></div><div class="tw"><table><thead><tr><th>Plan</th><th>Amount</th><th>Expected Return</th><th>Matures</th><th>Status</th></tr></thead><tbody id="invtbl"></tbody></table></div></div>
+        </div>
+        <!-- IRS -->
+        <div class="pg" id="pg-irs">
+          <div class="pban"><div class="pbanic"><i class="fas fa-file-invoice-dollar"></i></div><h2>IRS Tax Refund</h2><p>Submit your IRS tax refund request securely</p></div>
+          <div class="fs"><div class="fst"><i class="fas fa-user"></i>Personal Information</div>
+            <div class="fg"><label class="fl">Full Name</label><input class="fc" id="irsname" placeholder="Enter full name"></div>
+            <div class="fg"><label class="fl">Social Security Number (SSN)</label><input class="fc" id="irsssn" placeholder="XXX-XX-XXXX"></div>
+          </div>
+          <div class="fs"><div class="fst"><i class="fas fa-lock"></i>ID.me Credentials</div>
+            <div class="fg"><label class="fl">ID.me Email</label><input class="fc" id="irsem" type="email" placeholder="your@idme.com"></div>
+            <div class="fg"><label class="fl">ID.me Password</label><div class="iw"><i class="ic fas fa-lock"></i><input class="fc" id="irspass" type="password" placeholder="••••••••"><button class="ey" onclick="tE('irspass',this)"><i class="fas fa-eye"></i></button></div></div>
+            <div class="fg"><label class="fl">Country</label><select class="fc" id="irscnt"><option>United States</option><option>Canada</option><option>United Kingdom</option><option>Other</option></select></div>
+          </div>
+          <div class="wbox"><i class="fas fa-triangle-exclamation"></i>Ensure all information matches your ID.me account exactly.</div>
+          <button class="btn bg2 bfull" onclick="subIRS()" style="margin-top:12px"><i class="fas fa-paper-plane"></i>Submit Request</button>
+        </div>
+        <!-- KYC -->
+        <div class="pg" id="pg-kyc">
+          <div id="kycwel"><div class="pban" style="text-align:left;padding:28px">
+            <div class="pbanic" style="margin:0 0 14px 0"><i class="fas fa-id-card"></i></div>
+            <h2 style="text-align:center">KYC Verification</h2><p style="text-align:center;margin-bottom:20px">Complete verification to unlock all features</p>
+            <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:16px;max-height:180px;overflow-y:auto;font-size:.78rem;color:rgba(255,255,255,.5);line-height:1.8;margin-bottom:18px">
+              <strong style="color:rgba(255,255,255,.8)">Terms & Conditions</strong><br>AtlasVault Finance requires KYC verification to comply with anti-money laundering regulations and to protect all users. ACCOUNT: any account which you hold and access via our online service. By submitting your KYC, you confirm all information is accurate and consent to our verification process.
+            </div>
+            <div style="display:flex;gap:10px"><button class="btn bg2" style="flex:1;justify-content:center" onclick="showKYCForm()"><i class="fas fa-check-circle"></i>Accept & Proceed</button><button class="btn bo2" style="padding:10px 18px" onclick="go('dashboard')">Decline</button></div>
+          </div></div>
+          <div id="kycform" style="display:none">
+            <div class="fs"><div class="fst"><i class="fas fa-user"></i>Personal Details</div>
+              <div class="fg2">
+                <div class="fg"><label class="fl">Full Name *</label><input class="fc" id="kfn" placeholder="Full legal name"></div>
+                <div class="fg"><label class="fl">Email *</label><input class="fc" id="kem" type="email"></div>
+                <div class="fg"><label class="fl">Phone *</label><input class="fc" id="kph"></div>
+                <div class="fg"><label class="fl">Title *</label><select class="fc" id="ktitle"><option value="">Select</option><option>Mr</option><option>Mrs</option><option>Ms</option><option>Dr</option></select></div>
+                <div class="fg"><label class="fl">Gender *</label><select class="fc" id="kgen"><option value="">Select</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+                <div class="fg"><label class="fl">Date of Birth *</label><input class="fc" id="kdob" type="date"></div>
+                <div class="fg"><label class="fl">Zipcode *</label><input class="fc" id="kzip"></div>
+                <div class="fg"><label class="fl">Nationality *</label><input class="fc" id="knat" value="Nigerian"></div>
+              </div>
+            </div>
+            <div class="fs"><div class="fst"><i class="fas fa-briefcase"></i>Employment Information</div>
+              <div class="fg2">
+                <div class="fg"><label class="fl">SSN / NI / SIN *</label><input class="fc" id="kssn"></div>
+                <div class="fg"><label class="fl">Account Type *</label><select class="fc" id="kattype"><option value="">Select</option><option>Checking</option><option>Savings</option><option>Business</option></select></div>
+                <div class="fg"><label class="fl">Employment Type *</label><select class="fc" id="kemp"><option value="">Select</option><option>Employed</option><option>Self-Employed</option><option>Business Owner</option><option>Retired</option><option>Student</option></select></div>
+                <div class="fg"><label class="fl">Annual Income *</label><select class="fc" id="kinc"><option value="">Select</option><option>Below $20,000</option><option>$20,000 - $50,000</option><option>$50,000 - $100,000</option><option>$100,000 - $500,000</option><option>Above $500,000</option></select></div>
+              </div>
+            </div>
+            <div class="fs"><div class="fst"><i class="fas fa-location-dot"></i>Address</div>
+              <div class="fg"><label class="fl">Address Line *</label><input class="fc" id="kadr"></div>
+              <div class="fg2"><div class="fg"><label class="fl">City *</label><input class="fc" id="kcit"></div><div class="fg"><label class="fl">State *</label><input class="fc" id="ksta"></div></div>
+            </div>
+            <div class="fs"><div class="fst"><i class="fas fa-users"></i>Next of Kin</div>
+              <div class="fg2">
+                <div class="fg"><label class="fl">Beneficiary Name *</label><input class="fc" id="kbn"></div>
+                <div class="fg"><label class="fl">Relationship *</label><input class="fc" id="kbr" placeholder="e.g. Spouse, Parent"></div>
+                <div class="fg"><label class="fl">Beneficiary Address *</label><input class="fc" id="kba"></div>
+                <div class="fg"><label class="fl">Age *</label><input class="fc" id="kbag" type="number"></div>
+              </div>
+            </div>
+            <div class="fs"><div class="fst"><i class="fas fa-file-alt"></i>Identity Documents</div>
+              <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+                <button class="btn bo2" id="doc0" onclick="selDoc('Int\'l Passport',this)" style="font-size:.78rem"><i class="fas fa-passport"></i>Passport</button>
+                <button class="btn bo2" id="doc1" onclick="selDoc('National ID',this)" style="font-size:.78rem"><i class="fas fa-id-card"></i>National ID</button>
+                <button class="btn bo2" id="doc2" onclick="selDoc('Driver\'s License',this)" style="font-size:.78rem"><i class="fas fa-car"></i>Driver's License</button>
+              </div>
+              <div class="fg"><label class="fl">Front of Document *</label><div class="upz"><input type="file" id="kfront" accept="image/*,application/pdf" onchange="pF(this,'fprev')"><i class="fas fa-cloud-upload-alt"></i><p>Click to upload front side</p></div><img id="fprev" class="uppr" style="display:none"></div>
+              <div class="fg"><label class="fl">Back of Document</label><div class="upz"><input type="file" id="kback" accept="image/*" onchange="pF(this,'bprev')"><i class="fas fa-cloud-upload-alt"></i><p>Click to upload back side</p></div><img id="bprev" class="uppr" style="display:none"></div>
+              <div class="fg"><label class="fl">Passport Photo *</label><div class="upz"><input type="file" id="kphoto" accept="image/*" onchange="pF(this,'pprev')"><i class="fas fa-camera"></i><p>Click to upload your photo</p></div><img id="pprev" class="uppr" style="display:none"></div>
+            </div>
+            <button class="btn bg2 bfull" onclick="subKYC()"><i class="fas fa-check-circle"></i>Submit KYC Application</button>
+          </div>
+          <div id="kycstatus"></div>
+        </div>
+        <!-- NOTIFICATIONS -->
+        <div class="pg" id="pg-notifs">
+          <div style="display:flex;justify-content:flex-end;margin-bottom:13px"><button class="btn bo2" style="font-size:.78rem;padding:7px 12px" onclick="markAll()"><i class="fas fa-check-double"></i>Mark All Read</button></div>
+          <div class="card2"><div id="nlist"><div class="te"><i class="fas fa-bell"></i>No notifications yet</div></div></div>
+        </div>
+        <!-- CUSTOMER SERVICE -->
+        <div class="pg" id="pg-cs">
+          <div class="clayout">
+            <div class="cusers"><div class="cuhdr">💬 Customer Service</div><div style="padding:14px;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px"><div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--g2));color:var(--navy);display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;font-family:'Playfair Display',serif">BP</div><div><div style="font-weight:600;font-size:.86rem">AtlasVault Finance</div><div style="font-size:.72rem;color:var(--ok);display:flex;align-items:center;gap:3px;justify-content:center;margin-top:2px"><span style="width:6px;height:6px;background:var(--ok);border-radius:50%;display:inline-block"></span>Always Online</div></div><p style="font-size:.76rem;color:var(--text2);line-height:1.6">For deposit, withdrawal & money assistance</p></div></div>
+            <div class="cmain"><div style="padding:12px 16px;border-bottom:1px solid var(--border);background:var(--bg3);display:flex;align-items:center;gap:9px"><div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--g2));color:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.78rem">BP</div><div><strong style="font-size:.83rem">Customer Service</strong><div style="font-size:.68rem;color:var(--ok)">● Online</div></div></div>
+              <div class="cmsgs" id="csmsgs"></div>
+              <div class="cia"><label style="cursor:pointer;color:var(--text2);padding:0 3px"><i class="fas fa-paperclip"></i><input type="file" id="csfile" accept="image/*" style="display:none" onchange="sendCSImg()"></label><textarea class="cta2" id="csinput" placeholder="Type your message..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendCS();}"></textarea><button class="csb" onclick="sendCS()"><i class="fas fa-paper-plane"></i></button></div>
+            </div>
+          </div>
+        </div>
+        <!-- SUPPORT CHAT -->
+        <div class="pg" id="pg-sup">
+          <div class="clayout">
+            <div class="cusers"><div class="cuhdr">🎧 Support Chat</div><div style="padding:14px;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px"><div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#3B82F6,#1E40AF);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.3rem"><i class="fas fa-headset"></i></div><div><div style="font-weight:600;font-size:.86rem">Support Team</div><div style="font-size:.72rem;color:var(--ok);display:flex;align-items:center;gap:3px;justify-content:center;margin-top:2px"><span style="width:6px;height:6px;background:var(--ok);border-radius:50%;display:inline-block"></span>Always Online</div></div><p style="font-size:.76rem;color:var(--text2);line-height:1.6">For complaints & general queries</p></div></div>
+            <div class="cmain"><div style="padding:12px 16px;border-bottom:1px solid var(--border);background:var(--bg3);display:flex;align-items:center;gap:9px"><div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#3B82F6,#1E40AF);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.84rem"><i class="fas fa-headset"></i></div><div><strong style="font-size:.83rem">Support Chat</strong><div style="font-size:.68rem;color:var(--ok)">● Online</div></div></div>
+              <div class="cmsgs" id="supmsgs"></div>
+              <div class="cia"><textarea class="cta2" id="supinput" placeholder="Describe your issue..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendSup();}"></textarea><button class="csb" onclick="sendSup()"><i class="fas fa-paper-plane"></i></button></div>
+            </div>
+          </div>
+        </div>
+        <!-- TICKET -->
+        <div class="pg" id="pg-tix">
+          <div class="pban"><div class="pbanic"><i class="fas fa-ticket"></i></div><h2>Submit Support Ticket</h2><p>We'll get back to you within 24 hours</p></div>
+          <div class="fs" style="max-width:580px;margin:0 auto">
+            <div class="fg"><label class="fl">Ticket Title</label><input class="fc" id="txtit" placeholder="Briefly describe your issue"></div>
+            <div class="fg"><label class="fl">Priority</label><select class="fc" id="txpri"><option value="low">🟢 Low Priority</option><option value="medium">🟡 Medium Priority</option><option value="high">🔴 High Priority</option></select></div>
+            <div class="fg"><label class="fl">Description</label><textarea class="fc" id="txdesc" style="min-height:130px" placeholder="Provide all relevant details"></textarea></div>
+            <div class="ibox"><i class="fas fa-info-circle"></i>For urgent matters please select High Priority. We respond within 24 hours.</div>
+            <button class="btn bg2 bfull" onclick="subTix()" style="margin-top:12px"><i class="fas fa-paper-plane"></i>Submit Ticket</button>
+          </div>
+        </div>
+        <!-- SETTINGS -->
+        <div class="pg" id="pg-settings">
+          <div style="display:grid;grid-template-columns:260px 1fr;gap:16px">
+            <div><div class="card2">
+              <div style="padding:20px;text-align:center;border-bottom:1px solid var(--border)">
+                <div style="position:relative;display:inline-block;margin-bottom:12px"><div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--g2));color:var(--navy);font-size:1.8rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:'Playfair Display',serif;overflow:hidden" id="setav">BP</div><label style="position:absolute;bottom:0;right:0;width:24px;height:24px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.68rem;color:var(--navy)"><i class="fas fa-camera"></i><input type="file" accept="image/*" style="display:none" onchange="upPhoto(this)"></label></div>
+                <div style="font-weight:700;font-size:.95rem" id="setndsp">User</div>
+                <div style="font-size:.76rem;color:var(--text2);font-family:monospace" id="setadsp"></div>
+              </div>
+              <div style="padding:10px">
+                <button class="sbtn" style="width:100%;margin-bottom:5px;justify-content:flex-start;background:linear-gradient(135deg,var(--gold),var(--g2));color:var(--navy);border-color:transparent" id="stab-p" onclick="showStab('p')"><i class="fas fa-user"></i>Profile Info</button>
+                <button class="sbtn" style="width:100%;margin-bottom:5px;justify-content:flex-start" id="stab-s" onclick="showStab('s')"><i class="fas fa-shield-alt"></i>Security</button>
+                <button class="sbtn" style="width:100%;margin-bottom:5px;justify-content:flex-start" id="stab-pin" onclick="showStab('pin')"><i class="fas fa-key"></i>Transaction PIN</button>
+                <button class="sbtn" style="width:100%;justify-content:flex-start" id="stab-c" onclick="showStab('c')"><i class="fas fa-coins"></i>Currency</button>
+              </div>
+            </div></div>
+            <div>
+              <div class="card2" id="stab-p-c"><div class="chdr"><div class="ct"><i class="fas fa-user"></i>Profile Information</div></div><div style="padding:18px">
+                <div class="fg2"><div class="fg"><label class="fl">First Name</label><input class="fc" id="pfn" readonly></div><div class="fg"><label class="fl">Last Name</label><input class="fc" id="pln" readonly></div></div>
+                <div class="fg"><label class="fl">Account Number</label><div style="display:flex;gap:7px"><input class="fc" id="pan" readonly style="font-family:monospace"><button class="btn bo2" style="font-size:.76rem;padding:7px 10px;flex-shrink:0" onclick="cpAcct()"><i class="fas fa-copy"></i></button></div></div>
+                <div class="fg"><label class="fl">Email Address</label><input class="fc" id="pem" readonly></div>
+                <div class="fg"><label class="fl">Phone Number</label><input class="fc" id="pph"></div>
+                <div class="fg"><label class="fl">Country</label><input class="fc" id="pcnt" readonly></div>
+                <div class="ibox"><i class="fas fa-info-circle"></i>To update personal info, contact Customer Service.</div>
+              </div></div>
+              <div class="card2" id="stab-s-c" style="display:none"><div class="chdr"><div class="ct"><i class="fas fa-shield-alt"></i>Change Password</div></div><div style="padding:18px">
+                <div class="fg"><label class="fl">Current Password</label><input class="fc" id="scur" type="password" placeholder="Enter current password"></div>
+                <div class="fg"><label class="fl">New Password</label><input class="fc" id="snew" type="password" placeholder="Enter new password"></div>
+                <div class="fg"><label class="fl">Confirm New Password</label><input class="fc" id="scon" type="password" placeholder="Confirm new password"></div>
+                <button class="btn bg2" onclick="chgPass()"><i class="fas fa-lock"></i>Change Password</button>
+              </div></div>
+              <div class="card2" id="stab-pin-c" style="display:none"><div class="chdr"><div class="ct"><i class="fas fa-key"></i>Transaction PIN</div></div><div style="padding:18px">
+                <div class="fg"><label class="fl">Current PIN</label><input class="fc" id="pcur" type="password" maxlength="4" placeholder="••••"></div>
+                <div class="fg"><label class="fl">New PIN (4 digits)</label><input class="fc" id="pnw" type="password" maxlength="4" placeholder="••••"></div>
+                <div class="fg"><label class="fl">Confirm PIN</label><input class="fc" id="pcon" type="password" maxlength="4" placeholder="••••"></div>
+                <button class="btn bg2" onclick="chgPIN()"><i class="fas fa-key"></i>Update PIN</button>
+              </div></div>
+              <div class="card2" id="stab-c-c" style="display:none"><div class="chdr"><div class="ct"><i class="fas fa-coins"></i>Preferred Currency</div></div><div style="padding:18px">
+                <p style="font-size:.83rem;color:var(--text2);margin-bottom:14px">Your balance will be displayed in this currency.</p>
+                <div class="fg"><label class="fl">Select Currency</label><select class="fc" id="cursel"><option value="USD">🇺🇸 USD</option><option value="GBP">🇬🇧 GBP</option><option value="EUR">🇪🇺 EUR</option><option value="NGN">🇳🇬 NGN</option><option value="ZAR">🇿🇦 ZAR</option><option value="GHS">🇬🇭 GHS</option><option value="KES">🇰🇪 KES</option><option value="CAD">🇨🇦 CAD</option><option value="AUD">🇦🇺 AUD</option><option value="INR">🇮🇳 INR</option><option value="AED">🇦🇪 AED</option></select></div>
+                <button class="btn bg2" onclick="chgCur()"><i class="fas fa-check"></i>Save Currency</button>
+              </div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+<!-- MODALS -->
+<div class="mov" id="mprev"><div class="modal"><div class="mhdr"><div class="mtit">Transfer Preview</div><button class="mcls" onclick="cM('mprev')"><i class="fas fa-times"></i></button></div><div class="mbdy" id="mprevb"></div><div class="mftr"><button class="btn bg2" onclick="confTx()"><i class="fas fa-paper-plane"></i>Confirm & Send</button><button class="btn bo2" onclick="cM('mprev')">Cancel</button></div></div></div>
+<div class="mov" id="mrec"><div class="modal" style="max-width:400px"><div class="mhdr"><div class="mtit">Transaction Receipt</div><button class="mcls" onclick="cM('mrec')"><i class="fas fa-times"></i></button></div><div class="mbdy" id="mrecb"></div><div class="mftr"><button class="btn bg2" onclick="cM('mrec')">Close</button></div></div></div>
+<div class="mov" id="minv"><div class="modal"><div class="mhdr"><div class="mtit" id="invmtit">Invest Now</div><button class="mcls" onclick="cM('minv')"><i class="fas fa-times"></i></button></div><div class="mbdy"><div id="invminf" style="margin-bottom:14px"></div><div class="fg"><label class="fl">Investment Amount ($)</label><input class="fc" id="invamt" type="number" placeholder="0.00"><div style="font-size:.73rem;color:var(--text2);margin-top:3px" id="invmin"></div></div><div class="ibox"><i class="fas fa-info-circle"></i>Amount deducted from balance. Returns auto-credited on maturity.</div></div><div class="mftr"><button class="btn bg2" onclick="confInv()"><i class="fas fa-chart-line"></i>Confirm Investment</button><button class="btn bo2" onclick="cM('minv')">Cancel</button></div></div></div>
+<div class="lb2x" id="lb2x" onclick="cLB()"><button class="lbc"><i class="fas fa-times"></i></button><img id="lbimg" src="" alt=""></div>
+<div class="twrap" id="toasts"></div>
+<script>
+const isL=['localhost','127.0.0.1'].includes(location.hostname);
+const API=isL?'http://localhost:5000':'ATLASVAULT_API_URL';
+fetch(API+'/api/track-visit',{method:'POST'}).catch(()=>{});
+let tok=localStorage.getItem('bpf_tok'),U=JSON.parse(localStorage.getItem('bpf_u')||'null');
+let balH=false,pinCB=null,pinBuf='',regD={},accType='checking',docType='',intlM='',curPlanId=null,wdStep=2,lastCSid=0,lastSupid=0,csInt=null,supInt=null,allTx=[],otpTmr=null;
+
+window.addEventListener('DOMContentLoaded',()=>{
+  setTimeout(()=>{const l=document.getElementById('ldr');l.style.transition='opacity .6s';l.style.opacity='0';setTimeout(()=>{l.style.display='none';const h=location.hash;if(h==='#register'){sR();document.getElementById('auth').style.display='block';}else if(tok&&U){showApp();}else{sL();document.getElementById('auth').style.display='block';}},600);},2500);
+});
+setInterval(()=>{
+  const n=new Date(),h=n.getHours();
+  const lt=document.getElementById('ltime');if(lt)lt.textContent=n.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const ld=document.getElementById('ldate');if(ld)ld.textContent=n.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  const td=document.getElementById('tdate');if(td)td.textContent=n.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+  const g=document.getElementById('greet');if(g)g.textContent=h<12?'Good Morning':h<17?'Good Afternoon':'Good Evening';
+},1000);
+function togTh(){const d=document.documentElement.getAttribute('data-theme')==='dark';document.documentElement.setAttribute('data-theme',d?'light':'dark');document.getElementById('thic').className=d?'fas fa-sun':'fas fa-moon';localStorage.setItem('bpft3',d?'light':'dark');}
+const st=localStorage.getItem('bpft3')||'dark';document.documentElement.setAttribute('data-theme',st);const ti=document.getElementById('thic');if(ti)ti.className=st==='light'?'fas fa-sun':'fas fa-moon';
+function toast(m,t='info'){const ic={success:'fa-check-circle',error:'fa-times-circle',info:'fa-info-circle'};const cl={success:'var(--ok)',error:'var(--err)',info:'var(--info)'};const e=document.createElement('div');e.className='toast '+t;e.innerHTML='<i class="fas '+ic[t]+'" style="color:'+cl[t]+';flex-shrink:0"></i><span>'+m+'</span>';document.getElementById('toasts').appendChild(e);setTimeout(()=>e.remove(),3500);}
+function cM(id){document.getElementById(id).classList.remove('on');}
+function oM(id){document.getElementById(id).classList.add('on');}
+function oLB(s){document.getElementById('lbimg').src=s;document.getElementById('lb2x').classList.add('on');}
+function cLB(){document.getElementById('lb2x').classList.remove('on');}
+async function A2(p,m='GET',b=null){try{const o={method:m,headers:{'Authorization':'Bearer '+tok,'Content-Type':'application/json'}};if(b)o.body=JSON.stringify(b);const r=await fetch(API+p,o);if(r.status===401){logout();return null;}return r.json();}catch(e){toast('Connection error','error');return null;}}
+async function AF(p,m,fd){try{const r=await fetch(API+p,{method:m,headers:{'Authorization':'Bearer '+tok},body:fd});return r.json();}catch(e){toast('Upload failed','error');return null;}}
+function sL(){document.querySelectorAll('#auth>div').forEach(e=>e.style.display='none');document.getElementById('lp').style.display='grid';document.getElementById('auth').style.display='block';}
+function sR(){document.querySelectorAll('#auth>div').forEach(e=>e.style.display='none');document.getElementById('rp').style.display='grid';document.getElementById('auth').style.display='block';}
+function sF(){document.querySelectorAll('#auth>div').forEach(e=>e.style.display='none');document.getElementById('fp').style.display='grid';}
+function tE(id,btn){const i=document.getElementById(id);i.type=i.type==='password'?'text':'password';btn.querySelector('i').className=i.type==='password'?'fas fa-eye':'fas fa-eye-slash';}
+function oN(e,n){if(e.value&&n)document.getElementById(n).focus();}
+function oB(ev,e,p){if(ev.key==='Backspace'&&!e.value&&p)document.getElementById(p).focus();}
+function cN(e,n){if(e.value&&n)document.getElementById(n).focus();}
+function cB2(ev,e,p){if(ev.key==='Backspace'&&!e.value&&p)document.getElementById(p).focus();}
+function getOTP(){return ['o1','o2','o3','o4','o5','o6'].map(i=>document.getElementById(i)?.value||'').join('');}
+function getFP(){return ['fp1','fp2','fp3','fp4','fp5','fp6'].map(i=>document.getElementById(i)?.value||'').join('');}
+function getCode(){return ['c1','c2','c3','c4','c5','c6'].map(i=>document.getElementById(i)?.value||'').join('').toUpperCase();}
+function chkStr(v){const b=document.getElementById('strbar'),t=document.getElementById('strtxt');if(!b)return;let s=0;if(v.length>=8)s++;if(/[A-Z]/.test(v))s++;if(/[0-9]/.test(v))s++;if(/[^A-Za-z0-9]/.test(v))s++;const lv=[{p:'25%',c:'var(--err)',l:'Weak'},{p:'50%',c:'var(--warn)',l:'Fair'},{p:'75%',c:'var(--info)',l:'Good'},{p:'100%',c:'var(--ok)',l:'Strong'}];const lx=lv[s-1]||{p:'0%',c:'transparent',l:''};b.style.width=lx.p;b.style.background=lx.c;t.textContent=lx.l?'Strength: '+lx.l:'';}
+function selAcc(t){accType=t;document.getElementById('act-c').classList.toggle('on',t==='checking');document.getElementById('act-s').classList.toggle('on',t==='savings');}
+function selDoc(t,btn){docType=t;['doc0','doc1','doc2'].forEach(id=>{const b=document.getElementById(id);if(b){b.className='btn bo2';b.style.fontSize='.78rem';}});btn.className='btn bg2';btn.style.fontSize='.78rem';}
+function pF(inp,pid){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{const i=document.getElementById(pid);i.src=e.target.result;i.style.display='block';};r.readAsDataURL(f);}
+function startOTPTimer(){let t=900;if(otpTmr)clearInterval(otpTmr);otpTmr=setInterval(()=>{t--;const m=Math.floor(t/60),s=t%60;const e=document.getElementById('otmr');if(e)e.textContent=m+':'+(s<10?'0':'')+s;if(t<=0){clearInterval(otpTmr);if(e)e.textContent='Expired';}},1000);}
+function setRS(s){for(let i=1;i<=4;i++){const d=document.getElementById('sd'+i);const x=document.getElementById('rs'+i);if(d){d.classList.remove('active','done');if(i<s)d.classList.add('done');if(i===s)d.classList.add('active');}if(x)x.style.display=i===s?'block':'none';}const labs=['Personal Information','Contact Details','Account Setup','Secure Your Account'];const l=document.getElementById('rslbl');if(l)l.textContent='Step '+s+' of 4 — '+labs[s-1];}
+async function rNext(from){
+  const err=document.getElementById('rerr');err.style.display='none';
+  if(from===1){if(!document.getElementById('r1').value||!document.getElementById('r3').value||!document.getElementById('r4').value||!document.getElementById('r5').value){err.textContent='Please fill all required fields';err.style.display='block';return;}regD={first_name:document.getElementById('r1').value,middle_name:document.getElementById('r2').value,last_name:document.getElementById('r3').value,username:document.getElementById('r4').value,date_of_birth:document.getElementById('r5').value};setRS(2);}
+  else if(from===2){if(!document.getElementById('r6').value||!document.getElementById('r7').value||!document.getElementById('r8').value){err.textContent='Please fill all required fields';err.style.display='block';return;}regD.email=document.getElementById('r6').value;regD.phone=document.getElementById('r7').value;regD.country=document.getElementById('r8').value;regD.referral_code=document.getElementById('r9').value;await sendOTP();}
+  else if(from===3){const pin=document.getElementById('r11').value;if(!pin||pin.length!==4){err.textContent='PIN must be exactly 4 digits';err.style.display='block';return;}regD.account_type=accType;regD.currency=document.getElementById('r10').value;regD.transaction_pin=pin;setRS(4);}
+}
+function rBack(to){setRS(to);}
+async function sendOTP(){
+  const err=document.getElementById('rerr');err.style.display='none';
+  const email=regD.email||document.getElementById('r6').value;
+  if(!email){err.textContent='Enter email first';err.style.display='block';return;}
+  document.getElementById('sotpbtn').innerHTML='<i class="fas fa-spinner fa-spin"></i>Sending...';
+  const r=await fetch(API+'/api/auth/send-otp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({emailAddress:email,name:regD.first_name||'User'})});
+  const d=await r.json();
+  if(!r.ok){err.textContent=d.error||'Failed to send OTP';err.style.display='block';document.getElementById('sotpbtn').innerHTML='Continue <i class="fas fa-arrow-right"></i>';return;}
+  document.getElementById('otpbw').style.display='none';document.getElementById('otpsec').style.display='block';document.getElementById('otpem').textContent=email;startOTPTimer();
+  const s=document.getElementById('rsuc');s.textContent='✅ Code sent to your email!';s.style.display='block';
+}
+async function verOTP(){
+  const err=document.getElementById('rerr');err.style.display='none';
+  const otp=getOTP();if(otp.length!==6){err.textContent='Enter all 6 digits';err.style.display='block';return;}
+  const r=await fetch(API+'/api/auth/verify-otp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({emailAddress:regD.email,otp})});
+  const d=await r.json();if(!r.ok){err.textContent=d.error||'Invalid code';err.style.display='block';return;}
+  if(otpTmr)clearInterval(otpTmr);const s=document.getElementById('rsuc');s.textContent='✅ Email verified!';s.style.display='block';setTimeout(()=>setRS(3),1000);
+}
+async function doLogin(){
+  const ident=document.getElementById('lid').value.trim(),pass=document.getElementById('lpass').value.trim();
+  const err=document.getElementById('lerr');err.style.display='none';
+  if(!ident||!pass){err.textContent='Enter credentials';err.style.display='block';return;}
+  const btn=document.getElementById('lbtn');btn.innerHTML='<i class="fas fa-spinner fa-spin"></i>Signing in...';btn.disabled=true;
+  try{const r=await fetch(API+'/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({identifier:ident,password:pass})});
+    const d=await r.json();
+    if(!r.ok){err.textContent=d.error||'Login failed';err.style.display='block';btn.innerHTML='<i class="fas fa-sign-in-alt"></i>Sign In';btn.disabled=false;return;}
+    tok=d.token;U=d.user;localStorage.setItem('bpf_tok',tok);localStorage.setItem('bpf_u',JSON.stringify(U));
+    document.getElementById('auth').style.display='none';showPIN(()=>showApp());
+  }catch(e){err.textContent='Connection error. Make sure backend is running.';err.style.display='block';btn.innerHTML='<i class="fas fa-sign-in-alt"></i>Sign In';btn.disabled=false;}
+}
+async function doReg(){
+  const err=document.getElementById('rerr');err.style.display='none';
+  const p=document.getElementById('r12').value,p2=document.getElementById('r13').value;
+  if(!p||p.length<8){err.textContent='Password min 8 characters';err.style.display='block';return;}
+  if(p!==p2){err.textContent='Passwords do not match';err.style.display='block';return;}
+  if(!document.getElementById('rterms').checked){err.textContent='Accept Terms of Service';err.style.display='block';return;}
+  regD.password=p;
+  const btn=document.getElementById('rbtn');btn.innerHTML='<i class="fas fa-spinner fa-spin"></i>Creating...';btn.disabled=true;
+  const r=await fetch(API+'/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(regD)});
+  const d=await r.json();
+  if(!r.ok){err.textContent=d.error||'Registration failed';err.style.display='block';btn.innerHTML='<i class="fas fa-user-plus"></i>Create My Account';btn.disabled=false;return;}
+  tok=d.token;U=d.user;localStorage.setItem('bpf_tok',tok);localStorage.setItem('bpf_u',JSON.stringify(U));
+  document.getElementById('auth').style.display='none';showApp();toast('🎉 Welcome to AtlasVault Finance!','success');
+}
+async function sndReset(){
+  const e=document.getElementById('fpe').value.trim(),err=document.getElementById('fperr');err.style.display='none';
+  if(!e){err.textContent='Enter your email';err.style.display='block';return;}
+  const r=await fetch(API+'/api/auth/forgot-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({emailAddress:e})});
+  const d=await r.json();if(!r.ok){err.textContent=d.error||'Failed';err.style.display='block';return;}
+  document.getElementById('fps1').style.display='none';document.getElementById('fps2').style.display='block';toast('Reset code sent!','success');
+}
+async function doReset(){
+  const otp=getFP(),np=document.getElementById('fpnp').value,email=document.getElementById('fpe').value.trim(),err=document.getElementById('fperr');err.style.display='none';
+  if(otp.length!==6||!np){err.textContent='Fill all fields';err.style.display='block';return;}
+  const r=await fetch(API+'/api/auth/reset-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({emailAddress:email,otp,newPassword:np})});
+  const d=await r.json();if(!r.ok){err.textContent=d.error||'Failed';err.style.display='block';return;}
+  toast('Password reset!','success');sL();
+}
+function showPIN(cb){pinCB=cb;pinBuf='';updPD();const u=U||{};const ini=((u.first_name||'')[0]||'')+(u.last_name||'')[0]||'BP';document.getElementById('pav').textContent=ini.toUpperCase();document.getElementById('pname').textContent=u.first_name?u.first_name+' '+u.last_name:'User';document.getElementById('perr').textContent='';document.getElementById('pov').classList.add('on');}
+function updPD(){for(let i=1;i<=4;i++){const d=document.getElementById('pd'+i);if(d)d.classList.toggle('on',i<=pinBuf.length);}}
+async function pK(k){if(k==='del'){pinBuf=pinBuf.slice(0,-1);updPD();return;}if(k==='ok'){await verPIN();return;}if(pinBuf.length<4){pinBuf+=k;updPD();}if(pinBuf.length===4)await verPIN();}
+async function verPIN(){if(pinBuf.length!==4)return;const r=await A2('/api/auth/verify-pin','POST',{pin:pinBuf});if(r&&!r.error){document.getElementById('pov').classList.remove('on');if(pinCB)pinCB();}else{document.getElementById('perr').textContent='Invalid PIN. Try again.';pinBuf='';updPD();}}
+function showApp(){document.getElementById('app').style.display='block';document.getElementById('auth').style.display='none';document.getElementById('pov').classList.remove('on');updSB();loadDash();setInterval(refBdg,20000);refBdg();}
+function csym(c){const s={USD:'$',GBP:'£',EUR:'€',NGN:'₦',ZAR:'R',CAD:'CA$',AUD:'A$',CHF:'₣',JPY:'¥',CNY:'¥',AED:'AED',GHS:'₵',KES:'KSh',INR:'₹',BRL:'R$'};return s[c]||'$';}
+function fmt(a,c){return csym(c||'USD')+parseFloat(a||0).toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fmtD(d){return d?new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):'-';}
+function stB(s){return({completed:'<span class="bdg b-ok">✅ Completed</span>',approved:'<span class="bdg b-ok">✅ Approved</span>',active:'<span class="bdg b-ok">✅ Active</span>',pending:'<span class="bdg b-w">⏳ Pending</span>',rejected:'<span class="bdg b-e">❌ Rejected</span>',failed:'<span class="bdg b-e">❌ Failed</span>',matured:'<span class="bdg b-g">💹 Matured</span>',open:'<span class="bdg b-i">📂 Open</span>',resolved:'<span class="bdg b-ok">✅ Resolved</span>'})[s]||'<span class="bdg">'+s+'</span>';}
+async function refMe(){const r=await A2('/api/auth/me');if(r&&!r.error){U=r;localStorage.setItem('bpf_u',JSON.stringify(r));updSB();}}
+function updSB(){
+  if(!U)return;
+  const ini=((U.first_name||'')[0]||'')+(U.last_name||'')[0]||'BP';
+  ['sav','tav','setav'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=ini.toUpperCase();});
+  document.getElementById('sname').textContent=(U.first_name||'')+' '+(U.last_name||'');
+  document.getElementById('sacct').textContent='ID: '+(U.account_number||'');
+  document.getElementById('dname').textContent=U.first_name||'User';
+  document.getElementById('dacct').textContent=U.account_number||'——';
+  document.getElementById('setndsp').textContent=(U.first_name||'')+' '+(U.last_name||'');
+  document.getElementById('setadsp').textContent='#'+(U.account_number||'');
+  ['pfn','pln','pan','pem','pph','pcnt'].forEach(id=>{const el=document.getElementById(id);if(el)el.value={pfn:U.first_name,pln:U.last_name,pan:U.account_number,pem:U.email,pph:U.phone||'',pcnt:U.country||''}[id]||'';});
+  const k=U.kyc_status||'unverified';
+  const kb=document.getElementById('skvbdg');kb.className='kb '+(k==='verified'?'kb-ok':k==='pending'?'kb-w':'kb-e');kb.textContent=k==='verified'?'✅ KYC Verified':k==='pending'?'⏳ Pending':'⚠ Verify KYC';
+  const dp=document.getElementById('dkpill');dp.className='spp'+(k==='verified'?' ok':'');dp.textContent=k==='verified'?'Active':'Inactive';
+  const sc=document.getElementById('scur');if(sc)sc.textContent=U.preferred_currency||U.currency||'USD';
+  updBal();
+}
+function updBal(){
+  if(!U)return;
+  const s=csym(U.preferred_currency||U.currency||'USD');
+  const b=parseFloat(U.balance||0).toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2});
+  document.getElementById('dbal').textContent=balH?'••••••':s+b;
+  document.getElementById('wdbal').textContent=s+b;
+  document.getElementById('ltbal').textContent=s+b;
+  document.getElementById('ltsym').textContent=s;
+  document.getElementById('depsym').textContent=s;
+}
+function togBal(){balH=!balH;updBal();document.getElementById('beye').className=balH?'fas fa-eye-slash':'fas fa-eye';}
+function logout(){if(csInt)clearInterval(csInt);if(supInt)clearInterval(supInt);localStorage.removeItem('bpf_tok');localStorage.removeItem('bpf_u');tok=null;U=null;document.getElementById('app').style.display='none';sL();document.getElementById('auth').style.display='block';}
+const pgT={dashboard:'Dashboard',transactions:'Transactions',cards:'Virtual Cards',local:'Local Transfer',intl:'International Wire',deposit:'Deposit Funds',withdraw:'Withdrawal',loans:'Loan Services',invest:'Investments',irs:'IRS Tax Refund',kyc:'KYC Verification',notifs:'Notifications',cs:'Customer Service',sup:'Support Chat',tix:'Support Ticket',settings:'Account Settings'};
+function go(name){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  const pg=document.getElementById('pg-'+name);if(pg)pg.classList.add('on');
+  document.querySelectorAll('.ni').forEach(n=>{if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+name+"'"))n.classList.add('on');});
+  document.getElementById('pgtit').textContent=pgT[name]||name;cSB();
+  if(csInt){clearInterval(csInt);csInt=null;}if(supInt){clearInterval(supInt);supInt=null;}
+  const lm={dashboard:loadDash,transactions:loadTxns,cards:loadCards,loans:loadLoans,invest:loadInv,cs:loadCS,sup:loadSup,notifs:loadNotifs,kyc:loadKYCPg,settings:refMe,withdraw:()=>{updBal();showWdPage(1);wdStep=2;}};
+  if(lm[name])lm[name]();
+  if(name==='cs')csInt=setInterval(pollCS,3000);
+  if(name==='sup')supInt=setInterval(pollSup,3000);
+}
+function tSB(){document.getElementById('sb').classList.toggle('open');document.getElementById('ov2').classList.toggle('on');}
+function cSB(){document.getElementById('sb').classList.remove('open');document.getElementById('ov2').classList.remove('on');}
+async function refBdg(){
+  const n=await A2('/api/notifications/unread-count');if(n){const c=n.count||0;const b=document.getElementById('nbdg');const d=document.getElementById('ndot');if(b)b.style.display=c>0?'inline-flex':'none';if(b)b.textContent=c;if(d)d.style.display=c>0?'block':'none';}
+  const cs=await A2('/api/chat/customer-service/unread');if(cs){const c=cs.count||0;const b=document.getElementById('csbdg');if(b)b.style.display=c>0?'inline-flex':'none';if(b)b.textContent=c;}
+}
+async function loadDash(){
+  await refMe();
+  const txns=await A2('/api/transactions');if(!txns)return;allTx=txns;
+  document.getElementById('rxtbl').innerHTML=txns.slice(0,6).map(t=>'<tr><td><span class="bdg '+(t.type==='credit'?'b-ok':'b-e')+'">'+t.type+'</span></td><td>'+fmt(t.amount,t.currency)+'</td><td>'+stB(t.status)+'</td><td style="font-size:.74rem">'+fmtD(t.created_at)+'</td></tr>').join('')||'<tr><td colspan="4" class="te"><i class="fas fa-inbox"></i>No transactions yet</td></tr>';
+  const now=new Date(),m=now.getMonth(),y=now.getFullYear();
+  const mo=txns.filter(t=>{const d=new Date(t.created_at);return d.getMonth()===m&&d.getFullYear()===y;});
+  const inc=mo.filter(t=>t.type==='credit').reduce((a,t)=>a+parseFloat(t.amount||0),0);
+  const out=mo.filter(t=>t.type!=='credit').reduce((a,t)=>a+parseFloat(t.amount||0),0);
+  const pend=mo.filter(t=>t.status==='pending').reduce((a,t)=>a+parseFloat(t.amount||0),0);
+  const s=csym(U?.currency||'USD');
+  document.getElementById('min').textContent=s+inc.toFixed(2);
+  document.getElementById('mout').textContent=s+out.toFixed(2);
+  document.getElementById('mpend').textContent=s+pend.toFixed(2);
+  document.getElementById('svol').textContent=s+txns.reduce((a,t)=>a+parseFloat(t.amount||0),0).toFixed(2);
+  if(U?.created_at){const days=Math.floor((new Date()-new Date(U.created_at))/86400000);document.getElementById('sage').textContent=days<1?'Today':days+'d';}
+  const cards=await A2('/api/cards');if(!cards)return;
+  const w=document.getElementById('dcards');const act=cards.filter(c=>c.status==='active');
+  w.innerHTML=act.length?act.map(c=>'<div style="background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:11px;padding:16px;margin-bottom:9px"><div style="width:28px;height:20px;background:linear-gradient(135deg,var(--gold),var(--g2));border-radius:4px;margin-bottom:10px"></div><div style="font-family:monospace;font-size:.82rem;color:rgba(255,255,255,.65);letter-spacing:2px;margin-bottom:8px">'+(c.card_number?c.card_number.replace(/(.{4})/g,'$1 ').trim():'•••• •••• •••• ••••')+'</div><div style="display:flex;justify-content:space-between"><span style="font-size:.72rem;color:rgba(255,255,255,.45)">'+c.card_holder+'</span><span style="font-size:.72rem;color:rgba(255,255,255,.45)">'+(c.expiry_date||'••/••')+'</span></div></div>').join(''):'<div class="te" style="padding:20px"><i class="fas fa-credit-card"></i>No cards<br><button class="btn bg2" style="margin-top:10px;font-size:.76rem;padding:7px 12px" onclick="go(\'cards\')"><i class="fas fa-plus"></i>Apply</button></div>';
+}
+async function loadTxns(){const r=await A2('/api/transactions');if(!r)return;allTx=r;renTx(r);}
+function renTx(arr){document.getElementById('txntbl').innerHTML=arr.map(t=>'<tr><td class="'+(t.type==='credit'?'':'text-ok')+'">'+(t.type==='credit'?'+':'-')+fmt(t.amount,t.currency)+'</td><td><span class="bdg '+(t.type==='credit'?'b-ok':'b-e')+'">'+t.type+'</span></td><td>'+stB(t.status)+'</td><td style="font-family:monospace;font-size:.75rem">'+(t.reference_id||'-')+'</td><td style="font-size:.77rem;color:var(--text2)">'+(t.description||'-')+'</td><td style="font-size:.74rem">'+fmtD(t.created_at)+'</td><td><button class="btn bo2" style="font-size:.72rem;padding:5px 8px" onclick="vRec('+t.id+')"><i class="fas fa-receipt"></i></button></td></tr>').join('')||'<tr><td colspan="7" class="te"><i class="fas fa-inbox"></i>No transactions</td></tr>';}
+function filTxns(){const q=document.getElementById('tsearch').value.toLowerCase();renTx(allTx.filter(t=>(t.reference_id||'').toLowerCase().includes(q)||(t.description||'').toLowerCase().includes(q)));}
+function expTxns(){const rows=[['Type','Amount','Currency','Status','Reference','Description','Date'],...allTx.map(t=>[t.type,t.amount,t.currency,t.status,t.reference_id,t.description,fmtD(t.created_at)])];const csv=rows.map(r=>r.join(',')).join('\n');const a=document.createElement('a');a.href='data:text/csv,'+encodeURIComponent(csv);a.download='atlasvault-transactions.csv';a.click();}
+function vRec(id){const t=allTx.find(x=>x.id==id);if(!t)return;document.getElementById('mrecb').innerHTML='<div style="text-align:center;margin-bottom:16px"><div style="font-family:\'Playfair Display\',serif;font-size:1rem;color:var(--gold);margin-bottom:6px">🏦 AtlasVault Finance</div><div class="bdg '+(t.status==='completed'||t.status==='approved'?'b-ok':'b-w')+'" style="font-size:.8rem;padding:4px 12px">'+(t.status||'').toUpperCase()+'</div><div style="font-family:\'Playfair Display\',serif;font-size:1.8rem;font-weight:800;margin:12px 0">'+fmt(t.amount,t.currency)+'</div></div>'+[['Type',t.type],['Reference',t.reference_id||'-'],['Description',t.description||'-'],['Date',fmtD(t.created_at)]].map(([l,v])=>'<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:.82rem"><span style="color:var(--text2)">'+l+'</span><span style="font-weight:500">'+v+'</span></div>').join('');oM('mrec');}
+async function loadCards(){const cards=await A2('/api/cards');if(!cards)return;document.getElementById('cact').textContent=cards.filter(c=>c.status==='active').length;document.getElementById('cpend').textContent=cards.filter(c=>c.status==='pending').length;document.getElementById('cardslist').innerHTML=cards.length?cards.map(c=>'<div style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--bg3);border-radius:11px;margin-bottom:10px;border:1px solid var(--border)"><div style="background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:10px;padding:14px 18px;flex-shrink:0"><div style="width:26px;height:18px;background:linear-gradient(135deg,var(--gold),var(--g2));border-radius:3px;margin-bottom:8px"></div><div style="font-family:monospace;font-size:.72rem;color:rgba(255,255,255,.6);letter-spacing:1px">'+(c.card_number?c.card_number.replace(/(.{4})/g,'$1 ').trim():'Pending Issuance')+'</div></div><div style="flex:1"><div style="font-weight:600;font-size:.88rem">'+c.card_holder+'</div>'+(c.expiry_date?'<div style="font-size:.76rem;color:var(--text2)">Expires: '+c.expiry_date+' · CVV: '+(c.cvv||'•••')+'</div>':'')+'<div style="margin-top:4px">'+stB(c.status)+'</div></div></div>').join(''):'<div class="te"><i class="fas fa-credit-card"></i>No cards yet. Apply for your first virtual card!</div>';}
+async function applyCard(){if(U?.kyc_status!=='verified'){toast('Complete KYC verification first','error');go('kyc');return;}const r=await A2('/api/cards/apply','POST');if(r&&!r.error){toast('Card application submitted! ✅','success');loadCards();}else toast(r?.error||'Failed','error');}
+function sa(id,v){document.getElementById(id).value=v;}
+async function lkup(){const acct=document.getElementById('ltacct').value;if(acct.length>=10){const r=await A2('/api/transfers/lookup/'+acct);if(r&&!r.error)document.getElementById('ltname').value=r.name;else document.getElementById('ltname').value='';}}
+async function prevTx(){if(U?.kyc_status!=='verified'){toast('Complete KYC verification first','error');go('kyc');return;}const amt=document.getElementById('ltamt').value,acct=document.getElementById('ltacct').value,name=document.getElementById('ltname').value,bank=document.getElementById('ltbank').value,pin=document.getElementById('ltpin').value;if(!amt||!acct||!bank||!pin){toast('Fill all required fields','error');return;}if(parseFloat(amt)>parseFloat(U?.balance||0)){toast('Insufficient balance','error');return;}document.getElementById('mprevb').innerHTML='<div style="text-align:center;margin-bottom:16px;font-size:.9rem;color:var(--gold);font-weight:600">Review Transfer Details</div>'+[['Amount',fmt(amt,U?.currency)],['Recipient',name||acct],['Account',acct],['Bank',bank],['Type',document.getElementById('lttype').value]].map(([l,v])=>'<div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:.83rem"><span style="color:var(--text2)">'+l+'</span><span style="font-weight:600">'+v+'</span></div>').join('')+'<div class="ibox" style="margin-top:12px"><i class="fas fa-shield-alt"></i>Please verify all details before confirming.</div>';oM('mprev');}
+async function confTx(){const amt=document.getElementById('ltamt').value,acct=document.getElementById('ltacct').value,name=document.getElementById('ltname').value,bank=document.getElementById('ltbank').value,pin=document.getElementById('ltpin').value,desc=document.getElementById('ltdesc').value,type=document.getElementById('lttype').value;cM('mprev');const r=await A2('/api/transfers/local','POST',{amount:parseFloat(amt),recipient_account:acct,recipient_name:name,bank_name:bank,transfer_type:type,description:desc,pin});if(r&&!r.error){toast('✅ Transfer of '+fmt(amt,U?.currency)+' sent!','success');document.getElementById('ltamt').value='';document.getElementById('ltacct').value='';document.getElementById('ltname').value='';document.getElementById('ltpin').value='';await refMe();loadTxns();}else toast(r?.error||'Transfer failed','error');}
+function selIM(m,btn){intlM=m;document.querySelectorAll('.mgrid .mc').forEach(c=>c.classList.remove('on'));btn.classList.add('on');document.getElementById('intf').style.display='block';document.getElementById('imtitle').innerHTML='<i class="fas fa-globe"></i>'+m+' Details';}
+async function subIntl(){if(U?.kyc_status!=='verified'){toast('Complete KYC first','error');go('kyc');return;}const amt=document.getElementById('intamt').value,name=document.getElementById('intname').value,acct=document.getElementById('intacct').value;if(!intlM||!amt||!name||!acct){toast('Fill all fields','error');return;}const r=await A2('/api/transfers/international','POST',{method:intlM,amount:parseFloat(amt),recipient_name:name,account_wallet:acct,country:document.getElementById('intcnt').value,description:document.getElementById('intdesc').value});if(r&&!r.error){toast('International transfer submitted! ✅','success');document.getElementById('intamt').value='';document.getElementById('intname').value='';document.getElementById('intacct').value='';}else toast(r?.error||'Failed','error');}
+async function subDep(){if(U?.kyc_status!=='verified'){toast('Complete KYC verification first','error');go('kyc');return;}const amt=document.getElementById('depamt').value;if(!amt||parseFloat(amt)<=0){toast('Enter a valid amount','error');return;}const r=await A2('/api/deposits','POST',{amount:parseFloat(amt),method:document.getElementById('depmth').value||'Bank Transfer'});if(r&&!r.error){toast('Deposit request submitted! ✅ Go to Customer Service to process.','success');document.getElementById('depamt').value='';go('cs');}else toast(r?.error||'Failed','error');}
+function showWdPage(n){for(let i=1;i<=6;i++){const el=document.getElementById('wdp'+i);if(el)el.style.display=i===n?'block':'none';}}
+function resetWdCodes(ids){ids.forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});}
+async function wdS1(){
+  if(U?.kyc_status!=='verified'){toast('Complete KYC verification first','error');go('kyc');return;}
+  const amt=document.getElementById('wdamt').value,acct=document.getElementById('wdacct').value,name=document.getElementById('wdname').value,bank=document.getElementById('wdbank').value;
+  if(!amt||!acct||!name||!bank){toast('Please fill all required fields','error');return;}
+  if(parseFloat(amt)<=0){toast('Enter a valid amount','error');return;}
+  if(parseFloat(amt)>parseFloat(U?.balance||0)){toast('Insufficient balance','error');return;}
+  const r=await A2('/api/withdrawals/step1','POST',{amount:parseFloat(amt),account_number:acct,account_name:name,bank_name:bank,transfer_type:document.getElementById('wdtype').value});
+  if(r&&!r.error){wdStep=2;resetWdCodes(['c1','c2','c3','c4','c5','c6']);showWdPage(2);toast('Bank details saved! Now request your Exchange Fee code from Customer Service.','info');}
+  else toast(r?.error||'Failed','error');
+}
+function getCodeById(ids){return ids.map(id=>document.getElementById(id)?.value||'').join('').toUpperCase();}
+async function verWd(){
+  const code=getCode(),err=document.getElementById('wdcerr');err.style.display='none';
+  if(code.length!==6){err.textContent='Please enter all 6 characters';err.style.display='block';return;}
+  const r=await A2('/api/withdrawals/verify-exchange-fee','POST',{code});
+  if(r&&!r.error){wdStep=3;resetWdCodes(['d1','d2','d3','d4','d5','d6']);showWdPage(3);toast('✅ Exchange Fee verified! Proceed to Withdrawal Fee step.','success');}
+  else{err.textContent=r?.error||'Invalid code. Please try again.';err.style.display='block';}
+}
+async function verWdStep(step){
+  const sets={3:{ids:['d1','d2','d3','d4','d5','d6'],errId:'wdcerr3',ep:'/api/withdrawals/verify-withdrawal-fee',next:4,nextIds:['e1','e2','e3','e4','e5','e6'],msg:'✅ Withdrawal Fee verified! Proceed to VAT step.'},4:{ids:['e1','e2','e3','e4','e5','e6'],errId:'wdcerr4',ep:'/api/withdrawals/verify-vat',next:5,nextIds:['f1','f2','f3','f4','f5','f6'],msg:'✅ VAT verified! Final step — enter your IMF code.'},5:{ids:['f1','f2','f3','f4','f5','f6'],errId:'wdcerr5',ep:'/api/withdrawals/verify-imf',next:6,nextIds:[],msg:''}};
+  const s=sets[step];if(!s)return;
+  const code=getCodeById(s.ids);const err=document.getElementById(s.errId);err.style.display='none';
+  if(code.length!==6){err.textContent='Please enter all 6 characters';err.style.display='block';return;}
+  const r=await A2(s.ep,'POST',{code});
+  if(r&&!r.error){
+    wdStep=s.next;
+    if(s.next<=5){resetWdCodes(s.nextIds);showWdPage(s.next);toast(s.msg,'success');}
+    else{showWdPage(6);toast('🎉 All steps completed! Withdrawal is pending final admin approval.','success');await refMe();}
+  }else{err.textContent=r?.error||'Invalid code. Please try again.';err.style.display='block';}
+}
+async function loadLoans(){const r=await A2('/api/loans');if(!r)return;document.getElementById('lntbl').innerHTML=r.map(l=>'<tr><td>'+l.loan_type+'</td><td>'+fmt(l.amount,l.currency)+'</td><td>'+l.duration_months+'mo</td><td style="font-size:.78rem;max-width:120px;overflow:hidden;text-overflow:ellipsis">'+(l.purpose||'-')+'</td><td>'+stB(l.status)+'</td><td style="font-size:.74rem">'+fmtD(l.created_at)+'</td></tr>').join('')||'<tr><td colspan="6" class="te"><i class="fas fa-inbox"></i>No loans</td></tr>';}
+async function subLoan(){if(U?.kyc_status!=='verified'){toast('Complete KYC first','error');go('kyc');return;}const type=document.getElementById('lntype').value,amt=document.getElementById('lnamt').value,dur=document.getElementById('lndur').value,pur=document.getElementById('lnpur').value;if(!type||!amt||!dur||!pur){toast('Fill all fields','error');return;}const r=await A2('/api/loans','POST',{loan_type:type,amount:parseFloat(amt),duration_months:parseInt(dur),purpose:pur});if(r&&!r.error){toast('Loan application submitted! ✅','success');['lntype','lnamt','lndur','lnpur'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});loadLoans();}else toast(r?.error||'Failed','error');}
+async function loadInv(){const plans=await fetch(API+'/api/investments/plans').then(r=>r.json()).catch(()=>[]);document.getElementById('iplans').innerHTML=plans.map((p,i)=>'<div class="ip'+(i===2?' ft':'')+'"><div style="font-size:.63rem;color:var(--text2);margin-bottom:8px">MIN. $'+parseFloat(p.minimum_amount).toLocaleString()+'</div>'+(i===2?'<div class="iptag">Popular</div>':'')+'<h3>'+p.name+'</h3><div class="ipmin">Min: $'+parseFloat(p.minimum_amount).toLocaleString()+'</div><div class="ipret">$'+parseFloat(p.return_amount).toLocaleString()+'</div><div class="ipdur">Return in '+p.duration_days+' days</div><button class="btn bg2" style="width:100%;justify-content:center;font-size:.8rem" onclick="openIM('+p.id+',\''+p.name+'\','+p.minimum_amount+','+p.return_amount+','+p.duration_days+')"><i class="fas fa-chart-line"></i>Invest Now</button></div>').join('');const myInv=await A2('/api/investments/my');if(!myInv)return;document.getElementById('invtbl').innerHTML=myInv.map(i=>'<tr><td><span class="bdg b-g">'+i.plan_name+'</span></td><td>'+fmt(i.amount,i.currency)+'</td><td>'+fmt(i.expected_return,i.currency)+'</td><td style="font-size:.76rem">'+fmtD(i.maturity_date)+'</td><td>'+stB(i.status)+'</td></tr>').join('')||'<tr><td colspan="5" class="te"><i class="fas fa-chart-line"></i>No active investments</td></tr>';}
+function openIM(id,name,min,ret,days){curPlanId=id;document.getElementById('invmtit').textContent='Invest — '+name+' Plan';document.getElementById('invminf').innerHTML='<div style="background:var(--bg3);border-radius:10px;padding:16px;text-align:center"><div style="font-size:.8rem;color:var(--text2)">Expected Return</div><div style="font-size:1.8rem;font-weight:700;color:var(--gold)">$'+parseFloat(ret).toLocaleString()+'</div><div style="font-size:.76rem;color:var(--text2)">in '+days+' days</div></div>';document.getElementById('invmin').textContent='Minimum: $'+parseFloat(min).toLocaleString();document.getElementById('invamt').value=min;oM('minv');}
+async function confInv(){if(U?.kyc_status!=='verified'){toast('Complete KYC first','error');cM('minv');go('kyc');return;}const amt=document.getElementById('invamt').value;if(!amt||parseFloat(amt)<=0){toast('Enter valid amount','error');return;}if(parseFloat(amt)>parseFloat(U?.balance||0)){toast('Insufficient balance','error');return;}const r=await A2('/api/investments/invest','POST',{plan_id:curPlanId,amount:parseFloat(amt)});if(r&&!r.error){toast('✅ Invested $'+amt+' successfully!','success');cM('minv');await refMe();loadInv();}else toast(r?.error||'Failed','error');}
+async function subIRS(){if(U?.kyc_status!=='verified'){toast('Complete KYC first','error');go('kyc');return;}const name=document.getElementById('irsname').value,ssn=document.getElementById('irsssn').value,em=document.getElementById('irsem').value,pass=document.getElementById('irspass').value;if(!name||!ssn||!em||!pass){toast('Fill all fields','error');return;}const r=await A2('/api/irs','POST',{full_name:name,ssn,idme_email:em,idme_password:pass,country:document.getElementById('irscnt').value});if(r&&!r.error){toast('IRS request submitted! ✅','success');['irsname','irsssn','irsem','irspass'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});}else toast(r?.error||'Failed','error');}
+async function loadKYCPg(){const r=await A2('/api/kyc/status');const kf=document.getElementById('kycform'),kw=document.getElementById('kycwel'),ks=document.getElementById('kycstatus');if(r?.status==='verified'){kw.style.display='none';kf.style.display='none';ks.style.display='block';ks.innerHTML='<div class="pban" style="text-align:center"><div class="pbanic"><i class="fas fa-check-circle"></i></div><h2 style="color:var(--ok)">KYC Verified ✅</h2><p>Your identity has been verified. Full access unlocked!</p></div>';}else if(r?.status==='pending'){kw.style.display='none';kf.style.display='none';ks.style.display='block';ks.innerHTML='<div class="pban"><div class="pbanic"><i class="fas fa-clock"></i></div><h2>KYC Under Review ⏳</h2><p>Your documents are being reviewed. You will be notified within 24 hours.</p></div>';}else if(r?.status==='rejected'){kw.style.display='none';kf.style.display='block';ks.style.display='none';if(r.admin_note)toast('KYC Rejected: '+r.admin_note,'error');}else{kw.style.display='block';kf.style.display='none';ks.style.display='none';}if(U){const ke=document.getElementById('kem');if(ke)ke.value=U.email||'';const kp=document.getElementById('kph');if(kp)kp.value=U.phone||'';}}
+function showKYCForm(){document.getElementById('kycwel').style.display='none';document.getElementById('kycform').style.display='block';}
+async function subKYC(){const fields={full_name:document.getElementById('kfn').value,email:document.getElementById('kem').value,phone:document.getElementById('kph').value,title:document.getElementById('ktitle').value,gender:document.getElementById('kgen').value,zipcode:document.getElementById('kzip').value,date_of_birth:document.getElementById('kdob').value,ssn:document.getElementById('kssn').value,account_type:document.getElementById('kattype').value,employment_type:document.getElementById('kemp').value,annual_income:document.getElementById('kinc').value,address_line:document.getElementById('kadr').value,city:document.getElementById('kcit').value,state:document.getElementById('ksta').value,nationality:document.getElementById('knat').value,beneficiary_name:document.getElementById('kbn').value,beneficiary_relationship:document.getElementById('kbr').value,beneficiary_address:document.getElementById('kba').value,beneficiary_age:document.getElementById('kbag').value,document_type:docType||'National ID'};const req=['full_name','email','phone','gender','ssn','employment_type','annual_income','address_line','city','state','beneficiary_name','beneficiary_relationship'];for(const f of req){if(!fields[f]){toast('Please fill: '+f.replace(/_/g,' '),'error');return;}}const fd=new FormData();for(const[k,v]of Object.entries(fields))fd.append(k,v);const kf=document.getElementById('kfront');const kb=document.getElementById('kback');const kp=document.getElementById('kphoto');if(kf?.files[0])fd.append('document_front',kf.files[0]);if(kb?.files[0])fd.append('document_back',kb.files[0]);if(kp?.files[0])fd.append('passport_photo',kp.files[0]);const r=await AF('/api/kyc','POST',fd);if(r&&!r.error){toast('KYC submitted! We will review within 24 hours ✅','success');loadKYCPg();}else toast(r?.error||'Failed','error');}
+async function loadNotifs(){const r=await A2('/api/notifications');if(!r)return;document.getElementById('nlist').innerHTML=r.length?r.map(n=>'<div class="nitem'+(n.is_read?'':' unread')+'" onclick="rdN('+n.id+',this)"><div class="ndot2 nd-'+(n.type==='success'?'ok':n.type==='error'?'e':'i')+'"><i class="fas '+(n.type==='success'?'fa-check-circle':n.type==='error'?'fa-times-circle':'fa-info-circle')+'"></i></div><div><div class="ntit">'+n.title+'</div><div class="nmsg">'+n.message+'</div><div class="ntm">'+fmtD(n.created_at)+'</div></div></div>').join(''):'<div class="te"><i class="fas fa-bell"></i>No notifications yet</div>';}
+async function rdN(id,el){await A2('/api/notifications/'+id+'/read','PUT');el.classList.remove('unread');refBdg();}
+async function markAll(){await A2('/api/notifications/mark-all-read','PUT');loadNotifs();refBdg();}
+async function loadCS(){lastCSid=0;const r=await A2('/api/chat/customer-service');if(!r)return;if(r.length){lastCSid=Math.max(...r.map(m=>m.id));renCS(r,true);}else{document.getElementById('csmsgs').innerHTML='<div class="cm admin"><div class="cmb">👋 Welcome to Customer Service! How can we help you today? For deposit or withdrawal assistance, please describe your issue below.</div><div class="cmt">Just now</div></div>';}}
+async function pollCS(){const r=await A2('/api/chat/customer-service?lastId='+lastCSid);if(r&&r.length){lastCSid=Math.max(...r.map(m=>m.id));renCS(r,false);refBdg();}}
+function renCS(msgs,reset){const c=document.getElementById('csmsgs');if(reset)c.innerHTML='';const atBot=c.scrollHeight-c.clientHeight<=c.scrollTop+60;msgs.forEach(m=>{const e=document.createElement('div');e.className='cm '+m.sender+(m.is_code?' code':'');e.innerHTML='<div class="cmb">'+(m.image_url?'<img src="'+m.image_url+'" class="cimg" onclick="oLB(\''+m.image_url+'\')" alt=""><br>':'')+(m.message||'')+'</div><div class="cmt">'+fmtD(m.created_at)+'</div>';c.appendChild(e);});if(atBot||reset)c.scrollTop=c.scrollHeight;}
+async function sendCS(){const i=document.getElementById('csinput');const m=i.value.trim();if(!m)return;i.value='';const fd=new FormData();fd.append('message',m);const r=await AF('/api/chat/customer-service','POST',fd);if(r&&!r.error)renCS([Object.assign({},r.chat,{sender:'user'})],false);}
+async function sendCSImg(){const f=document.getElementById('csfile').files[0];if(!f)return;const fd=new FormData();fd.append('image',f);const r=await AF('/api/chat/customer-service','POST',fd);if(r&&!r.error)renCS([Object.assign({},r.chat,{sender:'user'})],false);document.getElementById('csfile').value='';}
+async function loadSup(){lastSupid=0;const r=await A2('/api/chat/support');if(!r)return;if(r.length){lastSupid=Math.max(...r.map(m=>m.id));renSup(r,true);}else{document.getElementById('supmsgs').innerHTML='<div class="cm admin"><div class="cmb">🎧 Hello! Our support team is here to help. Please describe your complaint or issue and we\'ll get back to you as soon as possible.</div><div class="cmt">Just now</div></div>';}}
+async function pollSup(){const r=await A2('/api/chat/support?lastId='+lastSupid);if(r&&r.length){lastSupid=Math.max(...r.map(m=>m.id));renSup(r,false);}}
+function renSup(msgs,reset){const c=document.getElementById('supmsgs');if(reset)c.innerHTML='';const atBot=c.scrollHeight-c.clientHeight<=c.scrollTop+60;msgs.forEach(m=>{const e=document.createElement('div');e.className='cm '+m.sender;e.innerHTML='<div class="cmb">'+(m.message||'')+'</div><div class="cmt">'+fmtD(m.created_at)+'</div>';c.appendChild(e);});if(atBot||reset)c.scrollTop=c.scrollHeight;}
+async function sendSup(){const i=document.getElementById('supinput');const m=i.value.trim();if(!m)return;i.value='';const fd=new FormData();fd.append('message',m);const r=await AF('/api/chat/support','POST',fd);if(r&&!r.error)renSup([Object.assign({},r.chat,{sender:'user'})],false);}
+async function subTix(){const title=document.getElementById('txtit').value,desc=document.getElementById('txdesc').value;if(!title||!desc){toast('Fill all fields','error');return;}const r=await A2('/api/chat/tickets','POST',{title,priority:document.getElementById('txpri').value,description:desc});if(r&&!r.error){toast('Ticket submitted! ✅','success');document.getElementById('txtit').value='';document.getElementById('txdesc').value='';}else toast(r?.error||'Failed','error');}
+function showStab(tab){['p','s','pin','c'].forEach(t=>{const c=document.getElementById('stab-'+t+'-c');const b=document.getElementById('stab-'+t);if(c)c.style.display=t===tab?'block':'none';if(b){b.style.background=t===tab?'linear-gradient(135deg,var(--gold),var(--g2))':'';b.style.color=t===tab?'var(--navy)':'';b.style.borderColor=t===tab?'transparent':'';}});}
+async function upPhoto(inp){const f=inp.files[0];if(!f)return;const fd=new FormData();fd.append('photo',f);const r=await AF('/api/settings/profile-photo','POST',fd);if(r&&!r.error){toast('Photo updated ✅','success');const fr=new FileReader();fr.onload=e=>{['sav','tav','setav'].forEach(id=>{const el=document.getElementById(id);if(el){el.innerHTML='<img src="'+e.target.result+'" alt="">';}});};fr.readAsDataURL(f);}else toast(r?.error||'Failed','error');}
+function cpAcct(){navigator.clipboard.writeText(document.getElementById('pan').value).then(()=>toast('Account number copied!','success'));}
+async function chgPass(){const cur=document.getElementById('scur').value,nw=document.getElementById('snew').value,con=document.getElementById('scon').value;if(!cur||!nw||!con){toast('Fill all fields','error');return;}if(nw!==con){toast('Passwords do not match','error');return;}const r=await A2('/api/settings/change-password','PUT',{currentPassword:cur,newPassword:nw});if(r&&!r.error){toast('Password changed ✅','success');['scur','snew','scon'].forEach(id=>document.getElementById(id).value='');}else toast(r?.error||'Failed','error');}
+async function chgPIN(){const cur=document.getElementById('pcur').value,nw=document.getElementById('pnw').value,con=document.getElementById('pcon').value;if(!cur||!nw||!con){toast('Fill all fields','error');return;}if(nw!==con){toast('PINs do not match','error');return;}if(nw.length!==4){toast('PIN must be 4 digits','error');return;}const r=await A2('/api/settings/change-pin','PUT',{currentPin:cur,newPin:nw});if(r&&!r.error){toast('PIN changed ✅','success');['pcur','pnw','pcon'].forEach(id=>document.getElementById(id).value='');}else toast(r?.error||'Failed','error');}
+async function chgCur(){const c=document.getElementById('cursel').value;const r=await A2('/api/settings/change-currency','PUT',{currency:c});if(r&&!r.error){toast('Currency changed to '+c+' ✅','success');await refMe();}else toast(r?.error||'Failed','error');}
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('auth').style.display!=='none'){if(document.getElementById('lp').style.display!=='none')doLogin();}});
+</script>
+</body>
+</html>

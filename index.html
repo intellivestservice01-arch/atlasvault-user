@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AtlasVault Finance — Fast & Stable Banking</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{--gold:#00D4AA;--gold2:#00A882;--navy:#050E1A;--navy2:#0A2540;--bg:#050C18;--card:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);--text:#F0F4FF;--text2:#8B9BB4;--success:#10B981;--r:14px;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
+
+/* LOADER */
+#loader{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.ldr-ring{width:100px;height:100px;border-radius:50%;border:2px solid rgba(240,180,41,.15);display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:24px;}
+.ldr-ring::before{content:'';position:absolute;inset:-3px;border-radius:50%;border:2.5px solid transparent;border-top-color:var(--gold);border-right-color:var(--gold);animation:spin 1.2s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ldr-inner{width:76px;height:76px;background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:800;color:var(--gold);}
+.ldr-name{font-family:'Playfair Display',serif;font-size:1.5rem;color:#fff;letter-spacing:2px;}
+.ldr-name span{color:var(--gold);}
+.ldr-bar{width:180px;height:2px;background:rgba(255,255,255,.07);border-radius:99px;overflow:hidden;margin-top:20px;}
+.ldr-fill{height:100%;background:linear-gradient(90deg,var(--gold),#fff,var(--gold));background-size:200%;border-radius:99px;animation:shimmer 1.5s linear infinite,grow 2.5s ease forwards;}
+@keyframes shimmer{to{background-position:200% center}}
+@keyframes grow{from{width:0}to{width:100%}}
+
+/* NAVBAR */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 5%;height:70px;display:flex;align-items:center;justify-content:space-between;transition:all .3s;background:transparent;}
+nav.scrolled{background:rgba(5,12,24,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--gold);display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo .logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:800;color:var(--navy);}
+.nav-links{display:flex;align-items:center;gap:32px;}
+.nav-links a{color:var(--text2);text-decoration:none;font-size:.88rem;font-weight:500;transition:color .2s;}
+.nav-links a:hover{color:var(--text);}
+.nav-btns{display:flex;align-items:center;gap:10px;}
+.btn-signin{background:transparent;border:1px solid var(--border);color:var(--text2);padding:8px 20px;border-radius:8px;font-size:.85rem;font-weight:600;font-family:'Outfit',sans-serif;cursor:pointer;transition:all .2s;text-decoration:none;}
+.btn-signin:hover{border-color:var(--gold);color:var(--gold);}
+.btn-open{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--navy);padding:9px 22px;border-radius:8px;font-size:.85rem;font-weight:700;font-family:'Outfit',sans-serif;cursor:pointer;border:none;text-decoration:none;transition:all .2s;box-shadow:0 4px 16px rgba(240,180,41,.3);}
+.btn-open:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(240,180,41,.4);}
+.ham{display:none;background:none;border:none;color:var(--text);font-size:1.3rem;cursor:pointer;}
+.mob-menu{display:none;position:fixed;inset:0;top:70px;background:rgba(5,12,24,.98);z-index:99;flex-direction:column;align-items:center;justify-content:center;gap:28px;}
+.mob-menu.open{display:flex;}
+.mob-menu a{color:var(--text2);text-decoration:none;font-size:1.1rem;font-weight:500;}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;padding:100px 5% 60px;position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(240,180,41,.06) 0%,transparent 60%),radial-gradient(ellipse at 70% 20%,rgba(30,58,95,.4) 0%,transparent 50%);}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse at center,black 30%,transparent 80%);}
+.hero-content{max-width:580px;position:relative;z-index:1;}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(240,180,41,.1);border:1px solid rgba(240,180,41,.2);border-radius:99px;padding:6px 14px;font-size:.78rem;color:var(--gold);font-weight:600;margin-bottom:24px;}
+.hero-badge::before{content:'';width:6px;height:6px;background:var(--gold);border-radius:50%;animation:blink 1.5s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,5vw,3.8rem);line-height:1.15;font-weight:800;margin-bottom:20px;}
+.hero h1 span{color:var(--gold);}
+.hero p{font-size:1.05rem;color:var(--text2);line-height:1.8;margin-bottom:36px;max-width:480px;}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:48px;}
+.hero-stats{display:flex;gap:36px;flex-wrap:wrap;}
+.hero-stat .num{font-size:1.6rem;font-weight:700;color:var(--gold);}
+.hero-stat .lbl{font-size:.78rem;color:var(--text2);}
+.hero-visual{position:absolute;right:5%;top:50%;transform:translateY(-50%);width:420px;z-index:1;}
+.card-preview{background:linear-gradient(135deg,#050E1A,#0A2540);border-radius:20px;padding:28px;border:1px solid rgba(240,180,41,.2);box-shadow:0 24px 64px rgba(0,0,0,.5),0 0 0 1px rgba(240,180,41,.05);animation:float 4s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.card-chip{width:40px;height:30px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:6px;margin-bottom:20px;}
+.card-number{font-family:monospace;font-size:1.05rem;color:rgba(255,255,255,.7);letter-spacing:3px;margin-bottom:20px;}
+.card-footer{display:flex;justify-content:space-between;align-items:flex-end;}
+.card-name{font-size:.8rem;color:rgba(255,255,255,.5);font-weight:600;letter-spacing:1px;}
+.card-logo{font-family:'Playfair Display',serif;font-size:1rem;color:var(--gold);}
+.card-balance{background:rgba(255,255,255,.05);border-radius:14px;padding:18px;margin-top:14px;border:1px solid var(--border);}
+.card-balance .lbl{font-size:.72rem;color:var(--text2);margin-bottom:5px;}
+.card-balance .val{font-size:1.7rem;font-weight:700;color:#fff;}
+.card-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
+.card-action{background:rgba(255,255,255,.05);border-radius:10px;padding:12px;text-align:center;border:1px solid var(--border);}
+.card-action i{color:var(--gold);font-size:.9rem;display:block;margin-bottom:4px;}
+.card-action span{font-size:.72rem;color:var(--text2);}
+
+/* MARQUEE */
+.marquee-wrap{padding:18px 0;background:rgba(240,180,41,.04);border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden;white-space:nowrap;}
+.marquee-track{display:inline-flex;animation:marquee 30s linear infinite;}
+.marquee-item{display:inline-flex;align-items:center;gap:8px;padding:0 32px;font-size:.82rem;color:var(--text2);}
+.marquee-item i{color:var(--gold);}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* SECTION COMMON */
+section{padding:90px 5%;}
+.sec-label{font-size:.75rem;font-weight:700;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;}
+.sec-title{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3vw,2.6rem);font-weight:700;margin-bottom:16px;}
+.sec-title span{color:var(--gold);}
+.sec-sub{font-size:.95rem;color:var(--text2);line-height:1.8;max-width:560px;}
+.sec-hdr{text-align:center;margin-bottom:56px;}
+.sec-hdr .sec-sub{margin:0 auto;}
+
+/* FEATURES */
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;}
+.feat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:28px;transition:all .3s;position:relative;overflow:hidden;}
+.feat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(240,180,41,.04),transparent);opacity:0;transition:opacity .3s;}
+.feat-card:hover{border-color:rgba(240,180,41,.3);transform:translateY(-4px);}
+.feat-card:hover::before{opacity:1;}
+.feat-icon{width:52px;height:52px;background:rgba(240,180,41,.1);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:var(--gold);margin-bottom:18px;}
+.feat-card h3{font-size:1.05rem;font-weight:600;margin-bottom:10px;}
+.feat-card p{font-size:.85rem;color:var(--text2);line-height:1.7;}
+
+/* HOW IT WORKS */
+.hiw{background:linear-gradient(135deg,rgba(10,22,40,.8),rgba(30,58,95,.4));}
+.hiw-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;position:relative;}
+.hiw-steps::before{content:'';position:absolute;top:32px;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);display:none;}
+.step{text-align:center;padding:32px 20px;}
+.step-num{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--navy);font-size:1.4rem;font-weight:800;font-family:'Playfair Display',serif;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;box-shadow:0 8px 24px rgba(240,180,41,.3);}
+.step h3{font-size:1rem;font-weight:600;margin-bottom:10px;}
+.step p{font-size:.84rem;color:var(--text2);line-height:1.7;}
+
+/* SERVICES */
+.services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;}
+.svc-card{position:relative;border-radius:var(--r);overflow:hidden;height:220px;cursor:pointer;border:1px solid var(--border);}
+.svc-card img{width:100%;height:100%;object-fit:cover;transition:transform .4s;}
+.svc-card:hover img{transform:scale(1.06);}
+.svc-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(5,12,24,.95) 40%,transparent);display:flex;flex-direction:column;justify-content:flex-end;padding:20px;}
+.svc-overlay h3{font-size:1.05rem;font-weight:700;}
+.svc-overlay p{font-size:.8rem;color:var(--text2);margin-top:4px;}
+
+/* INVESTMENT PLANS */
+.plans-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;}
+.plan-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:28px;text-align:center;transition:all .3s;position:relative;overflow:hidden;}
+.plan-card.featured{border-color:var(--gold);background:linear-gradient(135deg,rgba(240,180,41,.08),rgba(10,22,40,.9));}
+.plan-badge{position:absolute;top:14px;right:14px;background:var(--gold);color:var(--navy);font-size:.65rem;font-weight:700;padding:3px 9px;border-radius:99px;}
+.plan-name{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;margin-bottom:8px;}
+.plan-min{font-size:.8rem;color:var(--text2);margin-bottom:16px;}
+.plan-return{font-size:2rem;font-weight:700;color:var(--gold);margin-bottom:6px;}
+.plan-dur{font-size:.8rem;color:var(--text2);margin-bottom:20px;}
+.plan-btn{display:block;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--navy);padding:10px;border-radius:8px;font-weight:700;font-size:.85rem;text-decoration:none;transition:all .2s;}
+.plan-btn:hover{transform:translateY(-1px);}
+
+/* STATS */
+.stats-section{background:linear-gradient(135deg,var(--navy),var(--navy2));}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px;text-align:center;}
+.stat-item .num{font-family:'Playfair Display',serif;font-size:2.8rem;font-weight:800;color:var(--gold);}
+.stat-item .lbl{font-size:.85rem;color:var(--text2);margin-top:6px;}
+
+/* INTEREST RATES */
+.rates-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:700px;margin:0 auto;}
+.rate-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:28px;text-align:center;}
+.rate-card .type{font-size:.8rem;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
+.rate-card .rate{font-family:'Playfair Display',serif;font-size:3rem;font-weight:800;color:var(--gold);}
+.rate-card .rate span{font-size:1.5rem;}
+.rate-card p{font-size:.82rem;color:var(--text2);margin-top:8px;}
+
+/* TESTIMONIALS */
+.testi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;}
+.testi-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:26px;transition:all .3s;}
+.testi-card:hover{border-color:rgba(240,180,41,.2);}
+.stars{color:var(--gold);font-size:.85rem;margin-bottom:14px;}
+.testi-card p{font-size:.88rem;color:var(--text2);line-height:1.8;margin-bottom:18px;font-style:italic;}
+.testi-author{display:flex;align-items:center;gap:12px;}
+.testi-av{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;flex-shrink:0;}
+.testi-name{font-weight:600;font-size:.88rem;}
+.testi-loc{font-size:.75rem;color:var(--text2);}
+
+/* FAQ */
+.faq-list{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:12px;}
+.faq-item{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.faq-q{padding:18px 22px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-size:.92rem;font-weight:600;transition:color .2s;gap:12px;}
+.faq-q:hover{color:var(--gold);}
+.faq-q i{color:var(--gold);transition:transform .3s;flex-shrink:0;}
+.faq-item.open .faq-q i{transform:rotate(45deg);}
+.faq-a{padding:0 22px;max-height:0;overflow:hidden;transition:all .3s;font-size:.86rem;color:var(--text2);line-height:1.8;}
+.faq-item.open .faq-a{padding:0 22px 18px;max-height:200px;}
+
+/* CTA */
+.cta-section{background:linear-gradient(135deg,var(--navy),var(--navy2));text-align:center;}
+.cta-section h2{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3vw,2.8rem);margin-bottom:16px;}
+.cta-section p{color:var(--text2);margin-bottom:32px;font-size:.95rem;}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+
+/* CONTACT FORM */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;}
+.contact-form{display:flex;flex-direction:column;gap:14px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-group label{display:block;font-size:.78rem;color:var(--text2);margin-bottom:6px;font-weight:500;}
+.form-group input,.form-group textarea,.form-group select{width:100%;background:var(--card);border:1px solid var(--border);border-radius:9px;padding:12px 14px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.88rem;outline:none;transition:border .2s;}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--gold);}
+.form-group input::placeholder,.form-group textarea::placeholder{color:var(--text2);}
+.form-group textarea{resize:vertical;min-height:120px;}
+.contact-info{display:flex;flex-direction:column;gap:24px;}
+.contact-item{display:flex;gap:14px;align-items:flex-start;}
+.contact-icon{width:44px;height:44px;background:rgba(240,180,41,.1);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--gold);flex-shrink:0;}
+.contact-item h4{font-size:.9rem;font-weight:600;margin-bottom:4px;}
+.contact-item p{font-size:.82rem;color:var(--text2);}
+
+/* FOOTER */
+footer{background:rgba(0,0,0,.4);border-top:1px solid var(--border);padding:60px 5% 30px;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;}
+.footer-brand .logo{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--gold);display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+.footer-brand p{font-size:.84rem;color:var(--text2);line-height:1.8;max-width:280px;}
+.footer-col h4{font-size:.85rem;font-weight:700;color:var(--text);margin-bottom:14px;text-transform:uppercase;letter-spacing:.8px;}
+.footer-col a{display:block;font-size:.82rem;color:var(--text2);text-decoration:none;margin-bottom:8px;transition:color .2s;}
+.footer-col a:hover{color:var(--gold);}
+.footer-bottom{border-top:1px solid var(--border);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+.footer-bottom p{font-size:.78rem;color:var(--text2);}
+.social-links{display:flex;gap:10px;}
+.social-links a{width:34px;height:34px;background:var(--card);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--text2);text-decoration:none;transition:all .2s;}
+.social-links a:hover{border-color:var(--gold);color:var(--gold);}
+
+/* ACTIVITY POPUPS */
+.activity-popup{position:fixed;bottom:90px;left:20px;background:rgba(10,22,40,.95);border:1px solid var(--border);border-radius:12px;padding:12px 16px;font-size:.8rem;display:flex;align-items:center;gap:10px;z-index:50;transform:translateX(-200%);transition:transform .4s;max-width:260px;backdrop-filter:blur(12px);}
+.activity-popup.show{transform:translateX(0);}
+.activity-dot{width:8px;height:8px;background:var(--success);border-radius:50%;flex-shrink:0;animation:blink 1.5s infinite;}
+.activity-text{color:var(--text2);}
+.activity-text strong{color:var(--text);}
+
+/* CUSTOMER SUPPORT CHAT WIDGET */
+.chat-widget{position:fixed;bottom:24px;right:24px;z-index:200;}
+.chat-toggle{width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:var(--navy);box-shadow:0 8px 24px rgba(240,180,41,.4);transition:all .3s;position:relative;}
+.chat-toggle:hover{transform:scale(1.08);}
+.chat-toggle .badge{position:absolute;top:-3px;right:-3px;width:18px;height:18px;background:#EF4444;border-radius:50%;font-size:.65rem;color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg);}
+.chat-box{position:absolute;bottom:70px;right:0;width:340px;background:#0D1117;border:1px solid var(--border);border-radius:18px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.6);display:none;flex-direction:column;animation:chatOpen .3s ease;}
+@keyframes chatOpen{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.chat-box.open{display:flex;}
+.chat-head{background:linear-gradient(135deg,var(--navy),var(--navy2));padding:16px 18px;display:flex;align-items:center;justify-content:space-between;}
+.chat-head-info{display:flex;align-items:center;gap:10px;}
+.chat-av{width:38px;height:38px;border-radius:50%;background:var(--gold);color:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;flex-shrink:0;}
+.chat-head-name{font-weight:600;font-size:.9rem;}
+.chat-head-status{font-size:.72rem;color:rgba(255,255,255,.5);display:flex;align-items:center;gap:4px;}
+.chat-head-status::before{content:'';width:6px;height:6px;background:var(--success);border-radius:50%;}
+.chat-close{background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:1rem;transition:color .2s;}
+.chat-close:hover{color:#fff;}
+.chat-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;max-height:280px;min-height:200px;}
+.chat-msgs::-webkit-scrollbar{width:3px;}
+.chat-msgs::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px;}
+.chat-msg{max-width:85%;display:flex;flex-direction:column;gap:3px;}
+.chat-msg.bot{align-self:flex-start;}
+.chat-msg.user{align-self:flex-end;}
+.msg-bbl{padding:9px 13px;border-radius:13px;font-size:.83rem;line-height:1.5;}
+.chat-msg.bot .msg-bbl{background:rgba(255,255,255,.07);color:var(--text);border-radius:4px 13px 13px 13px;}
+.chat-msg.user .msg-bbl{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--navy);border-radius:13px 4px 13px 13px;font-weight:500;}
+.chat-msg-time{font-size:.62rem;color:var(--text2);}
+.chat-quick{padding:10px 14px;display:flex;gap:7px;flex-wrap:wrap;border-top:1px solid var(--border);}
+.quick-btn{background:rgba(240,180,41,.1);border:1px solid rgba(240,180,41,.2);color:var(--gold);border-radius:99px;padding:5px 12px;font-size:.72rem;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s;}
+.quick-btn:hover{background:rgba(240,180,41,.2);}
+.chat-input-row{padding:10px 14px;border-top:1px solid var(--border);display:flex;gap:8px;}
+.chat-input{flex:1;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:9px;padding:9px 12px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.83rem;outline:none;}
+.chat-input:focus{border-color:var(--gold);}
+.chat-input::placeholder{color:var(--text2);}
+.chat-send{background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;color:var(--navy);width:36px;height:36px;border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+
+/* UTILS */
+.btn-primary{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--navy);padding:12px 28px;border-radius:9px;font-size:.9rem;font-weight:700;font-family:'Outfit',sans-serif;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:all .2s;box-shadow:0 4px 16px rgba(240,180,41,.3);}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(240,180,41,.4);}
+.btn-secondary{background:transparent;border:1px solid var(--border);color:var(--text2);padding:12px 28px;border-radius:9px;font-size:.9rem;font-weight:600;font-family:'Outfit',sans-serif;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:all .2s;}
+.btn-secondary:hover{border-color:var(--gold);color:var(--gold);}
+
+/* RESPONSIVE */
+@media(max-width:1024px){.hero-visual{display:none;}.hero-content{max-width:100%;}.footer-grid{grid-template-columns:1fr 1fr;}.contact-grid{grid-template-columns:1fr;}.rates-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:768px){.nav-links,.nav-btns{display:none;}.ham{display:block;}section{padding:60px 5%;}
+.hero{padding:90px 5% 50px;}.hero h1{font-size:2.2rem;}.form-row{grid-template-columns:1fr;}.footer-grid{grid-template-columns:1fr;}.footer-grid>*:not(:first-child){display:none;}.rates-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="ldr-ring"><div class="ldr-inner">B</div></div>
+  <div class="ldr-name">Blue<span>Peak</span></div>
+  <div class="ldr-bar"><div class="ldr-fill"></div></div>
+</div>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <a class="nav-logo" href="#"><div class="logo-icon">B</div>AtlasVault Finance</a>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#services">Services</a>
+    <a href="#investments">Investments</a>
+    <a href="#faq">FAQ</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <div class="nav-btns">
+    <a href="app.html" class="btn-signin">Sign In</a>
+    <a href="app.html#register" class="btn-open">Open Account</a>
+  </div>
+  <button class="ham" onclick="toggleMob()"><i class="fas fa-bars"></i></button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mob-menu" id="mob-menu">
+  <a href="#about" onclick="toggleMob()">About</a>
+  <a href="#services" onclick="toggleMob()">Services</a>
+  <a href="#investments" onclick="toggleMob()">Investments</a>
+  <a href="#faq" onclick="toggleMob()">FAQ</a>
+  <a href="#contact" onclick="toggleMob()">Contact</a>
+  <a href="app.html" class="btn-open">Sign In</a>
+  <a href="app.html#register" class="btn-primary">Open Account</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge"><span>🏦 Trusted by 18,000+ Clients</span></div>
+    <h1>Fast & <span>Stable</span><br>Banking for Everyone</h1>
+    <p>AtlasVault Finance delivers world-class financial services — from secure transfers to smart investments. Your money, your control, anywhere in the world.</p>
+    <div class="hero-btns">
+      <a href="app.html#register" class="btn-primary"><i class="fas fa-rocket"></i>Open Free Account</a>
+      <a href="#about" class="btn-secondary"><i class="fas fa-play-circle"></i>Learn More</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num" data-target="18000">0</div><div class="lbl">Active Clients</div></div>
+      <div class="hero-stat"><div class="num" data-target="80">0</div><div class="lbl">Countries</div></div>
+      <div class="hero-stat"><div class="num" data-target="500">0</div><div class="lbl">Million in Assets</div></div>
+      <div class="hero-stat"><div class="num" data-target="12">0</div><div class="lbl">Years Experience</div></div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="card-preview">
+      <div class="card-chip"></div>
+      <div class="card-number">•••• •••• •••• 4829</div>
+      <div class="card-footer">
+        <div class="card-name">JOHN SMITH</div>
+        <div class="card-logo">AtlasVault</div>
+      </div>
+    </div>
+    <div class="card-balance">
+      <div class="lbl">Available Balance</div>
+      <div class="val">$24,850.00</div>
+    </div>
+    <div class="card-actions">
+      <div class="card-action"><i class="fas fa-paper-plane"></i><span>Send</span></div>
+      <div class="card-action"><i class="fas fa-arrow-down"></i><span>Deposit</span></div>
+      <div class="card-action"><i class="fas fa-chart-line"></i><span>Invest</span></div>
+      <div class="card-action"><i class="fas fa-history"></i><span>History</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <div class="marquee-item"><i class="fas fa-shield-alt"></i>Bank-Level Security</div>
+    <div class="marquee-item"><i class="fas fa-bolt"></i>Lightning Fast Transfers</div>
+    <div class="marquee-item"><i class="fas fa-globe"></i>Global Coverage — 80 Countries</div>
+    <div class="marquee-item"><i class="fas fa-lock"></i>256-bit Encryption</div>
+    <div class="marquee-item"><i class="fas fa-headset"></i>24/7 Customer Support</div>
+    <div class="marquee-item"><i class="fas fa-mobile-alt"></i>Mobile-First Banking</div>
+    <div class="marquee-item"><i class="fas fa-chart-line"></i>Smart Investments</div>
+    <div class="marquee-item"><i class="fas fa-award"></i>Award-Winning Service</div>
+    <div class="marquee-item"><i class="fas fa-shield-alt"></i>Bank-Level Security</div>
+    <div class="marquee-item"><i class="fas fa-bolt"></i>Lightning Fast Transfers</div>
+    <div class="marquee-item"><i class="fas fa-globe"></i>Global Coverage — 80 Countries</div>
+    <div class="marquee-item"><i class="fas fa-lock"></i>256-bit Encryption</div>
+    <div class="marquee-item"><i class="fas fa-headset"></i>24/7 Customer Support</div>
+    <div class="marquee-item"><i class="fas fa-mobile-alt"></i>Mobile-First Banking</div>
+    <div class="marquee-item"><i class="fas fa-chart-line"></i>Smart Investments</div>
+    <div class="marquee-item"><i class="fas fa-award"></i>Award-Winning Service</div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="sec-hdr">
+    <div class="sec-label">About Us</div>
+    <div class="sec-title">Why Choose <span>AtlasVault Finance?</span></div>
+    <p class="sec-sub">We provide a unique, safe and secured platform for financial transactions in the field of finance and fintech.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feat-card"><div class="feat-icon"><i class="fas fa-shield-halved"></i></div><h3>Fully Secured</h3><p>We use updated and sophisticated fintech technologies to secure and ensure safe transactions for all users across the platform.</p></div>
+    <div class="feat-card"><div class="feat-icon"><i class="fas fa-bolt"></i></div><h3>Lightning Fast</h3><p>Send and receive money instantly to any bank account worldwide. Our system processes transactions in real-time, 24/7.</p></div>
+    <div class="feat-card"><div class="feat-icon"><i class="fas fa-globe"></i></div><h3>Global Access</h3><p>We provide services in 80+ countries around the globe. Transfer money internationally through multiple methods.</p></div>
+    <div class="feat-card"><div class="feat-icon"><i class="fas fa-hand-holding-dollar"></i></div><h3>Low Transaction Fees</h3><p>Our transaction fees are incredibly low for all customers and all market makers. Keep more of what you earn.</p></div>
+    <div class="feat-card"><div class="feat-icon"><i class="fas fa-headset"></i></div><h3>24/7 Support</h3><p>Our customer care service is available at all times to attend to you and provide solutions to all your needs.</p></div>
+    <div class="feat-card"><div class="feat-icon"><i class="fas fa-mobile-screen"></i></div><h3>Mobile Ready</h3><p>Manage your finances anytime, anywhere on any device. Our platform is fully optimized for mobile use.</p></div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="hiw">
+  <div class="sec-hdr">
+    <div class="sec-label">How It Works</div>
+    <div class="sec-title">Simple & <span>Short Process</span></div>
+    <p class="sec-sub">Get started with AtlasVault Finance in just a few simple steps.</p>
+  </div>
+  <div class="hiw-steps">
+    <div class="step"><div class="step-num">1</div><h3>Sign Up</h3><p>Create your account in minutes. Fill in your details and set up your secure banking profile quickly and easily.</p></div>
+    <div class="step"><div class="step-num">2</div><h3>Set Up Your Account</h3><p>Choose your account type, select your currency, and configure your security settings including your transaction PIN.</p></div>
+    <div class="step"><div class="step-num">3</div><h3>Fund Your Account</h3><p>Add money through multiple deposit methods. Your funds are secured and ready for transactions immediately.</p></div>
+    <div class="step"><div class="step-num">4</div><h3>Perform Transactions</h3><p>Send money, invest, apply for loans, and manage all your finances seamlessly from your personal dashboard.</p></div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="sec-hdr">
+    <div class="sec-label">Our Services</div>
+    <div class="sec-title">Everything You <span>Need</span></div>
+    <p class="sec-sub">Comprehensive financial services designed to help you grow and protect your wealth.</p>
+  </div>
+  <div class="services-grid">
+    <div class="svc-card"><img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&q=80" alt="Forex"><div class="svc-overlay"><h3>Forex Trading</h3><p>Trade currencies at competitive rates</p></div></div>
+    <div class="svc-card"><img src="https://images.unsplash.com/photo-1592664474574-9a5e4e8f4571?w=600&q=80" alt="Agriculture"><div class="svc-overlay"><h3>Agriculture Finance</h3><p>Fund agricultural projects and ventures</p></div></div>
+    <div class="svc-card"><img src="https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=600&q=80" alt="Real Estate"><div class="svc-overlay"><h3>Real Estate</h3><p>Finance your dream property with competitive rates</p></div></div>
+    <div class="svc-card"><img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=600&q=80" alt="Oil & Gas"><div class="svc-overlay"><h3>Oil & Gas</h3><p>Investment opportunities in energy sector</p></div></div>
+    <div class="svc-card"><img src="https://images.unsplash.com/photo-1610375461246-83df859d849d?w=600&q=80" alt="Gold"><div class="svc-overlay"><h3>Gold Investment</h3><p>Secure your wealth with precious metals</p></div></div>
+    <div class="svc-card"><img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=80" alt="Business"><div class="svc-overlay"><h3>Business Banking</h3><p>Tailored financial solutions for businesses</p></div></div>
+  </div>
+</section>
+
+<!-- INVESTMENT PLANS -->
+<section id="investments" style="background:linear-gradient(135deg,rgba(10,22,40,.8),rgba(30,58,95,.3));">
+  <div class="sec-hdr">
+    <div class="sec-label">Investment Plans</div>
+    <div class="sec-title">Grow Your <span>Wealth</span></div>
+    <p class="sec-sub">Choose an investment plan that suits your goals. All returns are automatically credited to your account.</p>
+  </div>
+  <div class="plans-grid">
+    <div class="plan-card"><div class="plan-name">Starter</div><div class="plan-min">Min. $20</div><div class="plan-return">$120</div><div class="plan-dur">Return in 10 days</div><a href="app.html#register" class="plan-btn">Start Investing</a></div>
+    <div class="plan-card"><div class="plan-name">Bronze</div><div class="plan-min">Min. $100</div><div class="plan-return">$350</div><div class="plan-dur">Return in 15 days</div><a href="app.html#register" class="plan-btn">Start Investing</a></div>
+    <div class="plan-card featured"><div class="plan-badge">Popular</div><div class="plan-name">Silver</div><div class="plan-min">Min. $500</div><div class="plan-return">$1,500</div><div class="plan-dur">Return in 20 days</div><a href="app.html#register" class="plan-btn">Start Investing</a></div>
+    <div class="plan-card"><div class="plan-name">Gold</div><div class="plan-min">Min. $1,000</div><div class="plan-return">$4,000</div><div class="plan-dur">Return in 30 days</div><a href="app.html#register" class="plan-btn">Start Investing</a></div>
+    <div class="plan-card"><div class="plan-name">Platinum</div><div class="plan-min">Min. $5,000</div><div class="plan-return">$18,000</div><div class="plan-dur">Return in 45 days</div><a href="app.html#register" class="plan-btn">Start Investing</a></div>
+    <div class="plan-card"><div class="plan-name">Diamond</div><div class="plan-min">Min. $10,000</div><div class="plan-return">$45,000</div><div class="plan-dur">Return in 60 days</div><a href="app.html#register" class="plan-btn">Start Investing</a></div>
+  </div>
+</section>
+
+<!-- INTEREST RATES -->
+<section>
+  <div class="sec-hdr">
+    <div class="sec-label">Interest Rates</div>
+    <div class="sec-title">Our <span>Rates</span></div>
+    <p class="sec-sub">Competitive interest rates for all our customers and market makers.</p>
+  </div>
+  <div class="rates-grid">
+    <div class="rate-card"><div class="type">Personal Accounts</div><div class="rate">2<span>%</span></div><p>Annual interest rate on savings balances</p></div>
+    <div class="rate-card"><div class="type">Corporate Accounts</div><div class="rate">3<span>%</span></div><p>Annual interest rate for business accounts</p></div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats-section">
+  <div class="stats-grid">
+    <div class="stat-item"><div class="num" data-target="18000">0</div><div class="lbl">Active Users</div></div>
+    <div class="stat-item"><div class="num" data-target="2950">0</div><div class="lbl">Banking Days</div></div>
+    <div class="stat-item"><div class="num" data-target="375">0</div><div class="lbl">Who Benefit Daily</div></div>
+    <div class="stat-item"><div class="num" data-target="200">0</div><div class="lbl">Country Partners</div></div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section>
+  <div class="sec-hdr">
+    <div class="sec-label">Testimonials</div>
+    <div class="sec-title">What Our <span>Clients Say</span></div>
+    <p class="sec-sub">Real feedback from our valued customers around the world.</p>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card"><div class="stars">★★★★★</div><p>"AtlasVault Finance is one of the most reliable platforms I have ever used. The transfers are instant and the support team is always available."</p><div class="testi-author"><div class="testi-av">OT</div><div><div class="testi-name">Oliver Thompson</div><div class="testi-loc">United Kingdom</div></div></div></div>
+    <div class="testi-card"><div class="stars">★★★★★</div><p>"I invested in the Gold plan and received my full return on time. The platform is secure, professional, and easy to use. Highly recommended!"</p><div class="testi-author"><div class="testi-av">AM</div><div><div class="testi-name">Amara Mensah</div><div class="testi-loc">Ghana</div></div></div></div>
+    <div class="testi-card"><div class="stars">★★★★★</div><p>"The international transfer feature saved me so much in fees. AtlasVault Finance is truly a game changer for people who send money abroad regularly."</p><div class="testi-author"><div class="testi-av">KA</div><div><div class="testi-name">Kofi Asante</div><div class="testi-loc">Nigeria</div></div></div></div>
+    <div class="testi-card"><div class="stars">★★★★★</div><p>"Customer service is excellent. They responded within minutes when I had an issue. The KYC process was smooth and the dashboard is beautiful."</p><div class="testi-author"><div class="testi-av">SJ</div><div><div class="testi-name">Sarah Johnson</div><div class="testi-loc">United States</div></div></div></div>
+    <div class="testi-card"><div class="stars">★★★★★</div><p>"I love how the virtual cards work. I can make online purchases safely without exposing my main account. AtlasVault Finance has thought of everything."</p><div class="testi-author"><div class="testi-av">RM</div><div><div class="testi-name">Raj Mehta</div><div class="testi-loc">India</div></div></div></div>
+    <div class="testi-card"><div class="stars">★★★★★</div><p>"The loan application was approved within 24 hours. The process is straightforward, transparent, and the rates are very competitive. 10/10!"</p><div class="testi-author"><div class="testi-av">FD</div><div><div class="testi-name">Fatima Diallo</div><div class="testi-loc">Senegal</div></div></div></div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" style="background:linear-gradient(135deg,rgba(10,22,40,.8),rgba(30,58,95,.3));">
+  <div class="sec-hdr">
+    <div class="sec-label">FAQ</div>
+    <div class="sec-title">Frequently Asked <span>Questions</span></div>
+    <p class="sec-sub">Have questions? We have answers.</p>
+  </div>
+  <div class="faq-list">
+    <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">What is AtlasVault Finance?<i class="fas fa-plus"></i></div><div class="faq-a">AtlasVault Finance is a premier financial institution providing a comprehensive suite of banking, investment, asset management, and risk management products and services tailored to meet your specific needs.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">How do I create an account?<i class="fas fa-plus"></i></div><div class="faq-a">Click "Open Account" and complete our simple 4-step registration process. You'll need to provide your personal details, contact information, choose your account type, and set a secure password. The whole process takes less than 5 minutes.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">How long does my deposit take to reflect?<i class="fas fa-plus"></i></div><div class="faq-a">Deposits are typically reviewed and credited within 24 hours of submission. You will receive an email and in-app notification once your deposit is approved and credited to your account.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">What are the requirements for a business loan?<i class="fas fa-plus"></i></div><div class="faq-a">To apply for a business loan, you'll need to complete KYC verification, have an active account with a positive balance history, and provide the purpose and duration of the loan. Our team reviews applications within 1-3 business days.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">How long does an international withdrawal take?<i class="fas fa-plus"></i></div><div class="faq-a">International withdrawals are processed after all verification codes are confirmed. Once approved by our admin team, transfers are typically completed within 1-3 business days depending on the destination country and transfer method.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">Can I have more than one account?<i class="fas fa-plus"></i></div><div class="faq-a">Each user can have one primary account with both checking and savings functionality. You can switch between account types or upgrade your account by contacting our support team.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">How are my investments protected?<i class="fas fa-plus"></i></div><div class="faq-a">All investments are managed by our experienced financial team. Returns are guaranteed based on the plan you choose, and all invested funds are secured within our platform. Your returns are automatically credited to your account upon maturity.</div></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:60px;">
+    <div>
+      <div class="sec-label">Contact Us</div>
+      <div class="sec-title">Get In <span>Touch</span></div>
+      <p class="sec-sub" style="margin-bottom:32px;">Ready to get started or have a question? We are here to help you 24/7.</p>
+      <div class="contact-info">
+        <div class="contact-item"><div class="contact-icon"><i class="fas fa-location-dot"></i></div><div><h4>Our Headquarters</h4><p>214 North Tryon Street, Charlotte,<br>North Carolina, 28202</p></div></div>
+        <div class="contact-item"><div class="contact-icon"><i class="fas fa-envelope"></i></div><div><h4>Email Us</h4><p>atlasvaultfinance02@gmail.com</p></div></div>
+        <div class="contact-item"><div class="contact-icon"><i class="fas fa-headset"></i></div><div><h4>Live Support</h4><p>Use the chat widget at the bottom right<br>We respond within minutes</p></div></div>
+      </div>
+    </div>
+    <div>
+      <form class="contact-form" onsubmit="submitContact(event)">
+        <div class="form-row">
+          <div class="form-group"><label>First Name</label><input type="text" placeholder="John" required></div>
+          <div class="form-group"><label>Last Name</label><input type="text" placeholder="Smith" required></div>
+        </div>
+        <div class="form-group"><label>Email Address</label><input type="email" placeholder="john@example.com" required></div>
+        <div class="form-group"><label>Subject</label><input type="text" placeholder="How can we help?" required></div>
+        <div class="form-group"><label>Message</label><textarea placeholder="Write your message here..." required></textarea></div>
+        <button type="submit" class="btn-primary" style="width:100%;justify-content:center;padding:14px;"><i class="fas fa-paper-plane"></i>Send Message</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="sec-label" style="text-align:center">Get Started Today</div>
+  <h2>Ready to Start <span style="color:var(--gold)">Banking Smarter?</span></h2>
+  <p>Join over 18,000 clients who trust AtlasVault Finance with their money. Create your account in minutes — it's completely free.</p>
+  <div class="cta-btns">
+    <a href="app.html#register" class="btn-primary"><i class="fas fa-rocket"></i>Open Free Account</a>
+    <a href="app.html" class="btn-secondary"><i class="fas fa-sign-in-alt"></i>Sign In</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo"><div style="width:32px;height:32px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:800;color:var(--navy);">B</div>AtlasVault Finance</div>
+      <p>A premier financial institution providing comprehensive banking, investment, and financial services to individuals and businesses worldwide.</p>
+      <div class="social-links" style="margin-top:16px">
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <a href="app.html">Online Banking</a>
+      <a href="app.html#register">Open Account</a>
+      <a href="#services">Services</a>
+      <a href="#investments">Investments</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#about">About Us</a>
+      <a href="#faq">FAQs</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Cookie Policy</a>
+      <a href="#">Compliance</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 AtlasVault Finance. All rights reserved.</p>
+    <p style="color:var(--text2);font-size:.75rem;">🔒 Secured with 256-bit SSL Encryption</p>
+  </div>
+</footer>
+
+<!-- ACTIVITY POPUP -->
+<div class="activity-popup" id="activity-popup">
+  <div class="activity-dot"></div>
+  <div class="activity-text"><strong id="activity-name">John S.</strong> <span id="activity-msg">just made a deposit</span></div>
+</div>
+
+<!-- CUSTOMER SUPPORT CHAT WIDGET -->
+<div class="chat-widget">
+  <div class="chat-box" id="chat-box">
+    <div class="chat-head">
+      <div class="chat-head-info">
+        <div class="chat-av">BP</div>
+        <div>
+          <div class="chat-head-name">Customer Support</div>
+          <div class="chat-head-status">Online — typically replies instantly</div>
+        </div>
+      </div>
+      <button class="chat-close" onclick="toggleChat()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="chat-msgs" id="chat-msgs">
+      <div class="chat-msg bot">
+        <div class="msg-bbl">👋 Welcome to AtlasVault Finance! How can we help you today?</div>
+        <div class="chat-msg-time">Just now</div>
+      </div>
+    </div>
+    <div class="chat-quick" id="chat-quick">
+      <button class="quick-btn" onclick="quickMsg('How do I open an account?')">Open Account</button>
+      <button class="quick-btn" onclick="quickMsg('How do deposits work?')">Deposits</button>
+      <button class="quick-btn" onclick="quickMsg('Tell me about investments')">Investments</button>
+      <button class="quick-btn" onclick="quickMsg('I need support')">Get Support</button>
+    </div>
+    <div class="chat-input-row">
+      <input class="chat-input" id="chat-input" placeholder="Type your message..." onkeydown="if(event.key==='Enter')sendChat()">
+      <button class="chat-send" onclick="sendChat()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+  <button class="chat-toggle" onclick="toggleChat()" id="chat-toggle">
+    <i class="fas fa-comments" id="chat-icon"></i>
+    <div class="badge" id="chat-badge">1</div>
+  </button>
+</div>
+
+<script>
+const API = window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'ATLASVAULT_API_URL';
+
+// LOADER
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const l = document.getElementById('loader');
+    l.style.transition = 'opacity .6s';
+    l.style.opacity = '0';
+    setTimeout(() => l.style.display = 'none', 600);
+  }, 2500);
+  // Track visit
+  fetch(`${API}/api/track-visit`, { method: 'POST' }).catch(() => {});
+});
+
+// NAVBAR SCROLL
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// MOBILE MENU
+function toggleMob() {
+  document.getElementById('mob-menu').classList.toggle('open');
+}
+
+// FAQ
+function toggleFAQ(el) {
+  const item = el.parentElement;
+  document.querySelectorAll('.faq-item.open').forEach(i => { if(i !== item) i.classList.remove('open'); });
+  item.classList.toggle('open');
+}
+
+// COUNTER ANIMATION
+function animateCounter(el) {
+  const target = parseInt(el.getAttribute('data-target'));
+  const duration = 2000;
+  const start = performance.now();
+  const update = (time) => {
+    const elapsed = time - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.floor(eased * target).toLocaleString();
+    if (progress < 1) requestAnimationFrame(update);
+  };
+  requestAnimationFrame(update);
+}
+
+// Observe counters
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { animateCounter(e.target); observer.unobserve(e.target); } });
+}, { threshold: .5 });
+document.querySelectorAll('[data-target]').forEach(el => observer.observe(el));
+
+// CONTACT FORM
+function submitContact(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('button');
+  btn.innerHTML = '<i class="fas fa-check"></i> Message Sent!';
+  btn.style.background = 'var(--success)';
+  setTimeout(() => { btn.innerHTML = '<i class="fas fa-paper-plane"></i>Send Message'; btn.style.background = ''; e.target.reset(); }, 3000);
+}
+
+// ACTIVITY POPUPS
+const activities = [
+  ['James K.', 'just made a deposit'],
+  ['Sarah M.', 'completed KYC verification'],
+  ['David O.', 'invested in Silver plan'],
+  ['Amara D.', 'sent an international transfer'],
+  ['Chen W.', 'just opened an account'],
+  ['Fatima A.', 'applied for a loan'],
+  ['Michael T.', 'just made a deposit'],
+  ['Lola B.', 'invested in Gold plan'],
+];
+let actIdx = 0;
+function showActivity() {
+  const popup = document.getElementById('activity-popup');
+  const [name, msg] = activities[actIdx % activities.length];
+  document.getElementById('activity-name').textContent = name;
+  document.getElementById('activity-msg').textContent = msg;
+  popup.classList.add('show');
+  setTimeout(() => popup.classList.remove('show'), 3500);
+  actIdx++;
+}
+setInterval(showActivity, 7000);
+setTimeout(showActivity, 4000);
+
+// CHAT WIDGET
+let chatOpen = false;
+let chatReplying = false;
+
+const botReplies = {
+  'how do i open an account': "Opening an account is simple! Click the 'Open Account' button at the top and complete our 4-step registration. It takes less than 5 minutes! 🚀",
+  'how do deposits work': "To deposit funds, log into your dashboard and go to Deposit. Choose your preferred method and enter the amount. Our team reviews and credits within 24 hours. 💰",
+  'tell me about investments': "We offer 6 investment plans from $20 to $10,000+. Returns range from $120 to $45,000! All returns are automatically credited on maturity. Check the Investments section above! 📈",
+  'i need support': "For account-specific support, please log into your dashboard and use the Customer Service chat or submit a Support Ticket. Our team responds 24/7! 💬",
+  default: "Thank you for your message! For detailed assistance, please log into your dashboard or contact us at atlasvaultfinance02@gmail.com. We typically respond within minutes. 🏦"
+};
+
+function getBotReply(msg) {
+  const lower = msg.toLowerCase();
+  for (const [key, reply] of Object.entries(botReplies)) {
+    if (lower.includes(key.split(' ')[0]) || lower === key) return reply;
+  }
+  return botReplies.default;
+}
+
+function toggleChat() {
+  chatOpen = !chatOpen;
+  const box = document.getElementById('chat-box');
+  const icon = document.getElementById('chat-icon');
+  const badge = document.getElementById('chat-badge');
+  box.classList.toggle('open', chatOpen);
+  icon.className = chatOpen ? 'fas fa-times' : 'fas fa-comments';
+  if (chatOpen) badge.style.display = 'none';
+}
+
+function addMsg(text, type) {
+  const msgs = document.getElementById('chat-msgs');
+  const el = document.createElement('div');
+  el.className = `chat-msg ${type}`;
+  el.innerHTML = `<div class="msg-bbl">${text}</div><div class="chat-msg-time">Just now</div>`;
+  msgs.appendChild(el);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function quickMsg(text) {
+  addMsg(text, 'user');
+  document.getElementById('chat-quick').style.display = 'none';
+  if (chatReplying) return;
+  chatReplying = true;
+  setTimeout(() => {
+    addMsg(getBotReply(text.toLowerCase()), 'bot');
+    chatReplying = false;
+  }, 1200);
+}
+
+function sendChat() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  addMsg(text, 'user');
+  input.value = '';
+  document.getElementById('chat-quick').style.display = 'none';
+  if (chatReplying) return;
+  chatReplying = true;
+  setTimeout(() => {
+    addMsg(getBotReply(text.toLowerCase()), 'bot');
+    chatReplying = false;
+  }, 1200);
+}
+</script>
+</body>
+</html>
