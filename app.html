@@ -863,7 +863,7 @@ tr:hover td{background:rgba(240,180,41,.02);}
 <div class="twrap" id="toasts"></div>
 <script>
 const isL=['localhost','127.0.0.1'].includes(location.hostname);
-const API=isL?'http://localhost:5000':'ATLASVAULT_API_URL';
+const API=isL?'http://localhost:5000':'https://atlasvault-backend.onrender.com';
 fetch(API+'/api/track-visit',{method:'POST'}).catch(()=>{});
 let tok=localStorage.getItem('bpf_tok'),U=JSON.parse(localStorage.getItem('bpf_u')||'null');
 let balH=false,pinCB=null,pinBuf='',regD={},accType='checking',docType='',intlM='',curPlanId=null,wdStep=2,lastCSid=0,lastSupid=0,csInt=null,supInt=null,allTx=[],otpTmr=null;
