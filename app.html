@@ -291,8 +291,167 @@ tr:hover td{background:rgba(240,180,41,.02);}
 .lb2x.on{display:flex;}
 .lb2x img{max-width:90vw;max-height:90vh;border-radius:8px;}
 .lbc{position:absolute;top:15px;right:15px;background:rgba(255,255,255,.1);border:none;color:#fff;font-size:1.3rem;cursor:pointer;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
-@media(max-width:900px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.ov2.on{display:block}.main{margin-left:0}.ham{display:flex}.fg2,.fr2{grid-template-columns:1fr}.qag{grid-template-columns:repeat(2,1fr)}.clayout{grid-template-columns:1fr}.cusers{display:none}.cnt{padding:13px}.tbar{padding:0 13px}.al{grid-template-columns:1fr}.alL{display:none}.alR{padding:26px 18px}}
-@media(max-width:480px){.sgrid{grid-template-columns:1fr 1fr}.iplans{grid-template-columns:1fr 1fr}}
+
+/* ===== TABLET (max 900px) ===== */
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%);z-index:200;box-shadow:4px 0 20px rgba(0,0,0,.4)}
+  .sidebar.open{transform:translateX(0)}
+  .ov2.on{display:block}
+  .main{margin-left:0}
+  .ham{display:flex}
+  .fg2,.fr2{grid-template-columns:1fr}
+  .qag{grid-template-columns:repeat(2,1fr)}
+  .clayout{grid-template-columns:1fr;height:calc(100vh - 120px)}
+  .cusers{display:none}
+  .cnt{padding:13px}
+  .tbar{padding:0 13px}
+  .al{grid-template-columns:1fr}
+  .alL{display:none}
+  .alR{padding:26px 18px}
+  .bbal{padding:18px}
+  .bba{font-size:1.7rem}
+  .bbacts{flex-wrap:wrap}
+  .bbact{font-size:.74rem;padding:6px 10px}
+  div[style*="grid-template-columns:1fr 300px"]{grid-template-columns:1fr!important}
+  .sgrid{grid-template-columns:repeat(2,1fr)}
+  .iplans{grid-template-columns:repeat(2,1fr)}
+  .mgrid{grid-template-columns:repeat(3,1fr)}
+  .codein{gap:6px}
+  .ci{width:40px;height:48px;font-size:1.1rem}
+  .modal{max-width:100%!important;margin:10px}
+  div[style*="grid-template-columns:260px 1fr"]{grid-template-columns:1fr!important}
+  #stab-p-c,#stab-s-c,#stab-pin-c,#stab-c-c{display:none}
+  .fs{padding:15px}
+}
+
+/* ===== MOBILE (max 480px) ===== */
+@media(max-width:480px){
+  :root{--sw:260px}
+  .cnt{padding:10px}
+  .tbar{height:54px;padding:0 10px}
+  .ptitle{font-size:.9rem}
+  .tdate{display:none}
+  
+  /* Balance card */
+  .bbal{padding:16px;border-radius:12px}
+  .bba{font-size:1.5rem}
+  .bbg{font-size:.72rem}
+  .bbn{font-size:.88rem}
+  .bbl{font-size:.7rem}
+  .bbacts{gap:5px}
+  .bbact{padding:6px 9px;font-size:.72rem}
+  
+  /* Stats grid */
+  .sgrid{grid-template-columns:1fr 1fr;gap:8px}
+  .sc{padding:11px}
+  .sci{width:34px;height:34px;font-size:.82rem}
+  .sl2{font-size:.64rem}
+  .sv{font-size:.95rem}
+  
+  /* Quick actions */
+  .qag{grid-template-columns:repeat(2,1fr);gap:8px}
+  .qa{padding:12px 8px}
+  .qa i{font-size:1.1rem;margin-bottom:5px}
+  .qa span{font-size:.7rem}
+  
+  /* Investment plans */
+  .iplans{grid-template-columns:1fr}
+  
+  /* Transfer/method grid */
+  .mgrid{grid-template-columns:repeat(2,1fr);gap:8px}
+  .mc{padding:14px 10px}
+  .mc .ic2{font-size:1.3rem;margin-bottom:6px}
+  .mc h4{font-size:.78rem}
+  .mc p{font-size:.68rem}
+  
+  /* Forms */
+  .fs{padding:13px;margin-bottom:12px}
+  .fg{margin-bottom:10px}
+  .fc{padding:10px 11px;font-size:.84rem}
+  .fl{font-size:.72rem}
+  .fst{font-size:.82rem;margin-bottom:12px}
+  
+  /* Code inputs */
+  .codein{gap:5px}
+  .ci{width:38px;height:46px;font-size:1rem;border-radius:8px}
+  
+  /* Buttons */
+  .btn{padding:8px 14px;font-size:.78rem}
+  .bg2.bfull,.bo2.bfull{padding:12px;font-size:.85rem}
+  
+  /* Withdrawal steps */
+  #wdp1 .fg2,#wdp2 .fg2{grid-template-columns:1fr}
+  
+  /* Page banners */
+  .pban{padding:18px}
+  .pban h2{font-size:1.1rem}
+  .pban p{font-size:.78rem}
+  .pbanic{width:48px;height:48px;font-size:1.1rem}
+  
+  /* Chat */
+  .clayout{height:calc(100vh - 110px)}
+  .cmain{min-height:0}
+  .cmsgs{padding:10px}
+  .cia{padding:8px 10px;gap:5px}
+  .cta2{font-size:.8rem;padding:7px 10px}
+  .csb{width:32px;height:32px}
+  .cm .cmb{font-size:.78rem;padding:7px 10px}
+  
+  /* Notification items */
+  .nitem{padding:10px}
+  .ndot2{width:30px;height:30px;font-size:.78rem;flex-shrink:0}
+  .ntit{font-size:.8rem}
+  .nmsg{font-size:.72rem}
+  
+  /* Tables */
+  table{font-size:.74rem}
+  th{padding:7px 9px;font-size:.62rem}
+  td{padding:8px 9px}
+  
+  /* Settings */
+  div[style*="grid-template-columns:260px 1fr"]{grid-template-columns:1fr!important}
+  
+  /* Auth pages */
+  .alR{padding:20px 16px}
+  .ath{font-size:1.3rem}
+  .ats{font-size:.8rem}
+  .otpr{gap:6px}
+  .otpi{width:38px;height:44px;font-size:1rem}
+  
+  /* Balance display */
+  #wdp1 .fg2{grid-template-columns:1fr}
+  
+  /* Topbar avatar */
+  .tav{width:28px;height:28px;font-size:.72rem}
+  .tbtn{width:30px;height:30px;font-size:.8rem}
+  
+  /* Modal */
+  .mov{padding:10px}
+  .modal{max-height:95vh;border-radius:12px}
+  .mhdr{padding:12px 15px}
+  .mbdy{padding:14px}
+  .mftr{padding:10px 15px;flex-wrap:wrap;gap:6px}
+  .mftr .btn{flex:1;justify-content:center}
+  
+  /* KYC */
+  #kycform .fg2{grid-template-columns:1fr}
+  
+  /* Loan history table scroll */
+  .tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  
+  /* Success page */
+  #wdp6 > div{padding:32px 14px}
+  #wdp6 h2{font-size:1.3rem}
+}
+
+/* ===== VERY SMALL (max 360px) ===== */
+@media(max-width:360px){
+  .sgrid{grid-template-columns:1fr}
+  .qag{grid-template-columns:repeat(2,1fr)}
+  .ci{width:34px;height:42px;font-size:.95rem}
+  .bba{font-size:1.3rem}
+  .iplans{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
