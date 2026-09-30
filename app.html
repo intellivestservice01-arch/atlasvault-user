@@ -452,6 +452,39 @@ tr:hover td{background:rgba(240,180,41,.02);}
   .bba{font-size:1.3rem}
   .iplans{grid-template-columns:1fr}
 }
+
+/* ===== TRADING BROKER CSS ===== */
+.tv-cat{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:6px 14px;border-radius:99px;font-size:.76rem;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;white-space:nowrap;transition:all .2s;}
+.tv-cat.on{background:var(--gold);color:var(--navy);border-color:var(--gold);}
+.tv-cat:hover{border-color:var(--gold);color:var(--gold);}
+.asset-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+.asset-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,212,170,.1);}
+.asset-icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;margin-bottom:8px;}
+.asset-sym{font-size:.72rem;font-weight:700;color:var(--text2);letter-spacing:1px;}
+.asset-name{font-size:.82rem;font-weight:600;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.asset-price{font-size:1rem;font-weight:700;margin-bottom:4px;}
+.asset-chg{font-size:.75rem;font-weight:600;padding:2px 7px;border-radius:99px;}
+.chg-up{background:rgba(0,212,170,.1);color:#00D4AA;}
+.chg-dn{background:rgba(255,71,87,.1);color:#FF4757;}
+.sparkline{height:35px;margin:8px 0;}
+.holding-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;}
+.holding-icon{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;flex-shrink:0;}
+.holding-info{flex:1;min-width:0;}
+.holding-name{font-size:.86rem;font-weight:600;margin-bottom:2px;}
+.holding-qty{font-size:.73rem;color:var(--text2);}
+.holding-value{text-align:right;}
+.holding-amt{font-size:.9rem;font-weight:700;}
+.holding-pnl{font-size:.75rem;font-weight:600;}
+.pnl-up{color:#00D4AA;}
+.pnl-dn{color:#FF4757;}
+.pnl-zero{color:var(--text2);}
+.sell-btn{background:rgba(255,71,87,.1);border:1px solid rgba(255,71,87,.3);color:#FF4757;padding:5px 10px;border-radius:7px;font-size:.72rem;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;margin-top:4px;display:block;text-align:center;}
+.sell-btn:hover{background:rgba(255,71,87,.2);}
+.tv-receipt{font-size:.82rem;}
+.tv-receipt .rv{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);}
+.tv-receipt .rv:last-child{border-bottom:none;}
+.tv-receipt .rl{color:var(--text2);}
+.tv-receipt .rr{font-weight:600;text-align:right;}
 </style>
 </head>
 <body>
@@ -853,9 +886,97 @@ tr:hover td{background:rgba(240,180,41,.02);}
         </div>
         <!-- INVESTMENTS -->
         <div class="pg" id="pg-invest">
-          <div class="pban"><div class="pbanic"><i class="fas fa-chart-line"></i></div><h2>Investment Plans</h2><p>Grow your wealth with smart investment options</p></div>
-          <div class="iplans" id="iplans"></div>
-          <div class="card2"><div class="chdr"><div class="ct"><i class="fas fa-list-check"></i>My Investments</div><button class="btn bo2" style="font-size:.75rem;padding:5px 10px" onclick="loadInv()"><i class="fas fa-refresh"></i></button></div><div class="tw"><table><thead><tr><th>Plan</th><th>Amount</th><th>Expected Return</th><th>Matures</th><th>Status</th></tr></thead><tbody id="invtbl"></tbody></table></div></div>
+          <!-- Trading Header -->
+          <div style="background:linear-gradient(135deg,#050E1A,#0A2540);border-radius:14px;padding:20px;margin-bottom:16px;position:relative;overflow:hidden">
+            <div style="position:absolute;top:-40px;right:-40px;width:150px;height:150px;border-radius:50%;background:rgba(0,212,170,.05)"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+              <div>
+                <div style="font-size:.75rem;color:rgba(255,255,255,.4);margin-bottom:4px">PORTFOLIO VALUE</div>
+                <div style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:800;color:#fff" id="tv-total">$0.00</div>
+                <div style="font-size:.8rem;margin-top:4px" id="tv-pnl"><span style="color:rgba(255,255,255,.4)">P&L: </span><span style="color:#00D4AA">$0.00 (0.00%)</span></div>
+              </div>
+              <div style="display:flex;gap:8px">
+                <button class="btn" style="background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.3);color:#00D4AA;font-size:.78rem" onclick="showTvTab('market')"><i class="fas fa-globe"></i>Market</button>
+                <button class="btn" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.6);font-size:.78rem" onclick="showTvTab('portfolio')"><i class="fas fa-briefcase"></i>Portfolio</button>
+                <button class="btn" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.6);font-size:.78rem" onclick="loadInv()"><i class="fas fa-refresh"></i></button>
+              </div>
+            </div>
+            <!-- Mini Chart -->
+            <div style="margin-top:16px;height:60px;position:relative;overflow:hidden" id="tv-minichart">
+              <svg width="100%" height="60" viewBox="0 0 400 60" preserveAspectRatio="none">
+                <defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00D4AA" stop-opacity=".3"/><stop offset="100%" stop-color="#00D4AA" stop-opacity="0"/></linearGradient></defs>
+                <path id="chartPath" d="" fill="url(#cg)" stroke="#00D4AA" stroke-width="2"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Market Tab -->
+          <div id="tv-market">
+            <!-- Category Filter -->
+            <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:14px;-webkit-overflow-scrolling:touch">
+              <button class="tv-cat on" onclick="filterAssets('All')">All</button>
+              <button class="tv-cat" onclick="filterAssets('Crypto')">🔐 Crypto</button>
+              <button class="tv-cat" onclick="filterAssets('Stocks')">📈 Stocks</button>
+              <button class="tv-cat" onclick="filterAssets('Commodities')">🥇 Commodities</button>
+              <button class="tv-cat" onclick="filterAssets('Real Estate')">🏠 Real Estate</button>
+              <button class="tv-cat" onclick="filterAssets('Forex')">💱 Forex</button>
+            </div>
+            <!-- Assets Grid -->
+            <div id="tv-assets" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:16px"></div>
+          </div>
+
+          <!-- Portfolio Tab -->
+          <div id="tv-portfolio" style="display:none">
+            <div id="tv-holdings"></div>
+          </div>
+
+          <!-- Buy Modal -->
+          <div class="mov" id="tv-buy-modal">
+            <div class="modal" style="max-width:380px">
+              <div class="mhdr">
+                <div class="mtit" id="tv-buy-title">Buy Asset</div>
+                <button class="mcls" onclick="cM('tv-buy-modal')"><i class="fas fa-times"></i></button>
+              </div>
+              <div class="mbdy">
+                <div style="background:var(--bg3);border-radius:10px;padding:14px;margin-bottom:14px;display:flex;align-items:center;gap:12px">
+                  <div id="tv-buy-icon" style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700"></div>
+                  <div>
+                    <div style="font-weight:600;font-size:.9rem" id="tv-buy-name"></div>
+                    <div style="font-size:.78rem;color:var(--text2)" id="tv-buy-price"></div>
+                  </div>
+                  <div style="margin-left:auto;text-align:right">
+                    <div id="tv-buy-change" style="font-size:.82rem;font-weight:600"></div>
+                    <div style="font-size:.7rem;color:var(--text2)">24h change</div>
+                  </div>
+                </div>
+                <div class="fg">
+                  <label class="fl">Amount to Invest (USD)</label>
+                  <div class="amtw"><div class="sym">$</div><input class="fc" id="tv-buy-amt" type="number" placeholder="0.00" oninput="calcQty()"></div>
+                  <div style="display:flex;gap:6px;margin-top:6px">
+                    <button class="pre" onclick="setBuyAmt(100)">$100</button>
+                    <button class="pre" onclick="setBuyAmt(500)">$500</button>
+                    <button class="pre" onclick="setBuyAmt(1000)">$1K</button>
+                    <button class="pre" onclick="setBuyAmt(5000)">$5K</button>
+                  </div>
+                </div>
+                <div style="background:var(--bg3);border-radius:8px;padding:12px;margin-bottom:14px;font-size:.8rem">
+                  <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="color:var(--text2)">Quantity</span><span id="tv-qty">0.000000</span></div>
+                  <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="color:var(--text2)">Price per unit</span><span id="tv-unit-price">$0.00</span></div>
+                  <div style="display:flex;justify-content:space-between"><span style="color:var(--text2)">Available balance</span><span style="color:var(--gold)" id="tv-avail">$0.00</span></div>
+                </div>
+                <button class="btn bg2 bfull" onclick="confirmBuy()"><i class="fas fa-shopping-cart"></i>Buy Now</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Receipt Modal -->
+          <div class="mov" id="tv-receipt-modal">
+            <div class="modal" style="max-width:380px">
+              <div class="mhdr"><div class="mtit">Trade Receipt</div><button class="mcls" onclick="cM('tv-receipt-modal')"><i class="fas fa-times"></i></button></div>
+              <div class="mbdy" id="tv-receipt-body"></div>
+              <div class="mftr"><button class="btn bg2" onclick="cM('tv-receipt-modal')">Close</button></div>
+            </div>
+          </div>
         </div>
         <!-- IRS -->
         <div class="pg" id="pg-irs">
@@ -1316,6 +1437,209 @@ async function chgPass(){const cur=document.getElementById('scur').value,nw=docu
 async function chgPIN(){const cur=document.getElementById('pcur').value,nw=document.getElementById('pnw').value,con=document.getElementById('pcon').value;if(!cur||!nw||!con){toast('Fill all fields','error');return;}if(nw!==con){toast('PINs do not match','error');return;}if(nw.length!==4){toast('PIN must be 4 digits','error');return;}const r=await A2('/api/settings/change-pin','PUT',{currentPin:cur,newPin:nw});if(r&&!r.error){toast('PIN changed ✅','success');['pcur','pnw','pcon'].forEach(id=>document.getElementById(id).value='');}else toast(r?.error||'Failed','error');}
 async function chgCur(){const c=document.getElementById('cursel').value;const r=await A2('/api/settings/change-currency','PUT',{currency:c});if(r&&!r.error){toast('Currency changed to '+c+' ✅','success');await refMe();}else toast(r?.error||'Failed','error');}
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('auth').style.display!=='none'){if(document.getElementById('lp').style.display!=='none')doLogin();}});
+// ===== TRADING BROKER =====
+let tvAssets=[], tvCurrentAsset=null, tvCategory='All';
+
+async function loadInv(){
+  const [assets, portfolio] = await Promise.all([
+    A2('/api/trading/assets'),
+    A2('/api/trading/portfolio')
+  ]);
+  if(assets) tvAssets = assets;
+  renderAssets();
+  if(portfolio) renderPortfolio(portfolio);
+  drawMiniChart();
+  updatePortfolioValue(portfolio||[]);
+}
+
+function showTvTab(tab){
+  document.getElementById('tv-market').style.display = tab==='market'?'block':'none';
+  document.getElementById('tv-portfolio').style.display = tab==='portfolio'?'block':'none';
+  document.querySelectorAll('.tv-tab-btn').forEach(b=>b.classList.remove('on'));
+}
+
+function filterAssets(cat){
+  tvCategory=cat;
+  document.querySelectorAll('.tv-cat').forEach(b=>{b.classList.toggle('on', b.textContent.includes(cat)||(cat==='All'&&b.textContent==='All'));});
+  renderAssets();
+}
+
+function renderAssets(){
+  const filtered = tvCategory==='All' ? tvAssets : tvAssets.filter(a=>a.category===tvCategory);
+  const el = document.getElementById('tv-assets');
+  if(!el) return;
+  el.innerHTML = filtered.map(a=>{
+    const up = parseFloat(a.change_pct||0) >= 0;
+    const pts = genSparkline(up);
+    return `<div class="asset-card" onclick="openBuyModal(${a.id})">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+        <div class="asset-icon" style="background:${a.color}22;color:${a.color}">${a.icon||a.symbol[0]}</div>
+        <span class="asset-chg ${up?'chg-up':'chg-dn'}">${up?'+':''}${parseFloat(a.change_pct||0).toFixed(2)}%</span>
+      </div>
+      <div class="asset-sym">${a.symbol}</div>
+      <div class="asset-name">${a.name}</div>
+      <svg class="sparkline" viewBox="0 0 80 35" preserveAspectRatio="none" width="100%" height="35">
+        <polyline points="${pts}" fill="none" stroke="${up?'#00D4AA':'#FF4757'}" stroke-width="1.5"/>
+      </svg>
+      <div class="asset-price">$${parseFloat(a.current_price).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:4})}</div>
+    </div>`;
+  }).join('');
+}
+
+function genSparkline(up){
+  let pts=[], y=20;
+  for(let i=0;i<10;i++){
+    y += (Math.random()-( up?0.35:0.65))*6;
+    y = Math.max(3,Math.min(32,y));
+    pts.push(`${i*9},${y}`);
+  }
+  return pts.join(' ');
+}
+
+function drawMiniChart(){
+  let pts=[], y=40, w=400;
+  for(let i=0;i<=20;i++){
+    y += (Math.random()-0.4)*5;
+    y = Math.max(5, Math.min(55,y));
+    pts.push(`${i*(w/20)},${y}`);
+  }
+  const last = pts[pts.length-1];
+  const path = `M${pts.join('L')}L${w},60L0,60Z`;
+  const linePath = `M${pts.join('L')}`;
+  const el = document.getElementById('chartPath');
+  if(el){ el.setAttribute('d',path); }
+  const line = document.getElementById('tv-minichart')?.querySelector('path');
+}
+
+function renderPortfolio(portfolio){
+  const el = document.getElementById('tv-holdings');
+  if(!el) return;
+  if(!portfolio||portfolio.length===0){
+    el.innerHTML='<div class="te"><i class="fas fa-briefcase"></i><br>No active positions.<br>Go to Market tab to start trading.</div>';
+    return;
+  }
+  el.innerHTML = portfolio.map(t=>{
+    const pnl = parseFloat(t.display_pnl||0);
+    const pnlPct = parseFloat(t.amount_invested)>0 ? (pnl/parseFloat(t.amount_invested)*100) : 0;
+    const pnlClass = pnl>0?'pnl-up':pnl<0?'pnl-dn':'pnl-zero';
+    const pnlSign = pnl>=0?'+':'';
+    return `<div class="holding-card">
+      <div class="holding-icon" style="background:${t.color}22;color:${t.color}">${t.icon||t.asset_symbol[0]}</div>
+      <div class="holding-info">
+        <div class="holding-name">${t.asset_name}</div>
+        <div class="holding-qty">${parseFloat(t.quantity).toFixed(6)} ${t.asset_symbol}</div>
+        <div style="font-size:.72rem;color:var(--text2);margin-top:2px">Invested: $${parseFloat(t.amount_invested).toLocaleString()}</div>
+        <button class="sell-btn" onclick="sellTrade(${t.id},'${t.asset_name}')">Sell Position</button>
+      </div>
+      <div class="holding-value">
+        <div class="holding-amt">$${parseFloat(t.current_value||t.amount_invested).toLocaleString(undefined,{minimumFractionDigits:2})}</div>
+        <div class="holding-pnl ${pnlClass}">${pnlSign}$${Math.abs(pnl).toFixed(2)} (${pnlSign}${pnlPct.toFixed(2)}%)</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function updatePortfolioValue(portfolio){
+  const total = portfolio.reduce((s,t)=>s+parseFloat(t.current_value||t.amount_invested),0);
+  const totalPnl = portfolio.reduce((s,t)=>s+parseFloat(t.display_pnl||0),0);
+  const invested = portfolio.reduce((s,t)=>s+parseFloat(t.amount_invested),0);
+  const pct = invested>0?(totalPnl/invested*100):0;
+  const el = document.getElementById('tv-total');
+  const pe = document.getElementById('tv-pnl');
+  if(el) el.textContent='$'+total.toLocaleString(undefined,{minimumFractionDigits:2});
+  if(pe){
+    const sign = totalPnl>=0?'+':'';
+    const color = totalPnl>0?'#00D4AA':totalPnl<0?'#FF4757':'rgba(255,255,255,.4)';
+    pe.innerHTML=`<span style="color:rgba(255,255,255,.4)">P&L: </span><span style="color:${color}">${sign}$${Math.abs(totalPnl).toFixed(2)} (${sign}${pct.toFixed(2)}%)</span>`;
+  }
+}
+
+function openBuyModal(assetId){
+  const asset = tvAssets.find(a=>a.id===assetId);
+  if(!asset) return;
+  tvCurrentAsset = asset;
+  const up = parseFloat(asset.change_pct||0)>=0;
+  document.getElementById('tv-buy-title').textContent='Buy '+asset.name;
+  document.getElementById('tv-buy-icon').textContent=asset.icon||asset.symbol[0];
+  document.getElementById('tv-buy-icon').style.background=asset.color+'22';
+  document.getElementById('tv-buy-icon').style.color=asset.color;
+  document.getElementById('tv-buy-name').textContent=asset.name+' ('+asset.symbol+')';
+  document.getElementById('tv-buy-price').textContent='$'+parseFloat(asset.current_price).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:6});
+  document.getElementById('tv-buy-change').textContent=(up?'+':'')+parseFloat(asset.change_pct||0).toFixed(2)+'%';
+  document.getElementById('tv-buy-change').style.color=up?'#00D4AA':'#FF4757';
+  document.getElementById('tv-unit-price').textContent='$'+parseFloat(asset.current_price).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:6});
+  document.getElementById('tv-avail').textContent='$'+parseFloat(U?.balance||0).toLocaleString(undefined,{minimumFractionDigits:2});
+  document.getElementById('tv-buy-amt').value='';
+  document.getElementById('tv-qty').textContent='0.000000';
+  oM('tv-buy-modal');
+}
+
+function calcQty(){
+  const amt=parseFloat(document.getElementById('tv-buy-amt').value)||0;
+  const qty=tvCurrentAsset?amt/parseFloat(tvCurrentAsset.current_price):0;
+  document.getElementById('tv-qty').textContent=qty.toFixed(6);
+}
+
+function setBuyAmt(amt){
+  document.getElementById('tv-buy-amt').value=amt;
+  calcQty();
+}
+
+async function confirmBuy(){
+  if(U?.kyc_status!=='verified'){toast('Complete KYC first','error');cM('tv-buy-modal');go('kyc');return;}
+  const amt=parseFloat(document.getElementById('tv-buy-amt').value);
+  if(!amt||amt<=0){toast('Enter an amount','error');return;}
+  if(amt>parseFloat(U?.balance||0)){toast('Insufficient balance','error');return;}
+  const r=await A2('/api/trading/buy','POST',{asset_id:tvCurrentAsset.id,amount:amt});
+  if(r&&!r.error){
+    cM('tv-buy-modal');
+    await refMe();
+    showTradeReceipt(r.trade, tvCurrentAsset, amt);
+    loadInv();
+    toast('✅ Trade executed!','success');
+  } else toast(r?.error||'Failed','error');
+}
+
+function showTradeReceipt(trade, asset, amt){
+  const now=new Date();
+  document.getElementById('tv-receipt-body').innerHTML=`
+    <div style="text-align:center;margin-bottom:18px">
+      <div style="width:60px;height:60px;border-radius:50%;background:rgba(0,212,170,.12);border:3px solid #00D4AA;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:1.5rem;color:#00D4AA"><i class="fas fa-check"></i></div>
+      <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:4px">Trade Executed</div>
+      <div style="font-size:.8rem;color:var(--text2)">Your order has been successfully placed</div>
+    </div>
+    <div class="tv-receipt">
+      <div class="rv"><span class="rl">Asset</span><span class="rr">${asset.name} (${asset.symbol})</span></div>
+      <div class="rv"><span class="rl">Amount Invested</span><span class="rr" style="color:var(--gold)">$${amt.toLocaleString(undefined,{minimumFractionDigits:2})}</span></div>
+      <div class="rv"><span class="rl">Quantity</span><span class="rr">${parseFloat(trade.quantity).toFixed(6)} ${asset.symbol}</span></div>
+      <div class="rv"><span class="rl">Price per Unit</span><span class="rr">$${parseFloat(asset.current_price).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:6})}</span></div>
+      <div class="rv"><span class="rl">Trade Date</span><span class="rr">${now.toLocaleDateString()}</span></div>
+      <div class="rv"><span class="rl">Time</span><span class="rr">${now.toLocaleTimeString()}</span></div>
+      <div class="rv"><span class="rl">Reference</span><span class="rr" style="font-size:.72rem;font-family:monospace">${trade.reference_id}</span></div>
+      <div class="rv"><span class="rl">Status</span><span class="rr"><span class="bdg b-ok">✅ Active</span></span></div>
+    </div>
+    <div style="margin-top:14px;padding:10px;background:var(--bg3);border-radius:8px;font-size:.72rem;color:var(--text2);text-align:center;line-height:1.6">
+      This is an electronically generated trading receipt. Portfolio returns are subject to market conditions and admin review.
+    </div>
+  `;
+  oM('tv-receipt-modal');
+}
+
+async function sellTrade(tradeId, assetName){
+  if(!confirm('Sell your '+assetName+' position?')) return;
+  const r=await A2('/api/trading/sell/'+tradeId,'POST');
+  if(r&&!r.error){
+    const pnl=parseFloat(r.pnl||0);
+    const sign=pnl>=0?'+':'';
+    toast(`✅ Position closed! ${sign}$${Math.abs(pnl).toFixed(2)} P&L`,'success');
+    await refMe();
+    loadInv();
+  } else toast(r?.error||'Failed','error');
+}
+
+// Keep old functions for compatibility
+function openIM(){}
+async function confInv(){}
 </script>
 </body>
 </html>
