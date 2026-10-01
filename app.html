@@ -467,7 +467,7 @@ tr:hover td{background:rgba(240,180,41,.02);}
 .chg-up{background:rgba(0,212,170,.1);color:#00D4AA;}
 .chg-dn{background:rgba(255,71,87,.1);color:#FF4757;}
 .sparkline{height:35px;margin:8px 0;}
-.holding-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;}
+.holding-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px;}
 .holding-icon{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;flex-shrink:0;}
 .holding-info{flex:1;min-width:0;}
 .holding-name{font-size:.86rem;font-weight:600;margin-bottom:2px;}
@@ -485,6 +485,50 @@ tr:hover td{background:rgba(240,180,41,.02);}
 .tv-receipt .rv:last-child{border-bottom:none;}
 .tv-receipt .rl{color:var(--text2);}
 .tv-receipt .rr{font-weight:600;text-align:right;}
+
+/* Trading Grid */
+.tv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:16px;}
+
+/* Trading Mobile Fixes */
+@media(max-width:480px){
+  .tv-grid{grid-template-columns:1fr 1fr!important;}
+  .asset-card{padding:11px;}
+  .asset-icon{width:34px;height:34px;font-size:.95rem;margin-bottom:6px;}
+  .asset-price{font-size:.88rem;}
+  .asset-name{font-size:.76rem;}
+  .asset-chg{font-size:.68rem;padding:1px 5px;}
+  .sparkline{height:28px;}
+  
+  /* Portfolio header */
+  #pg-invest > div:first-child{padding:14px!important;}
+  #tv-total{font-size:1.4rem!important;}
+  #pg-invest > div:first-child > div:first-child > div:last-child{display:flex;flex-direction:column;gap:5px;}
+  #pg-invest > div:first-child > div:first-child > div:last-child button{font-size:.7rem;padding:5px 8px;}
+  
+  /* Category filter */
+  .tv-cat{padding:5px 10px;font-size:.7rem;}
+  
+  /* Holdings */
+  .holding-card{padding:11px;gap:9px;}
+  .holding-icon{width:36px;height:36px;font-size:.9rem;}
+  .holding-name{font-size:.8rem;}
+  .holding-qty{font-size:.68rem;}
+  .holding-amt{font-size:.84rem;}
+  .holding-pnl{font-size:.7rem;}
+  .sell-btn{font-size:.68rem;padding:4px 8px;}
+  
+  /* Buy modal */
+  #tv-buy-modal .modal{max-width:100%!important;margin:10px;}
+  #tv-buy-modal .mbdy{padding:14px;}
+  
+  /* Trading header on mobile */
+  div[id="pg-invest"] > div:first-child > div:first-child{flex-direction:column;align-items:flex-start;}
+}
+
+@media(max-width:360px){
+  .tv-grid{grid-template-columns:1fr 1fr!important;}
+  .asset-card{padding:9px;}
+}
 </style>
 </head>
 <body>
@@ -895,10 +939,10 @@ tr:hover td{background:rgba(240,180,41,.02);}
                 <div style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:800;color:#fff" id="tv-total">$0.00</div>
                 <div style="font-size:.8rem;margin-top:4px" id="tv-pnl"><span style="color:rgba(255,255,255,.4)">P&L: </span><span style="color:#00D4AA">$0.00 (0.00%)</span></div>
               </div>
-              <div style="display:flex;gap:8px">
-                <button class="btn" style="background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.3);color:#00D4AA;font-size:.78rem" onclick="showTvTab('market')"><i class="fas fa-globe"></i>Market</button>
-                <button class="btn" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.6);font-size:.78rem" onclick="showTvTab('portfolio')"><i class="fas fa-briefcase"></i>Portfolio</button>
-                <button class="btn" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.6);font-size:.78rem" onclick="loadInv()"><i class="fas fa-refresh"></i></button>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <button class="btn" style="background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.3);color:#00D4AA;font-size:.75rem;padding:7px 10px" onclick="showTvTab('market')"><i class="fas fa-globe"></i>Market</button>
+                <button class="btn" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.6);font-size:.75rem;padding:7px 10px" onclick="showTvTab('portfolio')"><i class="fas fa-briefcase"></i>Portfolio</button>
+                <button class="btn" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.6);font-size:.75rem;padding:7px 10px" onclick="loadInv()"><i class="fas fa-refresh"></i></button>
               </div>
             </div>
             <!-- Mini Chart -->
@@ -922,7 +966,7 @@ tr:hover td{background:rgba(240,180,41,.02);}
               <button class="tv-cat" onclick="filterAssets('Forex')">💱 Forex</button>
             </div>
             <!-- Assets Grid -->
-            <div id="tv-assets" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:16px"></div>
+            <div id="tv-assets" class="tv-grid"></div>
           </div>
 
           <!-- Portfolio Tab -->
