@@ -1656,6 +1656,112 @@ async function sellTrade(tradeId, assetName){
 // Keep old functions for compatibility
 function openIM(){}
 async function confInv(){}
+
+// ===== MISSING LOAD FUNCTIONS =====
+async function loadCS(){
+  lastCSid=0;
+  const r=await A2('/api/chat/customer-service');
+  if(!r)return;
+  if(r.length){lastCSid=Math.max(...r.map(m=>m.id));renCS(r,true);}
+  else{document.getElementById('csmsgs').innerHTML='<div class="cm admin"><div class="cmb">👋 Welcome to Customer Service! How can we help you today?</div><div class="cmt">Just now</div></div>';}
+}
+
+async function pollCS(){
+  const r=await A2('/api/chat/customer-service?lastId='+lastCSid);
+  if(r&&r.length){lastCSid=Math.max(...r.map(m=>m.id));renCS(r,false);refBdg();}
+}
+
+function renCS(msgs,reset){
+  const c=document.getElementById('csmsgs');
+  if(!c)return;
+  if(reset)c.innerHTML='';
+  const atBot=c.scrollHeight-c.clientHeight<=c.scrollTop+60;
+  msgs.forEach(m=>{
+    const e=document.createElement('div');
+    e.className='cm '+m.sender+(m.is_code?' code':'');
+    e.innerHTML='<div class="cmb">'+(m.image_url?'<img src="'+m.image_url+'" class="cimg" onclick="oLB(''+m.image_url+'')" alt=""><br>':'')+(m.message||'')+'</div><div class="cmt">'+fmtD(m.created_at)+'</div>';
+    c.appendChild(e);
+  });
+  if(atBot||reset)c.scrollTop=c.scrollHeight;
+}
+
+async function sendCS(){
+  const i=document.getElementById('csinput');
+  const m=i.value.trim();if(!m)return;i.value='';
+  const fd=new FormData();fd.append('message',m);
+  const r=await AF('/api/chat/customer-service','POST',fd);
+  if(r&&!r.error)renCS([Object.assign({},r.chat,{sender:'user'})],false);
+}
+
+async function sendCSImg(){
+  const f=document.getElementById('csfile').files[0];if(!f)return;
+  const fd=new FormData();fd.append('image',f);
+  const r=await AF('/api/chat/customer-service','POST',fd);
+  if(r&&!r.error)renCS([Object.assign({},r.chat,{sender:'user'})],false);
+  document.getElementById('csfile').value='';
+}
+
+async function loadSup(){
+  lastSupid=0;
+  const r=await A2('/api/chat/support');
+  if(!r)return;
+  if(r.length){lastSupid=Math.max(...r.map(m=>m.id));renSup(r,true);}
+  else{document.getElementById('supmsgs').innerHTML='<div class="cm admin"><div class="cmb">🎧 Hello! Our support team is here to help.</div><div class="cmt">Just now</div></div>';}
+}
+
+async function pollSup(){
+  const r=await A2('/api/chat/support?lastId='+lastSupid);
+  if(r&&r.length){lastSupid=Math.max(...r.map(m=>m.id));renSup(r,false);}
+}
+
+function renSup(msgs,reset){
+  const c=document.getElementById('supmsgs');if(!c)return;
+  if(reset)c.innerHTML='';
+  const atBot=c.scrollHeight-c.clientHeight<=c.scrollTop+60;
+  msgs.forEach(m=>{
+    const e=document.createElement('div');
+    e.className='cm '+m.sender;
+    e.innerHTML='<div class="cmb">'+(m.message||'')+'</div><div class="cmt">'+fmtD(m.created_at)+'</div>';
+    c.appendChild(e);
+  });
+  if(atBot||reset)c.scrollTop=c.scrollHeight;
+}
+
+async function sendSup(){
+  const i=document.getElementById('supinput');
+  const m=i.value.trim();if(!m)return;i.value='';
+  const fd=new FormData();fd.append('message',m);
+  const r=await AF('/api/chat/support','POST',fd);
+  if(r&&!r.error)renSup([Object.assign({},r.chat,{sender:'user'})],false);
+}
+
+async function loadNotifs(){
+  const r=await A2('/api/notifications');if(!r)return;
+  document.getElementById('nlist').innerHTML=r.length?r.map(n=>'<div class="nitem'+(n.is_read?'':' unread')+'" onclick="rdN('+n.id+',this)"><div class="ndot2 nd-'+(n.type==='success'?'ok':n.type==='error'?'e':'i')+'"><i class="fas '+(n.type==='success'?'fa-check-circle':n.type==='error'?'fa-times-circle':'fa-info-circle')+'"></i></div><div><div class="ntit">'+n.title+'</div><div class="nmsg">'+n.message+'</div><div class="ntm">'+fmtD(n.created_at)+'</div></div></div>').join(''):'<div class="te"><i class="fas fa-bell"></i>No notifications yet</div>';
+}
+
+async function rdN(id,el){await A2('/api/notifications/'+id+'/read','PUT');el.classList.remove('unread');refBdg();}
+async function markAll(){await A2('/api/notifications/mark-all-read','PUT');loadNotifs();refBdg();}
+
+async function loadKYCPg(){
+  const r=await A2('/api/kyc/status');
+  const kf=document.getElementById('kycform'),kw=document.getElementById('kycwel'),ks=document.getElementById('kycstatus');
+  if(r?.status==='verified'){kw.style.display='none';kf.style.display='none';ks.style.display='block';ks.innerHTML='<div class="pban"><div class="pbanic"><i class="fas fa-check-circle"></i></div><h2 style="color:var(--ok)">KYC Verified ✅</h2><p>Your identity has been verified. Full access unlocked!</p></div>';}
+  else if(r?.status==='pending'){kw.style.display='none';kf.style.display='none';ks.style.display='block';ks.innerHTML='<div class="pban"><div class="pbanic"><i class="fas fa-clock"></i></div><h2>KYC Under Review ⏳</h2><p>Your documents are being reviewed. You will be notified within 24 hours.</p></div>';}
+  else if(r?.status==='rejected'){kw.style.display='none';kf.style.display='block';ks.style.display='none';if(r.admin_note)toast('KYC Rejected: '+r.admin_note,'error');}
+  else{kw.style.display='block';kf.style.display='none';ks.style.display='none';}
+  if(U){const ke=document.getElementById('kem');if(ke)ke.value=U.email||'';const kp=document.getElementById('kph');if(kp)kp.value=U.phone||'';}
+}
+
+function showKYCForm(){document.getElementById('kycwel').style.display='none';document.getElementById('kycform').style.display='block';}
+
+async function refBdg(){
+  const n=await A2('/api/notifications/unread-count');
+  if(n){const c=n.count||0;const b=document.getElementById('nbdg');const d=document.getElementById('ndot');if(b)b.style.display=c>0?'inline-flex':'none';if(b)b.textContent=c;if(d)d.style.display=c>0?'block':'none';}
+  const cs=await A2('/api/chat/customer-service/unread');
+  if(cs){const c=cs.count||0;const b=document.getElementById('csbdg');if(b)b.style.display=c>0?'inline-flex':'none';if(b)b.textContent=c;}
+}
+
 </script>
 </body>
 </html>
