@@ -1679,7 +1679,7 @@ function renCS(msgs,reset){
   msgs.forEach(m=>{
     const e=document.createElement('div');
     e.className='cm '+m.sender+(m.is_code?' code':'');
-    e.innerHTML='<div class="cmb">'+(m.image_url?'<img src="'+m.image_url+'" class="cimg" onclick="oLB(''+m.image_url+'')" alt=""><br>':'')+(m.message||'')+'</div><div class="cmt">'+fmtD(m.created_at)+'</div>';
+    e.innerHTML='<div class="cmb">'+(m.image_url?'<img src="'+m.image_url+'" class="cimg" onclick="oLB(this.src)" alt=""><br>':'')+(m.message||'')+'</div><div class="cmt">'+fmtD(m.created_at)+'</div>';
     c.appendChild(e);
   });
   if(atBot||reset)c.scrollTop=c.scrollHeight;
