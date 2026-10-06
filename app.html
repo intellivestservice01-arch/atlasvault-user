@@ -1209,7 +1209,7 @@ function cM(id){document.getElementById(id).classList.remove('on');}
 function oM(id){document.getElementById(id).classList.add('on');}
 function oLB(s){document.getElementById('lbimg').src=s;document.getElementById('lb2x').classList.add('on');}
 function cLB(){document.getElementById('lb2x').classList.remove('on');}
-async function A2(p,m='GET',b=null){try{const o={method:m,headers:{'Authorization':'Bearer '+tok,'Content-Type':'application/json'}};if(b)o.body=JSON.stringify(b);const r=await fetch(API+p,o);if(r.status===401){logout();return null;}return r.json();}catch(e){toast('Connection error','error');return null;}}
+async function A2(p,m='GET',b=null){try{const o={method:m,headers:{'Authorization':'Bearer '+tok,'Content-Type':'application/json'}};if(b)o.body=JSON.stringify(b);const r=await fetch(API+p,o);if(r.status===401){logout();return null;}return await r.json();}catch(e){toast('Connection error','error');return null;}}
 async function AF(p,m,fd){try{const r=await fetch(API+p,{method:m,headers:{'Authorization':'Bearer '+tok},body:fd});return r.json();}catch(e){toast('Upload failed','error');return null;}}
 function sL(){document.querySelectorAll('#auth>div').forEach(e=>e.style.display='none');document.getElementById('lp').style.display='grid';document.getElementById('auth').style.display='block';}
 function sR(){document.querySelectorAll('#auth>div').forEach(e=>e.style.display='none');document.getElementById('rp').style.display='grid';document.getElementById('auth').style.display='block';}
@@ -1744,11 +1744,17 @@ async function rdN(id,el){await A2('/api/notifications/'+id+'/read','PUT');el.cl
 async function markAll(){await A2('/api/notifications/mark-all-read','PUT');loadNotifs();refBdg();}
 
 async function loadKYCPg(){
-  const r=await A2('/api/kyc/status');
   const kf=document.getElementById('kycform'),kw=document.getElementById('kycwel'),ks=document.getElementById('kycstatus');
-  if(r?.status==='verified'){kw.style.display='none';kf.style.display='none';ks.style.display='block';ks.innerHTML='<div class="pban"><div class="pbanic"><i class="fas fa-check-circle"></i></div><h2 style="color:var(--ok)">KYC Verified ✅</h2><p>Your identity has been verified. Full access unlocked!</p></div>';}
-  else if(r?.status==='pending'){kw.style.display='none';kf.style.display='none';ks.style.display='block';ks.innerHTML='<div class="pban"><div class="pbanic"><i class="fas fa-clock"></i></div><h2>KYC Under Review ⏳</h2><p>Your documents are being reviewed. You will be notified within 24 hours.</p></div>';}
-  else if(r?.status==='rejected'){kw.style.display='none';kf.style.display='block';ks.style.display='none';if(r.admin_note)toast('KYC Rejected: '+r.admin_note,'error');}
+  // Safe default: show the Terms/"Accept & Proceed" screen so the page is never blank
+  kw.style.display='block';kf.style.display='none';ks.style.display='none';ks.innerHTML='';
+  let r=null;
+  try{r=await A2('/api/kyc/status');}catch(e){r=null;}
+  // Use the server answer; if it failed, fall back to the status already loaded on the user
+  let st=(r&&!r.error&&(r.status||r.kyc_status))||(U&&U.kyc_status)||'unverified';
+  st=String(st).toLowerCase();
+  if(st==='verified'||st==='approved'){kw.style.display='none';kf.style.display='none';ks.style.display='block';ks.innerHTML='<div class="pban"><div class="pbanic"><i class="fas fa-check-circle"></i></div><h2 style="color:var(--ok)">KYC Verified ✅</h2><p>Your identity has been verified. Full access unlocked!</p></div>';}
+  else if(st==='pending'){kw.style.display='none';kf.style.display='none';ks.style.display='block';ks.innerHTML='<div class="pban"><div class="pbanic"><i class="fas fa-clock"></i></div><h2>KYC Under Review ⏳</h2><p>Your documents are being reviewed. You will be notified within 24 hours.</p></div>';}
+  else if(st==='rejected'){kw.style.display='none';kf.style.display='block';ks.style.display='none';if(r&&r.admin_note)toast('KYC Rejected: '+r.admin_note,'error');}
   else{kw.style.display='block';kf.style.display='none';ks.style.display='none';}
   if(U){const ke=document.getElementById('kem');if(ke)ke.value=U.email||'';const kp=document.getElementById('kph');if(kp)kp.value=U.phone||'';}
 }
