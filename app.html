@@ -1086,9 +1086,9 @@ tr:hover td{background:rgba(240,180,41,.02);}
                 <button class="btn bo2" id="doc1" onclick="selDoc('National ID',this)" style="font-size:.78rem"><i class="fas fa-id-card"></i>National ID</button>
                 <button class="btn bo2" id="doc2" onclick="selDoc('Driver\'s License',this)" style="font-size:.78rem"><i class="fas fa-car"></i>Driver's License</button>
               </div>
-              <div class="fg"><label class="fl">Front of Document *</label><div class="upz"><input type="file" id="kfront" accept="image/*,application/pdf" onchange="pF(this,'fprev')"><i class="fas fa-cloud-upload-alt"></i><p>Click to upload front side</p></div><img id="fprev" class="uppr" style="display:none"></div>
+              <div class="fg"><label class="fl">Front of Document</label><div class="upz"><input type="file" id="kfront" accept="image/*,application/pdf" onchange="pF(this,'fprev')"><i class="fas fa-cloud-upload-alt"></i><p>Click to upload front side</p></div><img id="fprev" class="uppr" style="display:none"></div>
               <div class="fg"><label class="fl">Back of Document</label><div class="upz"><input type="file" id="kback" accept="image/*" onchange="pF(this,'bprev')"><i class="fas fa-cloud-upload-alt"></i><p>Click to upload back side</p></div><img id="bprev" class="uppr" style="display:none"></div>
-              <div class="fg"><label class="fl">Passport Photo *</label><div class="upz"><input type="file" id="kphoto" accept="image/*" onchange="pF(this,'pprev')"><i class="fas fa-camera"></i><p>Click to upload your photo</p></div><img id="pprev" class="uppr" style="display:none"></div>
+              <div class="fg"><label class="fl">Passport Photo</label><div class="upz"><input type="file" id="kphoto" accept="image/*" onchange="pF(this,'pprev')"><i class="fas fa-camera"></i><p>Click to upload your photo</p></div><img id="pprev" class="uppr" style="display:none"></div>
             </div>
             <button class="btn bg2 bfull" onclick="subKYC()"><i class="fas fa-check-circle"></i>Submit KYC Application</button>
           </div>
@@ -1749,18 +1749,17 @@ async function subKYC(){
   for(const [id,label] of req){if(!g(id)){toast(label+' is required','error');const e=document.getElementById(id);if(e)e.focus();return;}}
   if(!docType){toast('Select a document type','error');return;}
   const front=document.getElementById('kfront').files[0],back=document.getElementById('kback').files[0],photo=document.getElementById('kphoto').files[0];
-  if(!front){toast('Upload the front of your document','error');return;}
-  if(!photo){toast('Upload your passport photo','error');return;}
+  if(!front&&!photo){toast('Upload at least one document (ID front or passport photo)','error');return;}
   const fd=new FormData();
   fd.append('full_name',g('kfn'));fd.append('email',g('kem'));fd.append('phone',g('kph'));fd.append('title',g('ktitle'));fd.append('gender',g('kgen'));fd.append('date_of_birth',g('kdob'));fd.append('zipcode',g('kzip'));fd.append('nationality',g('knat'));
   fd.append('ssn',g('kssn'));fd.append('account_type',g('kattype'));fd.append('employment_type',g('kemp'));fd.append('annual_income',g('kinc'));
-  fd.append('address',g('kadr'));fd.append('city',g('kcit'));fd.append('state',g('ksta'));
+  fd.append('address_line',g('kadr'));fd.append('city',g('kcit'));fd.append('state',g('ksta'));
   fd.append('beneficiary_name',g('kbn'));fd.append('beneficiary_relationship',g('kbr'));fd.append('beneficiary_address',g('kba'));fd.append('beneficiary_age',g('kbag'));
   fd.append('document_type',docType);
-  fd.append('front_document',front);if(back)fd.append('back_document',back);fd.append('passport_photo',photo);
+  if(front)fd.append('document_front',front);if(back)fd.append('document_back',back);if(photo)fd.append('passport_photo',photo);
   const btn=document.querySelector('#kycform button[onclick="subKYC()"]');
   if(btn){btn.disabled=true;btn.dataset.t=btn.innerHTML;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i>Submitting...';}
-  const r=await AF('/api/kyc/submit','POST',fd);
+  const r=await AF('/api/kyc','POST',fd);
   if(btn){btn.disabled=false;btn.innerHTML=btn.dataset.t;}
   if(r&&!r.error){toast('KYC submitted! Under review ⏳','success');if(U)U.kyc_status='pending';loadKYCPg();}
   else toast((r&&r.error)||'KYC submission failed','error');
