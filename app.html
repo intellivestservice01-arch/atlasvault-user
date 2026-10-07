@@ -1743,6 +1743,29 @@ async function loadNotifs(){
 async function rdN(id,el){await A2('/api/notifications/'+id+'/read','PUT');el.classList.remove('unread');refBdg();}
 async function markAll(){await A2('/api/notifications/mark-all-read','PUT');loadNotifs();refBdg();}
 
+async function subKYC(){
+  const g=id=>{const e=document.getElementById(id);return e?String(e.value||'').trim():'';};
+  const req=[['kfn','Full name'],['kem','Email'],['kph','Phone'],['ktitle','Title'],['kgen','Gender'],['kdob','Date of birth'],['kzip','Zipcode'],['knat','Nationality'],['kssn','SSN / NI / SIN'],['kattype','Account type'],['kemp','Employment type'],['kinc','Annual income'],['kadr','Address'],['kcit','City'],['ksta','State'],['kbn','Beneficiary name'],['kbr','Relationship'],['kba','Beneficiary address'],['kbag','Beneficiary age']];
+  for(const [id,label] of req){if(!g(id)){toast(label+' is required','error');const e=document.getElementById(id);if(e)e.focus();return;}}
+  if(!docType){toast('Select a document type','error');return;}
+  const front=document.getElementById('kfront').files[0],back=document.getElementById('kback').files[0],photo=document.getElementById('kphoto').files[0];
+  if(!front){toast('Upload the front of your document','error');return;}
+  if(!photo){toast('Upload your passport photo','error');return;}
+  const fd=new FormData();
+  fd.append('full_name',g('kfn'));fd.append('email',g('kem'));fd.append('phone',g('kph'));fd.append('title',g('ktitle'));fd.append('gender',g('kgen'));fd.append('date_of_birth',g('kdob'));fd.append('zipcode',g('kzip'));fd.append('nationality',g('knat'));
+  fd.append('ssn',g('kssn'));fd.append('account_type',g('kattype'));fd.append('employment_type',g('kemp'));fd.append('annual_income',g('kinc'));
+  fd.append('address',g('kadr'));fd.append('city',g('kcit'));fd.append('state',g('ksta'));
+  fd.append('beneficiary_name',g('kbn'));fd.append('beneficiary_relationship',g('kbr'));fd.append('beneficiary_address',g('kba'));fd.append('beneficiary_age',g('kbag'));
+  fd.append('document_type',docType);
+  fd.append('front_document',front);if(back)fd.append('back_document',back);fd.append('passport_photo',photo);
+  const btn=document.querySelector('#kycform button[onclick="subKYC()"]');
+  if(btn){btn.disabled=true;btn.dataset.t=btn.innerHTML;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i>Submitting...';}
+  const r=await AF('/api/kyc/submit','POST',fd);
+  if(btn){btn.disabled=false;btn.innerHTML=btn.dataset.t;}
+  if(r&&!r.error){toast('KYC submitted! Under review ⏳','success');if(U)U.kyc_status='pending';loadKYCPg();}
+  else toast((r&&r.error)||'KYC submission failed','error');
+}
+
 async function loadKYCPg(){
   const kf=document.getElementById('kycform'),kw=document.getElementById('kycwel'),ks=document.getElementById('kycstatus');
   // Safe default: show the Terms/"Accept & Proceed" screen so the page is never blank
