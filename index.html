@@ -118,25 +118,6 @@ section{padding:90px 5%;}
 .svc-overlay h3{font-size:1.05rem;font-weight:700;}
 .svc-overlay p{font-size:.8rem;color:var(--text2);margin-top:4px;}
 
-/* INVESTMENT PLANS */
-.plans-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;}
-.plan-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:28px;text-align:center;transition:all .3s;position:relative;overflow:hidden;}
-.plan-card.featured{border-color:var(--gold);background:linear-gradient(135deg,rgba(240,180,41,.08),rgba(10,22,40,.9));}
-.plan-badge{position:absolute;top:14px;right:14px;background:var(--gold);color:var(--navy);font-size:.65rem;font-weight:700;padding:3px 9px;border-radius:99px;}
-.plan-name{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;margin-bottom:8px;}
-.plan-min{font-size:.8rem;color:var(--text2);margin-bottom:16px;}
-.plan-return{font-size:2rem;font-weight:700;color:var(--gold);margin-bottom:6px;}
-.plan-dur{font-size:.8rem;color:var(--text2);margin-bottom:20px;}
-.plan-btn{display:block;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--navy);padding:10px;border-radius:8px;font-weight:700;font-size:.85rem;text-decoration:none;transition:all .2s;}
-.plan-btn:hover{transform:translateY(-1px);}
-
-/* STATS */
-.stats-section{background:linear-gradient(135deg,var(--navy),var(--navy2));}
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px;text-align:center;}
-.stat-item .num{font-family:'Playfair Display',serif;font-size:2.8rem;font-weight:800;color:var(--gold);}
-.stat-item .lbl{font-size:.85rem;color:var(--text2);margin-top:6px;}
-
-/* INTEREST RATES */
 .rates-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:700px;margin:0 auto;}
 .rate-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:28px;text-align:center;}
 .rate-card .type{font-size:.8rem;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
@@ -271,6 +252,69 @@ footer{background:rgba(0,0,0,.4);border-top:1px solid var(--border);padding:60px
   .footer-grid{grid-template-columns:1fr}
   .footer-bottom{flex-direction:column;gap:8px;text-align:center}
 .hero{padding:90px 5% 50px;}.hero h1{font-size:2.2rem;}.form-row{grid-template-columns:1fr;}.footer-grid{grid-template-columns:1fr;}.footer-grid>*:not(:first-child){display:none;}.rates-grid{grid-template-columns:1fr;}}
+
+/* AtlasVault responsive refinement: retain the existing navy + teal identity */
+:where(button,a,input,select,textarea,[role="button"]){-webkit-tap-highlight-color:transparent;}
+:where(button,a,[role="button"]){touch-action:manipulation;}
+:where(button,a):focus-visible,:where(input,select,textarea):focus-visible{outline:2px solid var(--gold,#00D4AA);outline-offset:3px;}
+img,svg,video,canvas{max-width:100%;}
+@media(max-width:768px){
+  html{scroll-padding-top:76px;}
+  body{font-size:15px;}
+  nav{height:64px;padding-inline:4%;}
+  .nav-logo{font-size:1.08rem;gap:8px;}
+  .nav-logo .logo-icon{width:34px;height:34px;}
+  .nav-links{gap:14px;}
+  .hero{min-height:auto;padding:100px 5% 44px;display:flex;flex-direction:column;align-items:stretch;gap:28px;}
+  .hero-content{width:100%;max-width:none;}
+  .hero h1{font-size:clamp(2.1rem,8vw,3.2rem);line-height:1.12;}
+  .hero p{font-size:1rem;line-height:1.7;margin-bottom:24px;}
+  .hero-btns{gap:10px;margin-bottom:26px;}
+  .hero-btns a,.hero-btns button{min-height:46px;}
+  .hero-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:8px;}
+  .hero-stat{padding:14px;background:rgba(255,255,255,.035);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:12px;}
+  .hero-stat .num{font-size:1.35rem;line-height:1.3;}
+  .hero-stat .lbl{font-size:.75rem;line-height:1.4;}
+  .hero-visual{position:relative;right:auto;top:auto;transform:none;width:100%;max-width:440px;margin:0 auto;}
+  .card-preview{padding:22px;}
+  .marquee-wrap{padding:13px 0;}
+  .marquee-item{padding-inline:18px;}
+  .al{grid-template-columns:1fr;min-height:100dvh;}
+  .alL{display:none;}
+  .alR{padding:24px 18px;align-items:flex-start;min-height:100dvh;}
+  .afw{max-width:520px;margin:auto;}
+  .fr2{grid-template-columns:1fr;gap:0;}
+  .fc{font-size:16px;min-height:46px;}
+  textarea.fc{min-height:100px;}
+  .btn{min-height:42px;}
+  .bfull{min-height:48px;}
+  .sp{gap:2px;}
+  .sd span{font-size:.62rem;text-align:center;}
+  .content{padding:14px!important;}
+  .topbar{padding:0 14px!important;}
+  .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px;}
+  .grid-2,.form-row{grid-template-columns:1fr!important;}
+  table{display:block;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .modal,.modal-content,.dialog{width:min(94vw,560px);max-height:88dvh;overflow:auto;}
+}
+@media(max-width:480px){
+  .nav-btns{gap:6px;}
+  .btn-signin,.btn-open{padding:9px 12px;font-size:.78rem;}
+  .hero{padding-inline:4%;}
+  .hero-stats{gap:9px;}
+  .hero-stat{padding:11px;}
+  .hero-stat .num{font-size:1.18rem;}
+  .hero-visual{max-width:100%;}
+  .card-balance .val{font-size:1.45rem;}
+  .ath{font-size:1.45rem;}
+  .alR{padding:20px 14px;}
+  .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+  .sp{margin-bottom:18px;}
+  .sd .dot{width:24px;height:24px;}
+  .sd span{font-size:.56rem;}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;}}
+
 </style>
 </head>
 <body>
@@ -288,7 +332,6 @@ footer{background:rgba(0,0,0,.4);border-top:1px solid var(--border);padding:60px
   <div class="nav-links">
     <a href="#about">About</a>
     <a href="#services">Services</a>
-    <a href="#investments">Investments</a>
     <a href="#faq">FAQ</a>
     <a href="#contact">Contact</a>
   </div>
@@ -303,7 +346,6 @@ footer{background:rgba(0,0,0,.4);border-top:1px solid var(--border);padding:60px
 <div class="mob-menu" id="mob-menu">
   <a href="#about" onclick="toggleMob()">About</a>
   <a href="#services" onclick="toggleMob()">Services</a>
-  <a href="#investments" onclick="toggleMob()">Investments</a>
   <a href="#faq" onclick="toggleMob()">FAQ</a>
   <a href="#contact" onclick="toggleMob()">Contact</a>
   <a href="app.html" class="btn-open">Sign In</a>
@@ -317,7 +359,7 @@ footer{background:rgba(0,0,0,.4);border-top:1px solid var(--border);padding:60px
   <div class="hero-content">
     <div class="hero-badge"><span>🏦 Trusted by 18,000+ Clients</span></div>
     <h1>Fast & <span>Stable</span><br>Banking for Everyone</h1>
-    <p>AtlasVault Finance delivers world-class financial services — from secure transfers to smart investments. Your money, your control, anywhere in the world.</p>
+    <p>AtlasVault Finance delivers world-class financial services — from secure transfers to everyday account services. Your money, your control, anywhere in the world.</p>
     <div class="hero-btns">
       <a href="app.html#register" class="btn-primary"><i class="fas fa-rocket"></i>Open Free Account</a>
       <a href="#about" class="btn-secondary"><i class="fas fa-play-circle"></i>Learn More</a>
@@ -360,7 +402,7 @@ footer{background:rgba(0,0,0,.4);border-top:1px solid var(--border);padding:60px
     <div class="marquee-item"><i class="fas fa-lock"></i>256-bit Encryption</div>
     <div class="marquee-item"><i class="fas fa-headset"></i>24/7 Customer Support</div>
     <div class="marquee-item"><i class="fas fa-mobile-alt"></i>Mobile-First Banking</div>
-    <div class="marquee-item"><i class="fas fa-chart-line"></i>Smart Investments</div>
+    
     <div class="marquee-item"><i class="fas fa-award"></i>Award-Winning Service</div>
     <div class="marquee-item"><i class="fas fa-shield-alt"></i>Bank-Level Security</div>
     <div class="marquee-item"><i class="fas fa-bolt"></i>Lightning Fast Transfers</div>
@@ -368,7 +410,7 @@ footer{background:rgba(0,0,0,.4);border-top:1px solid var(--border);padding:60px
     <div class="marquee-item"><i class="fas fa-lock"></i>256-bit Encryption</div>
     <div class="marquee-item"><i class="fas fa-headset"></i>24/7 Customer Support</div>
     <div class="marquee-item"><i class="fas fa-mobile-alt"></i>Mobile-First Banking</div>
-    <div class="marquee-item"><i class="fas fa-chart-line"></i>Smart Investments</div>
+    
     <div class="marquee-item"><i class="fas fa-award"></i>Award-Winning Service</div>
   </div>
 </div>
@@ -401,7 +443,7 @@ footer{background:rgba(0,0,0,.4);border-top:1px solid var(--border);padding:60px
     <div class="step"><div class="step-num">1</div><h3>Sign Up</h3><p>Create your account in minutes. Fill in your details and set up your secure banking profile quickly and easily.</p></div>
     <div class="step"><div class="step-num">2</div><h3>Set Up Your Account</h3><p>Choose your account type, select your currency, and configure your security settings including your transaction PIN.</p></div>
     <div class="step"><div class="step-num">3</div><h3>Fund Your Account</h3><p>Add money through multiple deposit methods. Your funds are secured and ready for transactions immediately.</p></div>
-    <div class="step"><div class="step-num">4</div><h3>Perform Transactions</h3><p>Send money, invest, apply for loans, and manage all your finances seamlessly from your personal dashboard.</p></div>
+    <div class="step"><div class="step-num">4</div><h3>Perform Transactions</h3><p>Send money, apply for loans, and manage your finances seamlessly from your personal dashboard.</p></div>
   </div>
 </section>
 
@@ -413,31 +455,15 @@ footer{background:rgba(0,0,0,.4);border-top:1px solid var(--border);padding:60px
     <p class="sec-sub">Comprehensive financial services designed to help you grow and protect your wealth.</p>
   </div>
   <div class="services-grid">
-    <div class="svc-card"><img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&q=80" alt="Forex"><div class="svc-overlay"><h3>Forex Trading</h3><p>Trade currencies at competitive rates</p></div></div>
     <div class="svc-card"><img src="https://images.unsplash.com/photo-1592664474574-9a5e4e8f4571?w=600&q=80" alt="Agriculture"><div class="svc-overlay"><h3>Agriculture Finance</h3><p>Fund agricultural projects and ventures</p></div></div>
     <div class="svc-card"><img src="https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=600&q=80" alt="Real Estate"><div class="svc-overlay"><h3>Real Estate</h3><p>Finance your dream property with competitive rates</p></div></div>
-    <div class="svc-card"><img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=600&q=80" alt="Oil & Gas"><div class="svc-overlay"><h3>Oil & Gas</h3><p>Investment opportunities in energy sector</p></div></div>
-    <div class="svc-card"><img src="https://images.unsplash.com/photo-1610375461246-83df859d849d?w=600&q=80" alt="Gold"><div class="svc-overlay"><h3>Gold Investment</h3><p>Secure your wealth with precious metals</p></div></div>
+    
+    
     <div class="svc-card"><img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=80" alt="Business"><div class="svc-overlay"><h3>Business Banking</h3><p>Tailored financial solutions for businesses</p></div></div>
   </div>
 </section>
 
-<!-- INVESTMENT PLANS -->
-<section id="investments" style="background:linear-gradient(135deg,rgba(10,22,40,.8),rgba(30,58,95,.3));">
-  <div class="sec-hdr">
-    <div class="sec-label">Investment Plans</div>
-    <div class="sec-title">Grow Your <span>Wealth</span></div>
-    <p class="sec-sub">Choose an investment plan that suits your goals. All returns are automatically credited to your account.</p>
-  </div>
-  <div class="plans-grid">
-    <div class="plan-card"><div class="plan-name">Starter</div><div class="plan-min">Min. $20</div><div class="plan-return">$120</div><div class="plan-dur">Return in 10 days</div><a href="app.html#register" class="plan-btn">Start Investing</a></div>
-    <div class="plan-card"><div class="plan-name">Bronze</div><div class="plan-min">Min. $100</div><div class="plan-return">$350</div><div class="plan-dur">Return in 15 days</div><a href="app.html#register" class="plan-btn">Start Investing</a></div>
-    <div class="plan-card featured"><div class="plan-badge">Popular</div><div class="plan-name">Silver</div><div class="plan-min">Min. $500</div><div class="plan-return">$1,500</div><div class="plan-dur">Return in 20 days</div><a href="app.html#register" class="plan-btn">Start Investing</a></div>
-    <div class="plan-card"><div class="plan-name">Gold</div><div class="plan-min">Min. $1,000</div><div class="plan-return">$4,000</div><div class="plan-dur">Return in 30 days</div><a href="app.html#register" class="plan-btn">Start Investing</a></div>
-    <div class="plan-card"><div class="plan-name">Platinum</div><div class="plan-min">Min. $5,000</div><div class="plan-return">$18,000</div><div class="plan-dur">Return in 45 days</div><a href="app.html#register" class="plan-btn">Start Investing</a></div>
-    <div class="plan-card"><div class="plan-name">Diamond</div><div class="plan-min">Min. $10,000</div><div class="plan-return">$45,000</div><div class="plan-dur">Return in 60 days</div><a href="app.html#register" class="plan-btn">Start Investing</a></div>
-  </div>
-</section>
+
 
 <!-- INTEREST RATES -->
 <section>
@@ -471,8 +497,8 @@ footer{background:rgba(0,0,0,.4);border-top:1px solid var(--border);padding:60px
   </div>
   <div class="testi-grid">
     <div class="testi-card"><div class="stars">★★★★★</div><p>"AtlasVault Finance is one of the most reliable platforms I have ever used. The transfers are instant and the support team is always available."</p><div class="testi-author"><div class="testi-av">OT</div><div><div class="testi-name">Oliver Thompson</div><div class="testi-loc">United Kingdom</div></div></div></div>
-    <div class="testi-card"><div class="stars">★★★★★</div><p>"I invested in the Gold plan and received my full return on time. The platform is secure, professional, and easy to use. Highly recommended!"</p><div class="testi-author"><div class="testi-av">AM</div><div><div class="testi-name">Amara Mensah</div><div class="testi-loc">Ghana</div></div></div></div>
-    <div class="testi-card"><div class="stars">★★★★★</div><p>"The international transfer feature saved me so much in fees. AtlasVault Finance is truly a game changer for people who send money abroad regularly."</p><div class="testi-author"><div class="testi-av">KA</div><div><div class="testi-name">Kofi Asante</div><div class="testi-loc">Nigeria</div></div></div></div>
+    <div class="testi-card"><div class="stars">★★★★★</div><p>"The platform is secure, professional, and easy to use. Highly recommended!"</p><div class="testi-author"><div class="testi-av">AM</div><div><div class="testi-name">Amara Mensah</div><div class="testi-loc">United Kingdom</div></div></div></div>
+    <div class="testi-card"><div class="stars">★★★★★</div><p>"The international transfer feature saved me so much in fees. AtlasVault Finance is truly a game changer for people who send money abroad regularly."</p><div class="testi-author"><div class="testi-av">KA</div><div><div class="testi-name">Kofi Asante</div><div class="testi-loc">United States</div></div></div></div>
     <div class="testi-card"><div class="stars">★★★★★</div><p>"Customer service is excellent. They responded within minutes when I had an issue. The KYC process was smooth and the dashboard is beautiful."</p><div class="testi-author"><div class="testi-av">SJ</div><div><div class="testi-name">Sarah Johnson</div><div class="testi-loc">United States</div></div></div></div>
     <div class="testi-card"><div class="stars">★★★★★</div><p>"I love how the virtual cards work. I can make online purchases safely without exposing my main account. AtlasVault Finance has thought of everything."</p><div class="testi-author"><div class="testi-av">RM</div><div><div class="testi-name">Raj Mehta</div><div class="testi-loc">India</div></div></div></div>
     <div class="testi-card"><div class="stars">★★★★★</div><p>"The loan application was approved within 24 hours. The process is straightforward, transparent, and the rates are very competitive. 10/10!"</p><div class="testi-author"><div class="testi-av">FD</div><div><div class="testi-name">Fatima Diallo</div><div class="testi-loc">Senegal</div></div></div></div>
@@ -487,13 +513,13 @@ footer{background:rgba(0,0,0,.4);border-top:1px solid var(--border);padding:60px
     <p class="sec-sub">Have questions? We have answers.</p>
   </div>
   <div class="faq-list">
-    <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">What is AtlasVault Finance?<i class="fas fa-plus"></i></div><div class="faq-a">AtlasVault Finance is a premier financial institution providing a comprehensive suite of banking, investment, asset management, and risk management products and services tailored to meet your specific needs.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">What is AtlasVault Finance?<i class="fas fa-plus"></i></div><div class="faq-a">AtlasVault Finance is a premier financial institution providing a comprehensive suite of banking, account management, and everyday financial services and services tailored to meet your specific needs.</div></div>
     <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">How do I create an account?<i class="fas fa-plus"></i></div><div class="faq-a">Click "Open Account" and complete our simple 4-step registration process. You'll need to provide your personal details, contact information, choose your account type, and set a secure password. The whole process takes less than 5 minutes.</div></div>
     <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">How long does my deposit take to reflect?<i class="fas fa-plus"></i></div><div class="faq-a">Deposits are typically reviewed and credited within 24 hours of submission. You will receive an email and in-app notification once your deposit is approved and credited to your account.</div></div>
-    <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">What are the requirements for a business loan?<i class="fas fa-plus"></i></div><div class="faq-a">To apply for a business loan, you'll need to complete KYC verification, have an active account with a positive balance history, and provide the purpose and duration of the loan. Our team reviews applications within 1-3 business days.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">What are the requirements for a business loan?<i class="fas fa-plus"></i></div><div class="faq-a">To apply for a business loan, you'll need to complete account verification, have an active account with a positive balance history, and provide the purpose and duration of the loan. Our team reviews applications within 1-3 business days.</div></div>
     <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">How long does an international withdrawal take?<i class="fas fa-plus"></i></div><div class="faq-a">International withdrawals are processed after all verification codes are confirmed. Once approved by our admin team, transfers are typically completed within 1-3 business days depending on the destination country and transfer method.</div></div>
     <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">Can I have more than one account?<i class="fas fa-plus"></i></div><div class="faq-a">Each user can have one primary account with both checking and savings functionality. You can switch between account types or upgrade your account by contacting our support team.</div></div>
-    <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">How are my investments protected?<i class="fas fa-plus"></i></div><div class="faq-a">All investments are managed by our experienced financial team. Returns are guaranteed based on the plan you choose, and all invested funds are secured within our platform. Your returns are automatically credited to your account upon maturity.</div></div>
+    
   </div>
 </section>
 
@@ -541,7 +567,7 @@ footer{background:rgba(0,0,0,.4);border-top:1px solid var(--border);padding:60px
   <div class="footer-grid">
     <div class="footer-brand">
       <div class="logo"><div style="width:32px;height:32px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:800;color:var(--navy);">B</div>AtlasVault Finance</div>
-      <p>A premier financial institution providing comprehensive banking, investment, and financial services to individuals and businesses worldwide.</p>
+      <p>A premier financial institution providing comprehensive banking and financial services to individuals and businesses worldwide.</p>
       <div class="social-links" style="margin-top:16px">
         <a href="#"><i class="fab fa-facebook-f"></i></a>
         <a href="#"><i class="fab fa-twitter"></i></a>
@@ -554,7 +580,6 @@ footer{background:rgba(0,0,0,.4);border-top:1px solid var(--border);padding:60px
       <a href="app.html">Online Banking</a>
       <a href="app.html#register">Open Account</a>
       <a href="#services">Services</a>
-      <a href="#investments">Investments</a>
     </div>
     <div class="footer-col">
       <h4>Company</h4>
@@ -604,7 +629,7 @@ footer{background:rgba(0,0,0,.4);border-top:1px solid var(--border);padding:60px
     <div class="chat-quick" id="chat-quick">
       <button class="quick-btn" onclick="quickMsg('How do I open an account?')">Open Account</button>
       <button class="quick-btn" onclick="quickMsg('How do deposits work?')">Deposits</button>
-      <button class="quick-btn" onclick="quickMsg('Tell me about investments')">Investments</button>
+      
       <button class="quick-btn" onclick="quickMsg('I need support')">Get Support</button>
     </div>
     <div class="chat-input-row">
@@ -619,7 +644,7 @@ footer{background:rgba(0,0,0,.4);border-top:1px solid var(--border);padding:60px
 </div>
 
 <script>
-const API = window.location.hostname === 'localhost' ? 'http://localhost:5000' : 'https://atlasvault-backend.onrender.com';
+const API = 'https://atlasvault-backend.onrender.com';
 
 // LOADER
 window.addEventListener('load', () => {
@@ -683,13 +708,13 @@ function submitContact(e) {
 // ACTIVITY POPUPS
 const activities = [
   ['James K.', 'just made a deposit'],
-  ['Sarah M.', 'completed KYC verification'],
-  ['David O.', 'invested in Silver plan'],
+  ['Sarah M.', 'completed account verification'],
+  ['David O.', 'completed an international transfer'],
   ['Amara D.', 'sent an international transfer'],
   ['Chen W.', 'just opened an account'],
   ['Fatima A.', 'applied for a loan'],
   ['Michael T.', 'just made a deposit'],
-  ['Lola B.', 'invested in Gold plan'],
+  ['Lola B.', 'updated account details'],
 ];
 let actIdx = 0;
 function showActivity() {
@@ -711,7 +736,7 @@ let chatReplying = false;
 const botReplies = {
   'how do i open an account': "Opening an account is simple! Click the 'Open Account' button at the top and complete our 4-step registration. It takes less than 5 minutes! 🚀",
   'how do deposits work': "To deposit funds, log into your dashboard and go to Deposit. Choose your preferred method and enter the amount. Our team reviews and credits within 24 hours. 💰",
-  'tell me about investments': "We offer 6 investment plans from $20 to $10,000+. Returns range from $120 to $45,000! All returns are automatically credited on maturity. Check the Investments section above! 📈",
+  
   'i need support': "For account-specific support, please log into your dashboard and use the Customer Service chat or submit a Support Ticket. Our team responds 24/7! 💬",
   default: "Thank you for your message! For detailed assistance, please log into your dashboard or contact us at atlasvaultfinance02@gmail.com. We typically respond within minutes. 🏦"
 };
